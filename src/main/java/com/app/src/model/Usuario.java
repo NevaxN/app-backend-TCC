@@ -1,8 +1,19 @@
-package com.app.src.models;
+package com.app.src.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "usuarios")
 public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(nullable = false, unique = true)
     private String login;
+
+    @Column(nullable = false, unique = true)
     private String password;
 
     // Construtores

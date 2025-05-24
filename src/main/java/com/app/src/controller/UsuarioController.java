@@ -1,61 +1,58 @@
-package com.app.src.controllers;
+package com.app.src.controller;
 
-import com.app.src.models.Usuario;
+import com.app.src.model.Usuario;
+import com.app.src.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    private Map<Integer, Usuario> usuarios = new HashMap<>();
-    private Integer proximoId = 1;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // Criar usuário
     @PostMapping
     public Usuario criar(@RequestBody Usuario usuario) {
-        usuario.setId(proximoId++);
-        usuarios.put(usuario.getId(), usuario);
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 
     // Listar todos os usuários
     @GetMapping
     public List<Usuario> listar() {
-        return new ArrayList<>(usuarios.values());
+        return usuarioRepository.findAll();
     }
 
     // Buscar usuário por ID
     @GetMapping("/{id}")
     public Usuario buscarPorId(@PathVariable Integer id) {
-        Usuario usuario = usuarios.get(id);
-        if (usuario == null) {
-            throw new NoSuchElementException("Usuário não encontrado");
-        }
-        return usuario;
+        return usuarioRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
     }
 
     // Atualizar usuário
     @PutMapping("/{id}")
     public Usuario atualizar(@PathVariable Integer id, @RequestBody Usuario dadosAtualizados) {
-        Usuario usuarioExistente = usuarios.get(id);
-        if (usuarioExistente == null) {
-            throw new NoSuchElementException("Usuário não encontrado");
-        }
+        Usuario usuarioExistente = usuarioRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
 
         usuarioExistente.setLogin(dadosAtualizados.getLogin());
         usuarioExistente.setPassword(dadosAtualizados.getPassword());
-        return usuarioExistente;
+
+        return usuarioRepository.save(usuarioExistente);
     }
 
     // Deletar usuário
     @DeleteMapping("/{id}")
     public String deletar(@PathVariable Integer id) {
-        Usuario removido = usuarios.remove(id);
-        if (removido == null) {
-            return "Usuário não encontrado";
+        if(!usuarioRepository.existsById(id)){
+            return "Usuário deletado com sucesso";
         }
+        usuarioRepository.deleteById(id);
         return "Usuário deletado com sucesso";
     }
 }

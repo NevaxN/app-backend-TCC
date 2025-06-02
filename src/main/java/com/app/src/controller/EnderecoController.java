@@ -15,7 +15,6 @@ public class EnderecoController {
 
     @Autowired
     private EnderecoRepository enderecoRepository;
-
     
     @Autowired
     private PesquisadorRepository pesquisadorRepository;

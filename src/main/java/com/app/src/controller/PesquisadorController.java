@@ -2,6 +2,8 @@ package com.app.src.controller;
 
 import com.app.src.model.Pesquisador;
 import com.app.src.repository.PesquisadorRepository;
+import com.app.src.repository.UsuarioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +17,15 @@ public class PesquisadorController {
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     // Criar pesquisador
     @PostMapping
     public Pesquisador criar(@RequestBody Pesquisador pesquisador) {
+        if (!usuarioRepository.existsById(pesquisador.getUsuario().getId())) {
+            throw new NoSuchElementException("Pesquisador não encontrado com id: " + pesquisador.getUsuario().getId());
+        }
         return pesquisadorRepository.save(pesquisador);
     }
 

@@ -9,11 +9,11 @@ import com.app.src.model.Endereco;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, Integer> {
 
-    Optional<Endereco> findPesquisadorById(Integer id);
+    Optional<Endereco> findEnderecoById(Integer id);
 
     List<Endereco> findAll();
 
-    <S extends Endereco> S save(S pesquisador);
+    <S extends Endereco> S save(S endereco);
 
     void deleteById(Integer id);
 

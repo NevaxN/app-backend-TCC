@@ -28,7 +28,7 @@ public class GraduacaoController {
     @GetMapping("/{id}")
     public Graduacao buscarPorId(@PathVariable Integer id) {
         return graduacaoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Endereço não encontrado com id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Graduacao não encontrado com id: " + id));
     }
 
     // Criar novo endereço
@@ -45,7 +45,7 @@ public class GraduacaoController {
     @PutMapping("/{id}")
     public Graduacao atualizar(@PathVariable Integer id, @RequestBody Graduacao graduacaoAtualizada) {
         Graduacao graduacao = graduacaoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Endereço não encontrado com id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Graduacao não encontrado com id: " + id));
 
         graduacao.setNivel(graduacaoAtualizada.getNivel());
         graduacao.setInstituicao(graduacaoAtualizada.getInstituicao());
@@ -64,7 +64,7 @@ public class GraduacaoController {
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Integer id) {
         if (!graduacaoRepository.existsById(id)) {
-            throw new NoSuchElementException("Endereço não encontrado com id: " + id);
+            throw new NoSuchElementException("Graduacao não encontrado com id: " + id);
         }
         graduacaoRepository.deleteById(id);
     }

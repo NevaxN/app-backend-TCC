@@ -9,11 +9,11 @@ import com.app.src.model.Graduacao;
 
 public interface GraduacaoRepository extends JpaRepository<Graduacao, Integer>{
     
-    Optional<Graduacao> findPesquisadorById(Integer id);
+    Optional<Graduacao> findGraduacaoById(Integer id);
 
     List<Graduacao> findAll();
 
-    <S extends Graduacao> S save(S pesquisador);
+    <S extends Graduacao> S save(S graduacao);
 
     void deleteById(Integer id);
 

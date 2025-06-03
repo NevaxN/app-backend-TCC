@@ -14,7 +14,7 @@ public interface OrientacaoRepository extends JpaRepository<Orientacao, Integer>
 
     List<Orientacao> findAll();
 
-    <S extends Endereco> S save(S endereco);
+    <S extends Orientacao> S save(S orientacao);
 
     void deleteById(Integer id);
 

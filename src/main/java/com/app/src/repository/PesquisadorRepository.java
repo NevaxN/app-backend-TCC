@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PesquisadorRepository extends JpaRepository<Pesquisador, Integer> {
 
-    Optional<Pesquisador> findPesquisadorById(Integer id);
+    Optional<Pesquisador> findById(Integer id);
 
     List<Pesquisador> findAll();
 

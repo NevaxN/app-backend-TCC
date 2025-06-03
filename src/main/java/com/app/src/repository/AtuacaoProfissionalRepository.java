@@ -9,7 +9,7 @@ import com.app.src.model.AtuacaoProfissional;
 
 public interface AtuacaoProfissionalRepository extends JpaRepository<AtuacaoProfissional, Integer>{
     
-    Optional<AtuacaoProfissional> findAtuacaoProfissionalById(Integer id);
+    Optional<AtuacaoProfissional> findById(Integer id);
 
     List<AtuacaoProfissional> findAll();
 

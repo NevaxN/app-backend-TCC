@@ -6,17 +6,17 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.app.src.model.Endereco;
+import com.app.src.model.Orientacao;
 
-public interface EnderecoRepository extends JpaRepository<Endereco, Integer> {
+public interface OrientacaoRepository extends JpaRepository<Orientacao, Integer>{
+    
+    Optional<Orientacao> findById(Integer id);
 
-    Optional<Endereco> findById(Integer id);
-
-    List<Endereco> findAll();
+    List<Orientacao> findAll();
 
     <S extends Endereco> S save(S endereco);
 
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
-    
 }

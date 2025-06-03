@@ -55,7 +55,7 @@ public class AtuacaoProfissionalController {
         atuacaoProfissional.setAnoFim(atuacaoProfissionalAtualizada.getAnoFim());
         atuacaoProfissional.setDestaque(atuacaoProfissionalAtualizada.getDestaque());
 
-        return atuacaoProfissionalRepository.save(atuacaoProfissionalAtualizada);
+        return atuacaoProfissionalRepository.save(atuacaoProfissional);
     }
 
     // Deletar endereço

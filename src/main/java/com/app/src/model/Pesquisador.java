@@ -11,8 +11,7 @@ public class Pesquisador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    // Chave estrangeira para a tabela Usuario
+    
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;

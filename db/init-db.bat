@@ -22,7 +22,7 @@ echo     login VARCHAR(255) NOT NULL UNIQUE, >> temp.sql
 echo     password VARCHAR(255) NOT NULL >> temp.sql
 echo ); >> temp.sql
 echo. >> temp.sql
-echo INSERT INTO usuarios (login, senha) VALUES ('admin', '1234') ON CONFLICT DO NOTHING; >> temp.sql
+echo INSERT INTO usuarios (login, password) VALUES ('admin', '1234') ON CONFLICT DO NOTHING; >> temp.sql
 
 docker exec -i tcc-postgres psql -U admin -d tccdb < temp.sql
 

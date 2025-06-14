@@ -19,7 +19,7 @@ REM Executa os comandos SQL dentro do container
 echo CREATE TABLE IF NOT EXISTS usuarios ( > temp.sql
 echo     id SERIAL PRIMARY KEY, >> temp.sql
 echo     login VARCHAR(255) NOT NULL UNIQUE, >> temp.sql
-echo     senha VARCHAR(255) NOT NULL >> temp.sql
+echo     password VARCHAR(255) NOT NULL >> temp.sql
 echo ); >> temp.sql
 echo. >> temp.sql
 echo INSERT INTO usuarios (login, senha) VALUES ('admin', '1234') ON CONFLICT DO NOTHING; >> temp.sql

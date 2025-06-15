@@ -1,5 +1,9 @@
 package com.app.src.controller;
 
+import com.app.src.model.Pesquisador;
+import com.app.src.model.Usuario;
+import com.app.src.repository.PesquisadorRepository;
+import com.app.src.repository.UsuarioRepository;
 import com.app.src.service.XmlService;
 import org.json.JSONObject;
 import org.json.XML;
@@ -20,6 +24,12 @@ public class XmlUploadController {
 
     @Autowired
     private XmlService xmlService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PesquisadorRepository pesquisadorRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadXml(@RequestParam("xml") MultipartFile xml) {
@@ -56,6 +66,14 @@ public class XmlUploadController {
 
             HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
             ResponseEntity<String> flaskResponse = restTemplate.postForEntity(flaskUrl, requestEntity, String.class);
+
+            String flaskJson = flaskResponse.getBody();
+            Usuario usuario = usuarioRepository.findById(1).orElseThrow();
+            Pesquisador pesquisador = xmlService.converterJsonParaPesquisador(flaskJson, usuario);
+
+            //System.out.println(pesquisador.getNacionalidade());
+
+            pesquisadorRepository.save(pesquisador);
 
             return ResponseEntity.ok(flaskResponse.getBody());
 

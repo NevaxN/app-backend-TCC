@@ -40,7 +40,7 @@ public class Pesquisador {
     private String paisNascimento;
 
     @Column(name = "lattes_id")
-    private Integer lattesId;
+    private Long lattesId;
 
     // Getters e Setters
 
@@ -124,11 +124,11 @@ public class Pesquisador {
         this.paisNascimento = paisNascimento;
     }
 
-    public Integer getLattesId() {
+    public Long getLattesId() {
         return lattesId;
     }
 
-    public void setLattesId(Integer lattesId) {
+    public void setLattesId(Long lattesId) {
         this.lattesId = lattesId;
     }
 }

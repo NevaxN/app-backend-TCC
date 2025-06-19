@@ -1,6 +1,8 @@
 package com.app.src.controller;
 
 import com.app.src.model.Pesquisador;
+import com.app.src.dto.PesquisadorDTO;
+import com.app.src.mapper.PesquisadorMapper;
 import com.app.src.repository.PesquisadorRepository;
 import com.app.src.repository.UsuarioRepository;
 
@@ -19,9 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/pesquisadores")
+@RequestMapping("/api/pesquisadores")
 public class PesquisadorController {
 
     @Autowired
@@ -31,30 +34,43 @@ public class PesquisadorController {
     private UsuarioRepository usuarioRepository;
 
     // Criar pesquisador
-    @PostMapping
-    public Pesquisador criar(@RequestBody Pesquisador pesquisador) {
-        if (!usuarioRepository.existsById(pesquisador.getUsuario().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + pesquisador.getUsuario().getId());
+    @PostMapping("/salvarPesquisador")
+    public PesquisadorDTO criar(@RequestBody PesquisadorDTO pesquisadorDTO) {
+        Pesquisador pesquisador = PesquisadorMapper.toEntity(pesquisadorDTO);
+
+        if (pesquisador.getUsuario() == null || pesquisador.getUsuario().getId() == null) {
+            throw new IllegalArgumentException("ID do usuario é obrigatório.");
         }
-        return pesquisadorRepository.save(pesquisador);
+
+        if (!usuarioRepository.existsById(pesquisador.getUsuario().getId())) {
+            throw new NoSuchElementException("Usuario não encontrado com id: " + pesquisador.getUsuario().getId());
+        }
+
+        Pesquisador salvo = pesquisadorRepository.save(pesquisador);
+
+        return PesquisadorMapper.toDTO(salvo);
     }
 
     // Listar todos os pesquisadores
-    @GetMapping
-    public List<Pesquisador> listar() {
-        return pesquisadorRepository.findAll();
+    @GetMapping("/listarPesquisadores")
+    public List<PesquisadorDTO> listar() {
+        return pesquisadorRepository.findAll().stream()
+                .map(PesquisadorMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // Buscar pesquisador por ID
-    @GetMapping("/{id}")
-    public Pesquisador buscarPorId(@PathVariable Integer id) {
-        return pesquisadorRepository.findById(id)
+    @GetMapping("/listarPesquisador/{id}")
+    public PesquisadorDTO buscarPorId(@PathVariable Integer id) {
+        Pesquisador pesquisador = pesquisadorRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
+        
+        return PesquisadorMapper.toDTO(pesquisador);
     }
 
     // Atualizar pesquisador
-    @PutMapping("/{id}")
-    public Pesquisador atualizar(@PathVariable Integer id, @RequestBody Pesquisador dadosAtualizados) {
+    @PutMapping("/alterarPesquisador/{id}")
+    public PesquisadorDTO atualizar(@PathVariable Integer id, @RequestBody Pesquisador dadosAtualizados) {
         Pesquisador existente = pesquisadorRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
 
@@ -69,11 +85,13 @@ public class PesquisadorController {
         existente.setLattesId(dadosAtualizados.getLattesId());
         existente.setUsuario(dadosAtualizados.getUsuario());
 
-        return pesquisadorRepository.save(existente);
+        Pesquisador salvo = pesquisadorRepository.save(existente);
+
+        return PesquisadorMapper.toDTO(salvo);
     }
 
     // Deletar pesquisador
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/excluirPesquisador/{id}")
     public String deletar(@PathVariable Integer id) {
         if (!pesquisadorRepository.existsById(id)) {
             return "Pesquisador não encontrado";

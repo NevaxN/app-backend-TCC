@@ -1,6 +1,8 @@
 package com.app.src.controller;
 
 import com.app.src.model.Endereco;
+import com.app.src.dto.EnderecoDTO;
+import com.app.src.mapper.EnderecoMapper;
 import com.app.src.repository.EnderecoRepository;
 import com.app.src.repository.PesquisadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/enderecos")
@@ -20,31 +23,43 @@ public class EnderecoController {
     private PesquisadorRepository pesquisadorRepository;
 
     // Listar todos os endereços
-    @GetMapping
-    public List<Endereco> listarTodos() {
-        return enderecoRepository.findAll();
+    @GetMapping("/listarEnderecos")
+    public List<EnderecoDTO> listarTodos() {
+        return enderecoRepository.findAll().stream()
+                .map(EnderecoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // Buscar endereço por ID
-    @GetMapping("/{id}")
-    public Endereco buscarPorId(@PathVariable Integer id) {
-        return enderecoRepository.findById(id)
+    @GetMapping("/listarEndereco/{id}")
+    public EnderecoDTO buscarPorId(@PathVariable Integer id) {
+        Endereco endereco = enderecoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Endereço não encontrado com id: " + id));
+        return EnderecoMapper.toDTO(endereco);
     }
 
     // Criar novo endereço
-    @PostMapping
-    public Endereco criar(@RequestBody Endereco endereco) {
-        // Validação simples: verificar se o pesquisador existe
+    @PostMapping("/salvarEndereco")
+    public EnderecoDTO criar(@RequestBody EnderecoDTO enderecoDTO) {
+        
+        Endereco endereco = EnderecoMapper.toEntity(enderecoDTO);
+        
+        if (endereco.getPesquisador() == null || endereco.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
         if (!pesquisadorRepository.existsById(endereco.getPesquisador().getId())) {
             throw new NoSuchElementException("Pesquisador não encontrado com id: " + endereco.getPesquisador().getId());
         }
-        return enderecoRepository.save(endereco);
+
+        Endereco salvo = enderecoRepository.save(endereco);
+
+        return EnderecoMapper.toDTO(salvo);
     }
 
     // Atualizar endereço
-    @PutMapping("/{id}")
-    public Endereco atualizar(@PathVariable Integer id, @RequestBody Endereco enderecoAtualizado) {
+    @PutMapping("/alterarEndereco/{id}")
+    public EnderecoDTO atualizar(@PathVariable Integer id, @RequestBody Endereco enderecoAtualizado) {
         Endereco endereco = enderecoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Endereço não encontrado com id: " + id));
 
@@ -54,11 +69,13 @@ public class EnderecoController {
         endereco.setPais(enderecoAtualizado.getPais());
         endereco.setTelefone(enderecoAtualizado.getTelefone());
 
-        return enderecoRepository.save(endereco);
+        Endereco salvo = enderecoRepository.save(endereco);
+
+        return EnderecoMapper.toDTO(salvo);
     }
 
     // Deletar endereço
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/excluirEndereco/{id}")
     public void deletar(@PathVariable Integer id) {
         if (!enderecoRepository.existsById(id)) {
             throw new NoSuchElementException("Endereço não encontrado com id: " + id);

@@ -40,17 +40,24 @@ public class ProducaoBibliograficaController {
 
     // Criar novo endereço
     @PostMapping("/salvarProducao")
-    public ProducaoBibliografica criar(@RequestBody ProducaoBibliografica producaoBibliografica) {
-        // Validação simples: verificar se o pesquisador existe
+    public ProducaoBibliograficaDTO criar(@RequestBody ProducaoBibliograficaDTO producaoBibliograficaDTO) {
+        ProducaoBibliografica producaoBibliografica = ProducaoBibliograficaMapper.toEntity(producaoBibliograficaDTO);
+        
+        if (producaoBibliografica.getPesquisador() == null || producaoBibliografica.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
         if (!pesquisadorRepository.existsById(producaoBibliografica.getPesquisador().getId())) {
             throw new NoSuchElementException("Pesquisador não encontrado com id: " + producaoBibliografica.getPesquisador().getId());
         }
-        return producaoBibliograficaRepository.save(producaoBibliografica);
+
+        ProducaoBibliografica salvo = producaoBibliograficaRepository.save(producaoBibliografica);
+        return ProducaoBibliograficaMapper.toDTO(salvo);
     }
 
     // Atualizar endereço
     @PutMapping("/alterarProducao/{id}")
-    public ProducaoBibliografica atualizar(@PathVariable Integer id, @RequestBody ProducaoBibliografica producaoBibliograficaAtualizado) {
+    public ProducaoBibliograficaDTO atualizar(@PathVariable Integer id, @RequestBody ProducaoBibliografica producaoBibliograficaAtualizado) {
         ProducaoBibliografica producaoBibliografica = producaoBibliograficaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Produção Bibliografica não encontrado com id: " + id));
 
@@ -63,7 +70,8 @@ public class ProducaoBibliograficaController {
         producaoBibliografica.setAutores(producaoBibliograficaAtualizado.getAutores());
         producaoBibliografica.setDestaque(producaoBibliograficaAtualizado.getDestaque());
 
-        return producaoBibliograficaRepository.save(producaoBibliografica);
+        ProducaoBibliografica salvo = producaoBibliograficaRepository.save(producaoBibliografica);
+        return ProducaoBibliograficaMapper.toDTO(salvo);
     }
 
     // Deletar endereço

@@ -1,6 +1,8 @@
 package com.app.src.controller;
 
 import com.app.src.model.Orientacao;
+import com.app.src.dto.OrientacaoDTO;
+import com.app.src.mapper.OrientacaoMapper;
 import com.app.src.repository.OrientacaoRepository;
 import com.app.src.repository.PesquisadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orientacoes")
@@ -19,31 +22,43 @@ public class OrientacaoController {
     private PesquisadorRepository pesquisadorRepository;
 
     // Listar todos os endereços
-    @GetMapping
-    public List<Orientacao> listarTodos() {
-        return orientacaoRepository.findAll();
+    @GetMapping("/listarOrientacoes")
+    public List<OrientacaoDTO> listarTodos() {
+        return orientacaoRepository.findAll().stream()
+                .map(OrientacaoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // Buscar endereço por ID
-    @GetMapping("/{id}")
-    public Orientacao buscarPorId(@PathVariable Integer id) {
-        return orientacaoRepository.findById(id)
+    @GetMapping("/listarOrientacao/{id}")
+    public OrientacaoDTO buscarPorId(@PathVariable Integer id) {
+        Orientacao orientacao = orientacaoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Orientação não encontrado com id: " + id));
+
+        return OrientacaoMapper.toDTO(orientacao);
     }
 
     // Criar novo endereço
-    @PostMapping
-    public Orientacao criar(@RequestBody Orientacao orientacao) {
-        // Validação simples: verificar se o pesquisador existe
+    @PostMapping("/salvarOrientacao")
+    public OrientacaoDTO criar(@RequestBody OrientacaoDTO orientacaoDTO) {
+        Orientacao orientacao = OrientacaoMapper.toEntity(orientacaoDTO);
+
+        if (orientacao.getPesquisador() == null || orientacao.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
         if (!pesquisadorRepository.existsById(orientacao.getPesquisador().getId())) {
             throw new NoSuchElementException("Pesquisador não encontrado com id: " + orientacao.getPesquisador().getId());
         }
-        return orientacaoRepository.save(orientacao);
+
+        Orientacao salvo = orientacaoRepository.save(orientacao);
+
+        return OrientacaoMapper.toDTO(salvo);
     }
 
     // Atualizar endereço
-    @PutMapping("/{id}")
-    public Orientacao atualizar(@PathVariable Integer id, @RequestBody Orientacao orientacaoAtualizado) {
+    @PutMapping("/alterarOrientacao/{id}")
+    public OrientacaoDTO atualizar(@PathVariable Integer id, @RequestBody Orientacao orientacaoAtualizado) {
         Orientacao orientacao = orientacaoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Orientação não encontrada com id: " + id));
 
@@ -55,11 +70,13 @@ public class OrientacaoController {
         orientacao.setAnoFim(orientacaoAtualizado.getAnoFim());
         orientacao.setDestaque(orientacaoAtualizado.getDestaque());
 
-        return orientacaoRepository.save(orientacao);
+        Orientacao salvo = orientacaoRepository.save(orientacao);
+
+        return OrientacaoMapper.toDTO(salvo);
     }
 
     // Deletar endereço
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/excluirOrientacao/{id}")
     public void deletar(@PathVariable Integer id) {
         if (!orientacaoRepository.existsById(id)) {
             throw new NoSuchElementException("Orientação não encontrado com id: " + id);

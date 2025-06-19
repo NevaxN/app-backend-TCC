@@ -1,6 +1,8 @@
 package com.app.src.controller;
 
 import com.app.src.model.Evento;
+import com.app.src.dto.EventoDTO;
+import com.app.src.mapper.EventoMapper;
 import com.app.src.repository.EventoRepository;
 import com.app.src.repository.PesquisadorRepository;
 
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/eventos")
@@ -20,31 +23,43 @@ public class EventoController {
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
 
-    @GetMapping
-    public List<Evento> listarTodos() {
-        return eventoRepository.findAll();
+    @GetMapping("/listarEventos")
+    public List<EventoDTO> listarTodos() {
+        return eventoRepository.findAll().stream()
+                .map(EventoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // Buscar endereço por ID
-    @GetMapping("/{id}")
-    public Evento buscarPorId(@PathVariable Integer id) {
-        return eventoRepository.findById(id)
+    @GetMapping("/listarEvento/{id}")
+    public EventoDTO buscarPorId(@PathVariable Integer id) {
+        Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento não encontrado com id: " + id));
+
+        return EventoMapper.toDTO(evento);
     }
 
     // Criar novo endereço
-    @PostMapping
-    public Evento criar(@RequestBody Evento evento) {
-        // Validação simples: verificar se o pesquisador existe
+    @PostMapping("/salvarEvento")
+    public EventoDTO criar(@RequestBody EventoDTO eventoDTO) {
+        Evento evento = EventoMapper.toEntity(eventoDTO);
+
+        if (evento.getPesquisador() == null || evento.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
         if (!pesquisadorRepository.existsById(evento.getPesquisador().getId())) {
             throw new NoSuchElementException("Pesquisador não encontrado com id: " + evento.getPesquisador().getId());
         }
-        return eventoRepository.save(evento);
+
+        Evento salvo = eventoRepository.save(evento);
+
+        return EventoMapper.toDTO(salvo);
     }
 
     // Atualizar endereço
-    @PutMapping("/{id}")
-    public Evento atualizar(@PathVariable Integer id, @RequestBody Evento eventoAtualizada) {
+    @PutMapping("/alterarEvento/{id}")
+    public EventoDTO atualizar(@PathVariable Integer id, @RequestBody Evento eventoAtualizada) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento não encontrado com id: " + id));
 
@@ -54,11 +69,13 @@ public class EventoController {
         evento.setAno(eventoAtualizada.getAno());
         evento.setLocal(eventoAtualizada.getLocal());
 
-        return eventoRepository.save(evento);
+        Evento salvo = eventoRepository.save(evento);
+
+        return EventoMapper.toDTO(salvo);
     }
 
     // Deletar endereço
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/excluirEvento/{id}")
     public void deletar(@PathVariable Integer id) {
         if (!eventoRepository.existsById(id)) {
             throw new NoSuchElementException("Evento não encontrado com id: " + id);

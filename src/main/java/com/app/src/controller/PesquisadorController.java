@@ -5,8 +5,18 @@ import com.app.src.repository.PesquisadorRepository;
 import com.app.src.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -70,5 +80,50 @@ public class PesquisadorController {
         }
         pesquisadorRepository.deleteById(id);
         return "Pesquisador deletado com sucesso";
+    }
+
+    @PutMapping("/{id}/imagem")
+    public ResponseEntity<?> alterarImagem(@PathVariable Integer id, @RequestParam("file")MultipartFile file) throws IOException {
+        Pesquisador pesquisador = pesquisadorRepository.findById(id).
+                orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Arquivo está vazio");
+        }
+        try {
+            byte[] imageBytes = file.getBytes();
+            pesquisador.setImagemPerfil(imageBytes);
+            pesquisadorRepository.save(pesquisador);
+            return ResponseEntity.ok("Imagem alterada com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi possível alterar a imagem");
+        }
+
+    }
+
+    // Obter imagem de perfil do pesquisador
+    @GetMapping("/{id}/imagem")
+    public ResponseEntity<byte[]> obterImagem(@PathVariable Integer id) throws IOException {
+
+        Pesquisador pesquisador = pesquisadorRepository.findById(id).
+                orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
+
+        byte[] imageBytes;
+        MediaType contentType = MediaType.IMAGE_PNG;
+
+        if (pesquisador.getImagemPerfil() != null && pesquisador.getImagemPerfil().length > 0) {
+            imageBytes = pesquisador.getImagemPerfil();
+            contentType = MediaType.IMAGE_JPEG; // Ou o tipo que você salvou
+        } else {
+            Resource resource = new ClassPathResource("images/default-user.jpg");
+            try (InputStream inputStream = resource.getInputStream()) {
+                imageBytes = StreamUtils.copyToByteArray(inputStream);
+            }
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(contentType);
+
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+
     }
 }

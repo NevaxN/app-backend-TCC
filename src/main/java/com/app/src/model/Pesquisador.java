@@ -1,6 +1,9 @@
 package com.app.src.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -41,6 +44,10 @@ public class Pesquisador {
 
     @Column(name = "lattes_id")
     private Long lattesId;
+
+    @Column()
+    @JdbcTypeCode(Types.VARBINARY)
+    private byte[] imagemPerfil;
 
     // Getters e Setters
 
@@ -130,5 +137,13 @@ public class Pesquisador {
 
     public void setLattesId(Long lattesId) {
         this.lattesId = lattesId;
+    }
+
+    public byte[] getImagemPerfil() {
+        return imagemPerfil;
+    }
+
+    public void setImagemPerfil(byte[] imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
     }
 }

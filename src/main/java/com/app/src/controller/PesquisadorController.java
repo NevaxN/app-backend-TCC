@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/pesquisadores")
+@RequestMapping("/api/pesquisadores")
 public class PesquisadorController {
 
     @Autowired

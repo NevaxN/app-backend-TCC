@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/favoritos")
+@RequestMapping("/api/favoritos")
 public class FavoritoController {
         
     @Autowired

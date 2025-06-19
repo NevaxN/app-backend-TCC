@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/idiomas")
+@RequestMapping("/api/idiomas")
 public class IdiomaController {
     
     @Autowired

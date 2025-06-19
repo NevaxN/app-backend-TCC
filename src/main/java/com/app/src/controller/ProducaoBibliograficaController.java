@@ -1,6 +1,8 @@
 package com.app.src.controller;
 
 import com.app.src.model.ProducaoBibliografica;
+import com.app.src.dto.ProducaoBibliograficaDTO;
+import com.app.src.mapper.ProducaoBibliograficaMapper;
 import com.app.src.repository.ProducaoBibliograficaRepository;
 import com.app.src.repository.PesquisadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/producoes_bibliograficas")
+@RequestMapping("/api/producoes")
 public class ProducaoBibliograficaController {
     
     @Autowired
@@ -20,20 +23,23 @@ public class ProducaoBibliograficaController {
     private PesquisadorRepository pesquisadorRepository;
 
     // Listar todos os endereços
-    @GetMapping
-    public List<ProducaoBibliografica> listarTodos() {
-        return producaoBibliograficaRepository.findAll();
+    @GetMapping("/listarProducoes")
+    public List<ProducaoBibliograficaDTO> listarTodos() {
+        return producaoBibliograficaRepository.findAll().stream()
+                .map(ProducaoBibliograficaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // Buscar endereço por ID
-    @GetMapping("/{id}")
-    public ProducaoBibliografica buscarPorId(@PathVariable Integer id) {
-        return producaoBibliograficaRepository.findById(id)
+    @GetMapping("/listarProducao/{id}")
+    public ProducaoBibliograficaDTO buscarPorId(@PathVariable Integer id) {
+        ProducaoBibliografica producaoBibliografica = producaoBibliograficaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Produção Bibliografica não encontrado com id: " + id));
+        return ProducaoBibliograficaMapper.toDTO(producaoBibliografica);
     }
 
     // Criar novo endereço
-    @PostMapping
+    @PostMapping("/salvarProducao")
     public ProducaoBibliografica criar(@RequestBody ProducaoBibliografica producaoBibliografica) {
         // Validação simples: verificar se o pesquisador existe
         if (!pesquisadorRepository.existsById(producaoBibliografica.getPesquisador().getId())) {
@@ -43,7 +49,7 @@ public class ProducaoBibliograficaController {
     }
 
     // Atualizar endereço
-    @PutMapping("/{id}")
+    @PutMapping("/alterarProducao/{id}")
     public ProducaoBibliografica atualizar(@PathVariable Integer id, @RequestBody ProducaoBibliografica producaoBibliograficaAtualizado) {
         ProducaoBibliografica producaoBibliografica = producaoBibliograficaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Produção Bibliografica não encontrado com id: " + id));
@@ -61,7 +67,7 @@ public class ProducaoBibliograficaController {
     }
 
     // Deletar endereço
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/excluirProducao/{id}")
     public void deletar(@PathVariable Integer id) {
         if (!producaoBibliograficaRepository.existsById(id)) {
             throw new NoSuchElementException("Produção Bibliografica não encontrado com id: " + id);

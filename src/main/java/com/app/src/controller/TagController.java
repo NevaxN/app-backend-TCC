@@ -39,6 +39,7 @@ public class TagController {
     }
 
     // Criar nova tag
+    @PostMapping("/salvarTag")
     public TagDTO criar(@RequestBody TagDTO tagDTO) {
         Tag tag = TagMapper.toEntity(tagDTO);
     

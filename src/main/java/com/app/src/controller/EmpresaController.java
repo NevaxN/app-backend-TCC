@@ -4,7 +4,6 @@ import com.app.src.model.Empresa;
 import com.app.src.dto.EmpresaDTO;
 import com.app.src.mapper.EmpresaMapper;
 import com.app.src.repository.EmpresaRepository;
-import com.app.src.repository.PesquisadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +17,6 @@ public class EmpresaController {
         
     @Autowired
     private EmpresaRepository empresaRepository;
-
-    @Autowired
-    private PesquisadorRepository pesquisadorRepository;
 
     @GetMapping("/listarEmpresas")
     public List<EmpresaDTO> listarTodos() {
@@ -43,14 +39,6 @@ public class EmpresaController {
     public EmpresaDTO criar(@RequestBody EmpresaDTO empresaDTO) {
         Empresa empresa = EmpresaMapper.toEntity(empresaDTO);
 
-        if (empresa.getPesquisador() == null || empresa.getPesquisador().getId() == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
-        }
-
-        if (!pesquisadorRepository.existsById(empresa.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + empresa.getPesquisador().getId());
-        }
-
         Empresa salvo = empresaRepository.save(empresa);
 
         return EmpresaMapper.toDTO(salvo);
@@ -62,7 +50,20 @@ public class EmpresaController {
         Empresa empresa = empresaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Empresa não encontrado com id: " + id));
 
-        empresa.setNome(empresaAtualizada.getNome());
+        empresa.setNomeRegistro(empresaAtualizada.getNomeRegistro());
+        empresa.setNomeComercial(empresaAtualizada.getNomeComercial());
+        empresa.setBairro(empresaAtualizada.getBairro());
+        empresa.setCep(empresaAtualizada.getCep());
+        empresa.setCidade(empresaAtualizada.getCidade());
+        empresa.setCnpj(empresaAtualizada.getCnpj());
+        empresa.setEmail(empresaAtualizada.getEmail());
+        empresa.setEstado(empresaAtualizada.getEstado());
+        empresa.setFrase(empresaAtualizada.getFrase());
+        empresa.setNumeroEndereco(empresaAtualizada.getNumeroEndereco());
+        empresa.setSetor(empresaAtualizada.getSetor());
+        empresa.setSite(empresaAtualizada.getSite());
+        empresa.setTelefone(empresaAtualizada.getTelefone());
+        empresa.setTextoEmpresa(empresa.getTextoEmpresa());
 
         Empresa salvo = empresaRepository.save(empresa);
 

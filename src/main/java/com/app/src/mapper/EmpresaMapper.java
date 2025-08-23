@@ -11,8 +11,20 @@ public class EmpresaMapper {
 
         EmpresaDTO dto = new EmpresaDTO();
         dto.setId(empresa.getId());
-        dto.setPesquisador(empresa.getPesquisador());
-        dto.setNome(empresa.getNome());
+        dto.setNomeRegistro(empresa.getNomeRegistro());
+        dto.setNomeComercial(empresa.getNomeComercial());
+        dto.setCnpj(empresa.getCnpj());
+        dto.setBairro(empresa.getBairro());
+        dto.setCep(empresa.getCep());
+        dto.setCidade(empresa.getCidade());
+        dto.setEmail(empresa.getEmail());
+        dto.setEstado(empresa.getEstado());
+        dto.setFrase(empresa.getFrase());
+        dto.setNumeroEndereco(dto.getNumeroEndereco());
+        dto.setSetor(empresa.getSetor());
+        dto.setSite(empresa.getSite());
+        dto.setTelefone(empresa.getTelefone());
+        dto.setTextoEmpresa(empresa.getTextoEmpresa());
         return dto;
     }
 
@@ -22,8 +34,20 @@ public class EmpresaMapper {
         }
 
         Empresa empresa = new Empresa();
-        empresa.setPesquisador(dto.getPesquisador());
-        empresa.setNome(dto.getNome());
+        empresa.setNomeRegistro(dto.getNomeRegistro());
+        empresa.setNomeComercial(dto.getNomeComercial());
+        empresa.setCnpj(dto.getCnpj());
+        empresa.setBairro(dto.getBairro());
+        empresa.setCep(dto.getCep());
+        empresa.setCidade(dto.getCidade());
+        empresa.setEmail(dto.getEmail());
+        empresa.setEstado(dto.getEstado());
+        empresa.setFrase(dto.getFrase());
+        empresa.setNumeroEndereco(dto.getNumeroEndereco());
+        empresa.setSetor(dto.getSetor());
+        empresa.setSite(dto.getSite());
+        empresa.setTelefone(dto.getTelefone());
+        empresa.setTextoEmpresa(dto.getTextoEmpresa());
         return empresa;
     }
 }

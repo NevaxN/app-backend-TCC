@@ -1,7 +1,5 @@
 package com.app.src.dto;
 
-import com.app.src.model.Pesquisador;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +9,31 @@ public class EmpresaDTO {
     
     private Integer id;
     
-    private Pesquisador pesquisador;
-    
-    private String nome;
+    private String nomeRegistro;
+
+    private String nomeComercial;
+
+    private String cnpj;
+
+    private String numeroEndereco;
+
+    private String bairro;
+
+    private String cidade;
+
+    private String estado;
+
+    private String cep;
+
+    private String telefone;
+
+    private String email;
+
+    private String site;
+
+    private String setor;
+
+    private String frase;
+
+    private String textoEmpresa;
 }

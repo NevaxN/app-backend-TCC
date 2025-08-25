@@ -36,4 +36,6 @@ public class EmpresaDTO {
     private String frase;
 
     private String textoEmpresa;
+
+    private String logradouro;
 }

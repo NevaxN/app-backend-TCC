@@ -52,11 +52,14 @@ public class Empresa {
     @Column(name = "textoEmpresa", nullable = false)
     private String textoEmpresa;
 
+    @Column(name = "logradouro", nullable = false)
+    private String logradouro;
+
     public Empresa() {}
 
     public Empresa(String nomeRegistro, String nomeComercial, String cnpj,
     String numeroEndereco, String bairro, String cidade, String estado, String cep, 
-    String telefone, String email, String site, String setor, String frase, String textoEmpresa){
+    String telefone, String email, String site, String setor, String frase, String textoEmpresa, String logradouro){
         this.nomeRegistro = nomeRegistro;
         this.nomeComercial = nomeComercial;
         this.cnpj = cnpj;
@@ -71,6 +74,7 @@ public class Empresa {
         this.setor = setor;
         this.frase = frase;
         this.textoEmpresa = textoEmpresa;
+        this.logradouro = logradouro;
     }
 
     public Integer getId() {
@@ -191,5 +195,13 @@ public class Empresa {
 
     public void setTextoEmpresa(String textoEmpresa) {
         this.textoEmpresa = textoEmpresa;
+    }
+
+    public String getLogradouro(){
+        return logradouro;
+    }
+
+    public void setLogradouro(String logradouro){
+        this.logradouro = logradouro;
     }
 }

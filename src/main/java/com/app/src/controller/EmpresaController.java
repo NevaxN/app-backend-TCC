@@ -38,7 +38,7 @@ public class EmpresaController {
     @PostMapping("/salvarEmpresa")
     public EmpresaDTO criar(@RequestBody EmpresaDTO empresaDTO) {
         Empresa empresa = EmpresaMapper.toEntity(empresaDTO);
-
+        
         Empresa salvo = empresaRepository.save(empresa);
 
         return EmpresaMapper.toDTO(salvo);
@@ -63,7 +63,8 @@ public class EmpresaController {
         empresa.setSetor(empresaAtualizada.getSetor());
         empresa.setSite(empresaAtualizada.getSite());
         empresa.setTelefone(empresaAtualizada.getTelefone());
-        empresa.setTextoEmpresa(empresa.getTextoEmpresa());
+        empresa.setTextoEmpresa(empresaAtualizada.getTextoEmpresa());
+        empresa.setLogradouro(empresaAtualizada.getLogradouro());
 
         Empresa salvo = empresaRepository.save(empresa);
 

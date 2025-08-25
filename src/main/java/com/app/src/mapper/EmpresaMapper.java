@@ -25,6 +25,7 @@ public class EmpresaMapper {
         dto.setSite(empresa.getSite());
         dto.setTelefone(empresa.getTelefone());
         dto.setTextoEmpresa(empresa.getTextoEmpresa());
+        dto.setLogradouro(empresa.getLogradouro());
         return dto;
     }
 
@@ -48,6 +49,7 @@ public class EmpresaMapper {
         empresa.setSite(dto.getSite());
         empresa.setTelefone(dto.getTelefone());
         empresa.setTextoEmpresa(dto.getTextoEmpresa());
+        empresa.setLogradouro(dto.getLogradouro());
         return empresa;
     }
 }

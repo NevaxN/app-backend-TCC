@@ -7,13 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GraduacaoDTO {
+public class FormacaoAcademicaDTO {
     
     private Integer id;
     
     private Pesquisador pesquisador;
     
     private String nivel;
+
+    private int sequenciaFormacao;
     
     private String instituicao;
     

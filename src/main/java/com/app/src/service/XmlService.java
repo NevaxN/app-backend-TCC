@@ -4,9 +4,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.app.src.model.FormacaoAcademica;
 import org.springframework.stereotype.Service;
 
 import com.app.src.model.Pesquisador;
@@ -16,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class XmlService {
+
+    final ObjectMapper mapper = new ObjectMapper();
 
     public String detectEncoding(byte[] xmlBytes) {
         String header = new String(xmlBytes, 0, Math.min(xmlBytes.length, 100), StandardCharsets.US_ASCII);
@@ -29,7 +34,7 @@ public class XmlService {
 
     public Pesquisador converterJsonParaPesquisador(String jsonBody, Usuario usuario) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
+
             JsonNode root = mapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador");
 
@@ -56,6 +61,42 @@ public class XmlService {
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao converter JSON para Pesquisador", e);
+        }
+    }
+
+    public List<FormacaoAcademica> converterJsonParaFormacaoAcademica (String jsonBody, Pesquisador pesquisador) {
+        try {
+            List<FormacaoAcademica> formacaoAcademicaList = new ArrayList<>();
+
+            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode dados = root.get("dados_pesquisador").get("formacao_academica");
+
+            for (JsonNode fa: dados) {
+                FormacaoAcademica formacaoAcademica = new FormacaoAcademica();
+                formacaoAcademica.setPesquisador(pesquisador);
+                formacaoAcademica.setSequenciaFormacao(fa.get("sequencia_formacao").asInt());
+                formacaoAcademica.setNivel(fa.get("tipo").asText());
+                formacaoAcademica.setCurso(fa.get("nome_curso").asText());
+                formacaoAcademica.setInstituicao(fa.get("nome_instituicao").asText());
+                formacaoAcademica.setStatus(fa.get("status").asText());
+                formacaoAcademica.setAnoInicio(fa.get("ano_de_inicio").asInt());
+                formacaoAcademica.setAnoConclusao(fa.get("ano_de_conclusao").asInt());
+                formacaoAcademica.setTituloTrabalho(fa.get("titulo_trabalho").asText());
+                formacaoAcademica.setDestaque(false);
+
+
+                String orientador = (fa.has("orientador") && !fa.get("orientador").asText().isEmpty())
+                        ? fa.get("orientador").asText()
+                        : "Não informado";
+                formacaoAcademica.setOrientador(orientador);
+
+                formacaoAcademicaList.add(formacaoAcademica);
+            }
+
+            return formacaoAcademicaList;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao converter JSON para Formação Acadêmica", e);
         }
     }
 }

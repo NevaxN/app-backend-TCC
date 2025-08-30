@@ -1,15 +1,15 @@
 package com.app.src.mapper;
 
-import com.app.src.dto.GraduacaoDTO;
-import com.app.src.model.Graduacao;
+import com.app.src.dto.FormacaoAcademicaDTO;
+import com.app.src.model.FormacaoAcademica;
 
-public class GraduacaoMapper {
-        public static GraduacaoDTO toDTO(Graduacao graduacao) {
+public class FormacaoAcademicaMapper {
+        public static FormacaoAcademicaDTO toDTO(FormacaoAcademica graduacao) {
         if (graduacao == null) {
             return null;
         }
 
-        GraduacaoDTO dto = new GraduacaoDTO();
+        FormacaoAcademicaDTO dto = new FormacaoAcademicaDTO();
         dto.setId(graduacao.getId());
         dto.setPesquisador(graduacao.getPesquisador());
         dto.setInstituicao(graduacao.getInstituicao());
@@ -20,15 +20,16 @@ public class GraduacaoMapper {
         dto.setTituloTrabalho(graduacao.getTituloTrabalho());
         dto.setOrientador(graduacao.getOrientador());
         dto.setDestaque(graduacao.getDestaque());
+        dto.setSequenciaFormacao(graduacao.getSequenciaFormacao());
         return dto;
     }
 
-    public static Graduacao toEntity(GraduacaoDTO dto) {
+    public static FormacaoAcademica toEntity(FormacaoAcademicaDTO dto) {
         if (dto == null) {
             return null;
         }
 
-        Graduacao graduacao = new Graduacao();
+        FormacaoAcademica graduacao = new FormacaoAcademica();
         graduacao.setPesquisador(dto.getPesquisador());
         graduacao.setInstituicao(dto.getInstituicao());
         graduacao.setCurso(dto.getCurso());
@@ -38,6 +39,7 @@ public class GraduacaoMapper {
         graduacao.setTituloTrabalho(dto.getTituloTrabalho());
         graduacao.setOrientador(dto.getOrientador());
         graduacao.setDestaque(dto.getDestaque());
+        graduacao.setSequenciaFormacao(dto.getSequenciaFormacao());
         return graduacao;
     }
 }

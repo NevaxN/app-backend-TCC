@@ -1,7 +1,9 @@
 package com.app.src.controller;
 
+import com.app.src.model.FormacaoAcademica;
 import com.app.src.model.Pesquisador;
 import com.app.src.model.Usuario;
+import com.app.src.repository.FormacaoAcademicaRepository;
 import com.app.src.repository.PesquisadorRepository;
 import com.app.src.repository.UsuarioRepository;
 import com.app.src.service.XmlService;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,6 +32,9 @@ public class XmlUploadController {
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
+
+    @Autowired
+    private FormacaoAcademicaRepository formacaoAcademicaRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadXml(@RequestParam("xml") MultipartFile xml) {
@@ -70,9 +76,11 @@ public class XmlUploadController {
             Usuario usuario = usuarioRepository.findById(1).orElseThrow();
             Pesquisador pesquisador = xmlService.converterJsonParaPesquisador(flaskJson, usuario);
 
-            //System.out.println(pesquisador.getNacionalidade());
+            Pesquisador pesquisadorSalvo = pesquisadorRepository.save(pesquisador);
 
-            pesquisadorRepository.save(pesquisador);
+            List<FormacaoAcademica> formacaoAcademicas = xmlService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo);
+
+            formacaoAcademicaRepository.saveAll(formacaoAcademicas);
 
             return ResponseEntity.ok(flaskResponse.getBody());
 

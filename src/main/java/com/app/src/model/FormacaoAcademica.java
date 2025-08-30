@@ -3,8 +3,8 @@ package com.app.src.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "graduacoes")
-public class Graduacao {
+@Table(name = "formacoes_academicas")
+public class FormacaoAcademica {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +16,9 @@ public class Graduacao {
 
     @Column(name = "nivel", nullable = false)
     private String nivel;
+
+    @Column(name = "sequencia_formacao", nullable = false)
+    private int sequenciaFormacao;
 
     @Column(name = "instituicao", nullable = false)
     private String instituicao;
@@ -41,13 +44,14 @@ public class Graduacao {
     @Column(name = "destaque", nullable = false)
     private Boolean destaque;
 
-    public Graduacao() {
+    public FormacaoAcademica() {
     }
 
-    public Graduacao(Pesquisador pesquisador, String nivel, String instituicao, String curso, String status,
-                     Integer anoInicio, Integer anoConclusao, String tituloTrabalho, String orientador, Boolean destaque) {
+    public FormacaoAcademica(Pesquisador pesquisador, String nivel, int sequenciaFormacao, String instituicao, String curso, String status,
+                             Integer anoInicio, Integer anoConclusao, String tituloTrabalho, String orientador, Boolean destaque) {
         this.pesquisador = pesquisador;
         this.nivel = nivel;
+        this.sequenciaFormacao = sequenciaFormacao;
         this.instituicao = instituicao;
         this.curso = curso;
         this.status = status;
@@ -144,5 +148,13 @@ public class Graduacao {
 
     public void setDestaque(Boolean destaque) {
         this.destaque = destaque;
+    }
+
+    public int getSequenciaFormacao() {
+        return sequenciaFormacao;
+    }
+
+    public void setSequenciaFormacao(int sequenciaFormacao) {
+        this.sequenciaFormacao = sequenciaFormacao;
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.app.src.model.Endereco;
 import com.app.src.model.FormacaoAcademica;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,29 @@ public class XmlService {
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao converter JSON para Pesquisador", e);
+        }
+    }
+
+    public List<Endereco> converterJsonParaEndereco (String jsonBody, Pesquisador pesquisador) {
+        try {
+            List<Endereco> enderecoList = new ArrayList<>();
+            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode dados = root.get("dados_pesquisador").get("endereco");
+
+            for (JsonNode e: dados) {
+                Endereco endereco = new Endereco();
+                endereco.setPesquisador(pesquisador);
+                endereco.setTipo(e.get("tipo").asText());
+                endereco.setPais(e.get("pais").asText());
+                endereco.setCidade(e.get("cidade").asText());
+                endereco.setBairro(e.get("bairro").asText());
+                endereco.setTelefone(e.get("telefone").asText());
+                endereco.setEmail(e.get("email").asText());
+                enderecoList.add(endereco);
+            }
+            return enderecoList;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao converter JSON para Endereço", e);
         }
     }
 

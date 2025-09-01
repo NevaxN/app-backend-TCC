@@ -1,8 +1,10 @@
 package com.app.src.controller;
 
+import com.app.src.model.Endereco;
 import com.app.src.model.FormacaoAcademica;
 import com.app.src.model.Pesquisador;
 import com.app.src.model.Usuario;
+import com.app.src.repository.EnderecoRepository;
 import com.app.src.repository.FormacaoAcademicaRepository;
 import com.app.src.repository.PesquisadorRepository;
 import com.app.src.repository.UsuarioRepository;
@@ -34,7 +36,12 @@ public class XmlUploadController {
     private PesquisadorRepository pesquisadorRepository;
 
     @Autowired
+    private EnderecoRepository enderecoRepository;
+
+    @Autowired
     private FormacaoAcademicaRepository formacaoAcademicaRepository;
+
+
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadXml(@RequestParam("xml") MultipartFile xml) {
@@ -78,8 +85,12 @@ public class XmlUploadController {
 
             Pesquisador pesquisadorSalvo = pesquisadorRepository.save(pesquisador);
 
-            List<FormacaoAcademica> formacaoAcademicas = xmlService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo);
+            // Endereço
+            List<Endereco> enderecos = xmlService.converterJsonParaEndereco(flaskJson, pesquisadorSalvo);
+            enderecoRepository.saveAll(enderecos);
 
+            // Formação Acadêmica
+            List<FormacaoAcademica> formacaoAcademicas = xmlService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo);
             formacaoAcademicaRepository.saveAll(formacaoAcademicas);
 
             return ResponseEntity.ok(flaskResponse.getBody());

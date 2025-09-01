@@ -14,6 +14,9 @@ public class Endereco {
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
 
+    @Column(name = "tipo", nullable = false)
+    private String tipo;
+
     @Column(name = "pais", nullable = false)
     private String pais;
 
@@ -32,8 +35,9 @@ public class Endereco {
     public Endereco() {
     }
 
-    public Endereco(Pesquisador pesquisador, String pais, String cidade, String bairro, String telefone, String email) {
+    public Endereco(Pesquisador pesquisador, String tipo, String pais, String cidade, String bairro, String telefone, String email) {
         this.pesquisador = pesquisador;
+        this.tipo = tipo;
         this.pais = pais;
         this.cidade = cidade;
         this.bairro = bairro;
@@ -97,4 +101,11 @@ public class Endereco {
         this.email = email;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }

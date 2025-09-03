@@ -12,13 +12,3 @@ docker run --name tcc-postgres \
     -d postgres:16
 
 sleep 5
-
-docker exec -i tcc-postgres psql -U admin -d tccdb <<EOF
-CREATE TABLE IF NOT EXISTS usuarios (
-    id SERIAL PRIMARY KEY,
-    login VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
-);
-
-INSERT INTO usuarios (login, password) VALUES ('admin', '1234') ON CONFLICT DO NOTHING;
-EOF

@@ -1,1 +1,5 @@
 .gradle/*
+build/*
+.vscode/*
+.idea/*
+bin/*

@@ -9,12 +9,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.app.src.model.Endereco;
-import com.app.src.model.FormacaoAcademica;
+import com.app.src.model.*;
 import org.springframework.stereotype.Service;
 
-import com.app.src.model.Pesquisador;
-import com.app.src.model.Usuario;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -123,4 +120,28 @@ public class XmlService {
             throw new RuntimeException("Erro ao converter JSON para Formação Acadêmica", e);
         }
     }
+
+    public List<Idioma> converterJsonParaIdioma (String jsonBody, Pesquisador pesquisador) {
+       try {
+           List<Idioma> idiomaList = new ArrayList<>();
+           JsonNode root = mapper.readTree(jsonBody);
+           JsonNode dados = root.get("dados_pesquisador").get("idiomas");
+
+           for (JsonNode i: dados) {
+               Idioma idioma = new Idioma();
+               idioma.setPesquisador(pesquisador);
+               idioma.setIdioma(i.get("idioma").asText());
+               idioma.setEscrita(i.get("escrita").asText());
+               idioma.setLeitura(i.get("leitura").asText());
+               idioma.setFala(i.get("fala").asText());
+               idiomaList.add(idioma);
+           }
+
+           return idiomaList;
+
+       } catch (Exception e) {
+           throw new RuntimeException("Erro ao converter JSON para Idioma", e);
+       }
+    }
+
 }

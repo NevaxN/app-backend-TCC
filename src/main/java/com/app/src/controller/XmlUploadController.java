@@ -1,13 +1,7 @@
 package com.app.src.controller;
 
-import com.app.src.model.Endereco;
-import com.app.src.model.FormacaoAcademica;
-import com.app.src.model.Pesquisador;
-import com.app.src.model.Usuario;
-import com.app.src.repository.EnderecoRepository;
-import com.app.src.repository.FormacaoAcademicaRepository;
-import com.app.src.repository.PesquisadorRepository;
-import com.app.src.repository.UsuarioRepository;
+import com.app.src.model.*;
+import com.app.src.repository.*;
 import com.app.src.service.XmlService;
 import org.json.JSONObject;
 import org.json.XML;
@@ -41,6 +35,8 @@ public class XmlUploadController {
     @Autowired
     private FormacaoAcademicaRepository formacaoAcademicaRepository;
 
+    @Autowired
+    private IdiomaRepository idiomaRepository;
 
 
     @PostMapping("/upload")
@@ -80,7 +76,7 @@ public class XmlUploadController {
             ResponseEntity<String> flaskResponse = restTemplate.postForEntity(flaskUrl, requestEntity, String.class);
 
             String flaskJson = flaskResponse.getBody();
-            Usuario usuario = usuarioRepository.findById(1).orElseThrow();
+            Usuario usuario = new Usuario(1, "admin", "password");
             Pesquisador pesquisador = xmlService.converterJsonParaPesquisador(flaskJson, usuario);
 
             Pesquisador pesquisadorSalvo = pesquisadorRepository.save(pesquisador);
@@ -88,6 +84,10 @@ public class XmlUploadController {
             // Endereço
             List<Endereco> enderecos = xmlService.converterJsonParaEndereco(flaskJson, pesquisadorSalvo);
             enderecoRepository.saveAll(enderecos);
+
+            // Idiomas
+            List<Idioma> idiomas = xmlService.converterJsonParaIdioma(flaskJson, pesquisadorSalvo);
+            idiomaRepository.saveAll(idiomas);
 
             // Formação Acadêmica
             List<FormacaoAcademica> formacaoAcademicas = xmlService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo);

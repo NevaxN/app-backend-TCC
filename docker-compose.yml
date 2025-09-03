@@ -29,7 +29,8 @@ services:
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin123
     volumes:
-      - .:/app  # monta o código local só no dev
+      - ./src:/app/src # monta o código local só no dev
+    command: /bin/sh -c "if [ \"$DEV\" = 'true' ]; then ./gradlew bootRun; else java -jar app.jar; fi"
 
 volumes:
   postgres_data:

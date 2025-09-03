@@ -144,4 +144,26 @@ public class XmlService {
        }
     }
 
+    public List<Premiacao> converterJsonParaPremiacao (String jsonBody, Pesquisador pesquisador) {
+        try {
+            List<Premiacao> premiacaoList = new ArrayList<>();
+            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode dados = root.get("dados_pesquisador").get("premiacoes");
+
+            for (JsonNode p: dados) {
+                Premiacao premiacao = new Premiacao();
+                premiacao.setPesquisador(pesquisador);
+                premiacao.setTitulo(p.get("titulo").asText());
+                premiacao.setInstituicao(p.get("instituicao").asText());
+                premiacao.setAno(p.get("ano").asInt());
+                premiacaoList.add(premiacao);
+            }
+
+            return premiacaoList;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao converter JSON para Idioma", e);
+        }
+    }
+
 }

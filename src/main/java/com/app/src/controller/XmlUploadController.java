@@ -37,6 +37,8 @@ public class XmlUploadController {
 
     @Autowired
     private IdiomaRepository idiomaRepository;
+    @Autowired
+    private PremiacaoRepository premiacaoRepository;
 
 
     @PostMapping("/upload")
@@ -76,7 +78,7 @@ public class XmlUploadController {
             ResponseEntity<String> flaskResponse = restTemplate.postForEntity(flaskUrl, requestEntity, String.class);
 
             String flaskJson = flaskResponse.getBody();
-            Usuario usuario = new Usuario(1, "admin", "password");
+            Usuario usuario = usuarioRepository.findById(1).orElseThrow();
             Pesquisador pesquisador = xmlService.converterJsonParaPesquisador(flaskJson, usuario);
 
             Pesquisador pesquisadorSalvo = pesquisadorRepository.save(pesquisador);
@@ -85,9 +87,13 @@ public class XmlUploadController {
             List<Endereco> enderecos = xmlService.converterJsonParaEndereco(flaskJson, pesquisadorSalvo);
             enderecoRepository.saveAll(enderecos);
 
-            // Idiomas
+            // Idioma
             List<Idioma> idiomas = xmlService.converterJsonParaIdioma(flaskJson, pesquisadorSalvo);
             idiomaRepository.saveAll(idiomas);
+
+            // Premiação
+            List<Premiacao> premiacoes = xmlService.converterJsonParaPremiacao(flaskJson, pesquisadorSalvo);
+            premiacaoRepository.saveAll(premiacoes);
 
             // Formação Acadêmica
             List<FormacaoAcademica> formacaoAcademicas = xmlService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo);

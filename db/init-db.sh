@@ -1,14 +1,7 @@
 #!/bin/bash
 
-docker stop tcc-postgres
-docker rm tcc-postgres
+# Derruba containers antigos
+docker-compose down -v
 
-docker run --name tcc-postgres \
-    -e POSTGRES_USER=admin \
-    -e POSTGRES_PASSWORD=admin \
-    -e POSTGRES_DB=tccdb \
-    -p 5432:5432 \
-    -v tcc_pgdata:/var/lib/postgresql/data \
-    -d postgres:16
-
-sleep 5
+# Sobe o Postgres e o backend em modo DEV
+DEV=true docker-compose up -d --build postgres app

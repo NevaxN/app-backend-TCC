@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class XmlService {
 
     final ObjectMapper mapper = new ObjectMapper();
+    private static final String MISSING_STRING_VALUE = "Não informado";
+    private static final int MISSING_INTEGER_VALUE = 0;
 
     public String detectEncoding(byte[] xmlBytes) {
         String header = new String(xmlBytes, 0, Math.min(xmlBytes.length, 100), StandardCharsets.US_ASCII);
@@ -28,6 +30,18 @@ public class XmlService {
             return matcher.group(1);
         }
         return "UTF-8"; // fallback padrão
+    }
+
+    // Função génerica para obter o valor de um JSON, retornando valor genérico caso seja null
+    private <T> T getValue (JsonNode node, String key, T defaultValue, Class<T> type) {
+        if (node.has(key) && !node.get(key).isNull()) {
+            JsonNode value = node.get(key);
+            if (type == String.class) return type.cast(value.asText());
+            if (type == Integer.class) return type.cast(value.asInt());
+        } else {
+            return defaultValue;
+        };
+        return defaultValue;
     }
 
     public Pesquisador converterJsonParaPesquisador(String jsonBody, Usuario usuario) {
@@ -70,13 +84,15 @@ public class XmlService {
 
             for (JsonNode e: dados) {
                 Endereco endereco = new Endereco();
+
                 endereco.setPesquisador(pesquisador);
-                endereco.setTipo(e.get("tipo").asText());
-                endereco.setPais(e.get("pais").asText());
-                endereco.setCidade(e.get("cidade").asText());
-                endereco.setBairro(e.get("bairro").asText());
-                endereco.setTelefone(e.get("telefone").asText());
-                endereco.setEmail(e.get("email").asText());
+                endereco.setTipo(getValue(e, "tipo", MISSING_STRING_VALUE, String.class));
+                endereco.setPais(getValue(e, "pais", MISSING_STRING_VALUE, String.class));
+                endereco.setCidade(getValue(e, "cidade", MISSING_STRING_VALUE, String.class));
+                endereco.setBairro(getValue(e, "bairro", MISSING_STRING_VALUE, String.class));
+                endereco.setTelefone(getValue(e, "telefone", MISSING_STRING_VALUE, String.class));
+                endereco.setEmail(getValue(e, "email", MISSING_STRING_VALUE, String.class));
+
                 enderecoList.add(endereco);
             }
             return enderecoList;
@@ -94,22 +110,18 @@ public class XmlService {
 
             for (JsonNode fa: dados) {
                 FormacaoAcademica formacaoAcademica = new FormacaoAcademica();
+
                 formacaoAcademica.setPesquisador(pesquisador);
-                formacaoAcademica.setSequenciaFormacao(fa.get("sequencia_formacao").asInt());
-                formacaoAcademica.setNivel(fa.get("tipo").asText());
-                formacaoAcademica.setCurso(fa.get("nome_curso").asText());
-                formacaoAcademica.setInstituicao(fa.get("nome_instituicao").asText());
-                formacaoAcademica.setStatus(fa.get("status").asText());
-                formacaoAcademica.setAnoInicio(fa.get("ano_de_inicio").asInt());
-                formacaoAcademica.setAnoConclusao(fa.get("ano_de_conclusao").asInt());
-                formacaoAcademica.setTituloTrabalho(fa.get("titulo_trabalho").asText());
+                formacaoAcademica.setSequenciaFormacao(getValue(fa, "sequencia_formacao", MISSING_INTEGER_VALUE, Integer.class));
+                formacaoAcademica.setNivel(getValue(fa, "tipo", MISSING_STRING_VALUE, String.class));
+                formacaoAcademica.setCurso(getValue(fa, "nome_curso", MISSING_STRING_VALUE, String.class));
+                formacaoAcademica.setInstituicao(getValue(fa, "nome_instituicao", MISSING_STRING_VALUE, String.class));
+                formacaoAcademica.setStatus(getValue(fa, "status", MISSING_STRING_VALUE, String.class));
+                formacaoAcademica.setAnoInicio(getValue(fa, "ano_de_inicio", MISSING_INTEGER_VALUE, Integer.class));
+                formacaoAcademica.setAnoConclusao(getValue(fa, "ano_de_conclusao", MISSING_INTEGER_VALUE, Integer.class));
+                formacaoAcademica.setTituloTrabalho(getValue(fa, "titulo_trabalho", MISSING_STRING_VALUE, String.class));
+                formacaoAcademica.setOrientador(getValue(fa, "orientador", MISSING_STRING_VALUE, String.class));
                 formacaoAcademica.setDestaque(false);
-
-
-                String orientador = (fa.has("orientador") && !fa.get("orientador").asText().isEmpty())
-                        ? fa.get("orientador").asText()
-                        : "Não informado";
-                formacaoAcademica.setOrientador(orientador);
 
                 formacaoAcademicaList.add(formacaoAcademica);
             }
@@ -130,10 +142,10 @@ public class XmlService {
            for (JsonNode i: dados) {
                Idioma idioma = new Idioma();
                idioma.setPesquisador(pesquisador);
-               idioma.setIdioma(i.get("idioma").asText());
-               idioma.setEscrita(i.get("escrita").asText());
-               idioma.setLeitura(i.get("leitura").asText());
-               idioma.setFala(i.get("fala").asText());
+               idioma.setIdioma(getValue(i, "idioma", MISSING_STRING_VALUE, String.class));
+               idioma.setEscrita(getValue(i, "escrita", MISSING_STRING_VALUE, String.class));
+               idioma.setLeitura(getValue(i, "leitura", MISSING_STRING_VALUE, String.class));
+               idioma.setFala(getValue(i, "fala", MISSING_STRING_VALUE, String.class));
                idiomaList.add(idioma);
            }
 
@@ -153,9 +165,9 @@ public class XmlService {
             for (JsonNode p: dados) {
                 Premiacao premiacao = new Premiacao();
                 premiacao.setPesquisador(pesquisador);
-                premiacao.setTitulo(p.get("titulo").asText());
-                premiacao.setInstituicao(p.get("instituicao").asText());
-                premiacao.setAno(p.get("ano").asInt());
+                premiacao.setTitulo(getValue(p, "titulo", MISSING_STRING_VALUE, String.class));
+                premiacao.setInstituicao(getValue(p, "instituicao", MISSING_STRING_VALUE, String.class));
+                premiacao.setAno(getValue(p, "ano", MISSING_INTEGER_VALUE, Integer.class));
                 premiacaoList.add(premiacao);
             }
 
@@ -163,6 +175,38 @@ public class XmlService {
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao converter JSON para Idioma", e);
+        }
+    }
+
+    public List<AtuacaoProfissional> converterJsonParaAtuacaoProfissional (String jsonBody, Pesquisador pesquisador) {
+        try {
+
+            List<AtuacaoProfissional> atuacaoProfissionalList = new ArrayList<>();
+
+            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode dados = root.get("dados_pesquisador").get("atuacoes_profissionais");
+
+            for (JsonNode ap: dados) {
+                AtuacaoProfissional atuacaoProfissional = new AtuacaoProfissional();
+
+                atuacaoProfissional.setPesquisador(pesquisador);
+                atuacaoProfissional.setInstituicao(getValue(ap, "instituicao", MISSING_STRING_VALUE, String.class));
+                atuacaoProfissional.setCargo(getValue(ap, "cargo", MISSING_STRING_VALUE, String.class));
+                atuacaoProfissional.setSequenciaAtuacao(getValue(ap, "sequencia_atuacao", MISSING_INTEGER_VALUE, Integer.class));
+                atuacaoProfissional.setSequenciaVinculo(getValue(ap, "sequencia_vinculo", MISSING_INTEGER_VALUE, Integer.class));
+                atuacaoProfissional.setMesInicio(getValue(ap, "mes_inicio", MISSING_INTEGER_VALUE, Integer.class));
+                atuacaoProfissional.setMesFim(getValue(ap, "mes_fim", MISSING_INTEGER_VALUE, Integer.class));
+                atuacaoProfissional.setAnoInicio(getValue(ap, "ano_inicio", MISSING_INTEGER_VALUE, Integer.class));
+                atuacaoProfissional.setAnoFim(getValue(ap, "ano_fim", MISSING_INTEGER_VALUE, Integer.class));
+                atuacaoProfissional.setDestaque(false);
+
+                atuacaoProfissionalList.add(atuacaoProfissional);
+            }
+
+            return  atuacaoProfissionalList;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao converter JSON para Atuação Profissional", e);
         }
     }
 

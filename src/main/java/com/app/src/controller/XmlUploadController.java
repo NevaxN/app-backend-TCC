@@ -37,8 +37,12 @@ public class XmlUploadController {
 
     @Autowired
     private IdiomaRepository idiomaRepository;
+
     @Autowired
     private PremiacaoRepository premiacaoRepository;
+
+    @Autowired
+    private AtuacaoProfissionalRepository atuacaoProfissionalRepository;
 
 
     @PostMapping("/upload")
@@ -98,6 +102,10 @@ public class XmlUploadController {
             // Formação Acadêmica
             List<FormacaoAcademica> formacaoAcademicas = xmlService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo);
             formacaoAcademicaRepository.saveAll(formacaoAcademicas);
+
+            // Atuações Profissionais
+            List<AtuacaoProfissional> atuacoesProfissionais = xmlService.converterJsonParaAtuacaoProfissional(flaskJson, pesquisadorSalvo);
+            atuacaoProfissionalRepository.saveAll(atuacoesProfissionais);
 
             return ResponseEntity.ok(flaskResponse.getBody());
 

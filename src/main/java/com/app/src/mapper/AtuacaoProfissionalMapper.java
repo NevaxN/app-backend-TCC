@@ -13,12 +13,14 @@ public class AtuacaoProfissionalMapper {
         dto.setId(atuacaoProfissional.getId());
         dto.setPesquisador(atuacaoProfissional.getPesquisador());
         dto.setInstituicao(atuacaoProfissional.getInstituicao());
-        dto.setVinculo(atuacaoProfissional.getVinculo());
-        dto.setDepartamento(atuacaoProfissional.getDepartamento());
         dto.setCargo(atuacaoProfissional.getCargo());
         dto.setAnoInicio(atuacaoProfissional.getAnoInicio());
         dto.setAnoFim(atuacaoProfissional.getAnoFim());
         dto.setDestaque(atuacaoProfissional.getDestaque());
+        dto.setMesFim(atuacaoProfissional.getMesFim());
+        dto.setMesInicio(atuacaoProfissional.getMesInicio());
+        dto.setSequenciaAtuacao(atuacaoProfissional.getSequenciaAtuacao());
+        dto.setSequenciaVinculo(atuacaoProfissional.getSequenciaVinculo());
         return dto;
     }
 
@@ -30,12 +32,14 @@ public class AtuacaoProfissionalMapper {
         AtuacaoProfissional atuacaoProfissional = new AtuacaoProfissional();
         atuacaoProfissional.setPesquisador(dto.getPesquisador());
         atuacaoProfissional.setInstituicao(dto.getInstituicao());
-        atuacaoProfissional.setVinculo(dto.getVinculo());
-        atuacaoProfissional.setDepartamento(dto.getDepartamento());
         atuacaoProfissional.setCargo(dto.getCargo());
         atuacaoProfissional.setAnoInicio(dto.getAnoInicio());
         atuacaoProfissional.setAnoFim(dto.getAnoFim());
         atuacaoProfissional.setDestaque(dto.getDestaque());
+        atuacaoProfissional.setMesInicio(dto.getMesInicio());
+        atuacaoProfissional.setMesFim(dto.getMesFim());
+        atuacaoProfissional.setSequenciaAtuacao(dto.getSequenciaAtuacao());
+        atuacaoProfissional.setSequenciaVinculo(dto.getSequenciaVinculo());
         return atuacaoProfissional;
     }
 }

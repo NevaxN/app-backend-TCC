@@ -1,0 +1,7 @@
+# Trata todos os arquivos de texto de forma automática, mas prefere LF no checkout.
+* text=auto eol=lf
+
+# Garante que scripts de shell e o gradlew sempre usem finais de linha LF.
+*.sh eol=lf
+gradlew eol=lf
+gradlew.bat eol=crlf

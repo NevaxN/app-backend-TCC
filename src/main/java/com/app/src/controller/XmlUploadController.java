@@ -70,7 +70,7 @@ public class XmlUploadController {
 
             // Envia para o serviço Flask
             RestTemplate restTemplate = new RestTemplate();
-            String flaskUrl = "http://localhost:5000/analyze";
+            String flaskUrl = "http://keyword-extractor:5000/analyze";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

@@ -2,7 +2,7 @@ package com.app.src.dto;
 
 import java.util.List;
 
-import com.app.src.model.Pesquisador;
+import com.app.src.models.Pesquisador;
 
 import lombok.Getter;
 import lombok.Setter;

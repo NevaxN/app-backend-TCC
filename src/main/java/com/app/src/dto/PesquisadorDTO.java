@@ -3,7 +3,7 @@ package com.app.src.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import com.app.src.model.Usuario;
+import com.app.src.models.Usuario;
 
 import lombok.Getter;
 import lombok.Setter;

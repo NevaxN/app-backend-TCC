@@ -1,68 +1,48 @@
 package com.app.src.controllers;
 
-import com.app.src.dto.UsuarioDTO;
-import com.app.src.mappers.UsuarioMapper;
-import com.app.src.models.Usuario;
-import com.app.src.repositories.UsuarioRepository;
+import com.app.src.dto.CriarUsuarioDTO;
+import com.app.src.dto.LoginUsuarioDTO;
+import com.app.src.dto.ResgatarJWTTokenDTO;
+import com.app.src.services.UsuarioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
-    // Criar usuário
+    @PostMapping("/login")
+    public ResponseEntity<ResgatarJWTTokenDTO> authenticateUser(@RequestBody LoginUsuarioDTO loginUsuarioDTO) {
+
+        ResgatarJWTTokenDTO token = usuarioService.authenticateUser(loginUsuarioDTO);
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
     @PostMapping("/salvarUsuario")
-    public UsuarioDTO criar(@RequestBody UsuarioDTO usuarioDTO) {
-        Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);
-        Usuario salvo = usuarioRepository.save(usuario);
-        return UsuarioMapper.toDTO(salvo);
+    public ResponseEntity<Void> criarUsuario(@RequestBody CriarUsuarioDTO criarUsuarioDTO) {
+        usuarioService.createUser(criarUsuarioDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // Listar todos os usuários
-    @GetMapping("/listarUsuarios")
-    public List<UsuarioDTO> listar() {
-        return usuarioRepository.findAll().stream()
-                .map(UsuarioMapper::toDTO)
-                .collect(Collectors.toList());
+    @GetMapping("/test")
+    public ResponseEntity<String> getAuthenticationTest(){
+        return new ResponseEntity<>("Autenticado com sucesso", HttpStatus.OK);
     }
 
-    // Buscar usuário por ID
-    @GetMapping("/listarUsuario/{id}")
-    public UsuarioDTO buscarPorId(@PathVariable Integer id) {
-        Usuario usuario = usuarioRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
-        return UsuarioMapper.toDTO(usuario);
+    @GetMapping("/test/cliente")
+    public ResponseEntity<String> getClienteAuthenticationTest() {
+        return new ResponseEntity<>("Cliente autenticado com sucesso", HttpStatus.OK);
     }
 
-    // Atualizar usuário
-    @PutMapping("/alterarUsuario/{id}")
-    public UsuarioDTO atualizar(@PathVariable Integer id, @RequestBody Usuario dadosAtualizados) {
-        Usuario usuarioExistente = usuarioRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
-
-        usuarioExistente.setLogin(dadosAtualizados.getLogin());
-        usuarioExistente.setPassword(dadosAtualizados.getPassword());
-
-        Usuario salvo = usuarioRepository.save(usuarioExistente);
-        return UsuarioMapper.toDTO(salvo);
+    @GetMapping("/test/administrador")
+    public ResponseEntity<String> getAdminAuthenticationTest(){
+        return new ResponseEntity<>("Administrador autenticado com sucesso", HttpStatus.OK);
     }
 
-    // Deletar usuário
-    @DeleteMapping("/excluirUsuario/{id}")
-    public String deletar(@PathVariable Integer id) {
-        if(!usuarioRepository.existsById(id)){
-            return "Usuário deletado com sucesso";
-        }
-        usuarioRepository.deleteById(id);
-        return "Usuário deletado com sucesso";
-    }
 }

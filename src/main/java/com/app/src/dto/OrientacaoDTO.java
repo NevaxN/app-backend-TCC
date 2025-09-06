@@ -16,14 +16,16 @@ public class OrientacaoDTO {
     private String tipo;
     
     private String nomeOrientado;
-    
+
+    private String nomeCurso;
+
     private String tituloTrabalho;
     
     private String instituicao;
     
-    private Integer anoInicio;
-    
-    private Integer anoFim;
+    private Integer ano;
+
+    private Integer sequencia;
     
     private Boolean destaque;
 }

@@ -210,4 +210,34 @@ public class XmlService {
         }
     }
 
+    public List<Orientacao> converterJsonParaOrientacao (String jsonBody, Pesquisador pesquisador) {
+        try {
+            List<Orientacao> orientacoesList = new ArrayList<>();
+
+            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode dados = root.get("dados_pesquisador").get("orientacoes");
+
+            for (JsonNode o : dados) {
+                Orientacao orientacao = new Orientacao();
+
+                orientacao.setPesquisador(pesquisador);
+                orientacao.setTipo(getValue(o, "tipo", MISSING_STRING_VALUE, String.class));
+                orientacao.setTituloTrabalho(getValue(o, "titulo", MISSING_STRING_VALUE, String.class));
+                orientacao.setInstituicao(getValue(o, "instituicao", MISSING_STRING_VALUE, String.class));
+                orientacao.setNomeOrientado(getValue(o, "orientado", MISSING_STRING_VALUE, String.class));
+                orientacao.setNomeCurso(getValue(o, "curso", MISSING_STRING_VALUE, String.class));
+                orientacao.setSequencia(getValue(o, "sequencia", MISSING_INTEGER_VALUE, Integer.class));
+                orientacao.setAno(getValue(o, "ano", MISSING_INTEGER_VALUE, Integer.class));
+                orientacao.setDestaque(false);
+
+                orientacoesList.add(orientacao);
+            }
+
+            return orientacoesList;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao converter JSON para Orientação", e);
+        }
+    }
+
 }

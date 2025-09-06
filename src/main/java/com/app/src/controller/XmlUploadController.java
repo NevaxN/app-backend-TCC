@@ -44,6 +44,9 @@ public class XmlUploadController {
     @Autowired
     private AtuacaoProfissionalRepository atuacaoProfissionalRepository;
 
+    @Autowired
+    private OrientacaoRepository orientacaoRepository;
+
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadXml(@RequestParam("xml") MultipartFile xml) {
@@ -106,6 +109,10 @@ public class XmlUploadController {
             // Atuações Profissionais
             List<AtuacaoProfissional> atuacoesProfissionais = xmlService.converterJsonParaAtuacaoProfissional(flaskJson, pesquisadorSalvo);
             atuacaoProfissionalRepository.saveAll(atuacoesProfissionais);
+
+            // Orientações
+            List<Orientacao> orientacoes = xmlService.converterJsonParaOrientacao(flaskJson, pesquisadorSalvo);
+            orientacaoRepository.saveAll(orientacoes);
 
             return ResponseEntity.ok(flaskResponse.getBody());
 

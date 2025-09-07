@@ -47,9 +47,10 @@ public class XmlService {
     private final FormacaoAcademicaRepository formacaoAcademicaRepository;
     private final AtuacaoProfissionalRepository atuacaoProfissionalRepository;
     private final OrientacaoRepository orientacaoRepository;
+    private final ProjetoPesquisaRepository projetoPesquisaRepository;
 
 
-    public XmlService(ArtigoRepository artigoRepository, TrabalhoEventoRepository trabalhoEventoRepository, LivroRepository livroRepository, CapituloRepository capituloRepository, CapituloRepository capituloRepository1, UsuarioRepository usuarioRepository, PesquisadorRepository pesquisadorRepository, EnderecoRepository enderecoRepository, IdiomaRepository idiomaRepository, PremiacaoRepository premiacaoRepository, FormacaoAcademicaRepository formacaoAcademicaRepository, AtuacaoProfissionalRepository atuacaoProfissionalRepository, OrientacaoRepository orientacaoRepository) {
+    public XmlService(ArtigoRepository artigoRepository, TrabalhoEventoRepository trabalhoEventoRepository, LivroRepository livroRepository, CapituloRepository capituloRepository, CapituloRepository capituloRepository1, UsuarioRepository usuarioRepository, PesquisadorRepository pesquisadorRepository, EnderecoRepository enderecoRepository, IdiomaRepository idiomaRepository, PremiacaoRepository premiacaoRepository, FormacaoAcademicaRepository formacaoAcademicaRepository, AtuacaoProfissionalRepository atuacaoProfissionalRepository, OrientacaoRepository orientacaoRepository, ProjetoPesquisaRepository projetoPesquisaRepository) {
         this.artigoRepository = artigoRepository;
         this.trabalhoEventoRepository = trabalhoEventoRepository;
         this.livroRepository = livroRepository;
@@ -62,6 +63,7 @@ public class XmlService {
         this.formacaoAcademicaRepository = formacaoAcademicaRepository;
         this.atuacaoProfissionalRepository = atuacaoProfissionalRepository;
         this.orientacaoRepository = orientacaoRepository;
+        this.projetoPesquisaRepository = projetoPesquisaRepository;
     }
 
     public String processarXml(MultipartFile xml) {
@@ -95,7 +97,7 @@ public class XmlService {
 
             enderecoRepository.saveAll(converterJsonParaEndereco(flaskJson, pesquisadorSalvo));
             formacaoAcademicaRepository.saveAll(converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo));
-            atuacaoProfissionalRepository.saveAll(converterJsonParaAtuacaoProfissional(flaskJson, pesquisadorSalvo));
+            converterJsonParaAtuacaoProfissional(flaskJson, pesquisadorSalvo);
             converterJsonParaProducaoBibliografica(flaskJson, pesquisadorSalvo);
             orientacaoRepository.saveAll(converterJsonParaOrientacao(flaskJson, pesquisadorSalvo));
             premiacaoRepository.saveAll(converterJsonParaPremiacao(flaskJson, pesquisadorSalvo));
@@ -266,32 +268,62 @@ public class XmlService {
         }
     }
 
-    public List<AtuacaoProfissional> converterJsonParaAtuacaoProfissional (String jsonBody, Pesquisador pesquisador) {
+    public void converterJsonParaAtuacaoProfissional (String jsonBody, Pesquisador pesquisador) {
         try {
 
             List<AtuacaoProfissional> atuacaoProfissionalList = new ArrayList<>();
+            List<ProjetoPesquisa> projetoPesquisaList = new ArrayList<>();
 
             JsonNode root = mapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador").get("atuacoes_profissionais");
 
             for (JsonNode ap: dados) {
-                AtuacaoProfissional atuacaoProfissional = new AtuacaoProfissional();
+                String instituicao = getValue(ap, "instituicao", MISSING_STRING_VALUE, String.class);
+                Integer sequenciaAtuacao = getValue(ap, "sequencia_atuacao", MISSING_INTEGER_VALUE, Integer.class);
 
-                atuacaoProfissional.setPesquisador(pesquisador);
-                atuacaoProfissional.setInstituicao(getValue(ap, "instituicao", MISSING_STRING_VALUE, String.class));
-                atuacaoProfissional.setCargo(getValue(ap, "cargo", MISSING_STRING_VALUE, String.class));
-                atuacaoProfissional.setSequenciaAtuacao(getValue(ap, "sequencia_atuacao", MISSING_INTEGER_VALUE, Integer.class));
-                atuacaoProfissional.setSequenciaVinculo(getValue(ap, "sequencia_vinculo", MISSING_INTEGER_VALUE, Integer.class));
-                atuacaoProfissional.setMesInicio(getValue(ap, "mes_inicio", MISSING_INTEGER_VALUE, Integer.class));
-                atuacaoProfissional.setMesFim(getValue(ap, "mes_fim", MISSING_INTEGER_VALUE, Integer.class));
-                atuacaoProfissional.setAnoInicio(getValue(ap, "ano_inicio", MISSING_INTEGER_VALUE, Integer.class));
-                atuacaoProfissional.setAnoFim(getValue(ap, "ano_fim", MISSING_INTEGER_VALUE, Integer.class));
-                atuacaoProfissional.setDestaque(false);
+                JsonNode vinculos = ap.get("vinculos");
 
-                atuacaoProfissionalList.add(atuacaoProfissional);
+                if (vinculos != null && vinculos.isArray()) {
+                    for (JsonNode v : vinculos) {
+                        AtuacaoProfissional atuacaoProfissional = new AtuacaoProfissional();
+
+                        atuacaoProfissional.setPesquisador(pesquisador);
+                        atuacaoProfissional.setInstituicao(instituicao);
+                        atuacaoProfissional.setSequenciaAtuacao(sequenciaAtuacao);
+
+                        atuacaoProfissional.setCargo(getValue(v, "cargo", MISSING_STRING_VALUE, String.class));
+                        atuacaoProfissional.setSequenciaVinculo(getValue(v, "sequencia_vinculo", MISSING_INTEGER_VALUE, Integer.class));
+                        atuacaoProfissional.setMesInicio(getValue(v, "mes_inicio", MISSING_INTEGER_VALUE, Integer.class));
+                        atuacaoProfissional.setMesFim(getValue(v, "mes_fim", MISSING_INTEGER_VALUE, Integer.class));
+                        atuacaoProfissional.setAnoInicio(getValue(v, "ano_inicio", MISSING_INTEGER_VALUE, Integer.class));
+                        atuacaoProfissional.setAnoFim(getValue(v, "ano_fim", MISSING_INTEGER_VALUE, Integer.class));
+                        atuacaoProfissional.setDestaque(false);
+
+                        atuacaoProfissionalList.add(atuacaoProfissional);
+                    }
+                }
+
+                JsonNode projetosPesquisa = ap.get("projetos_de_pesquisa");
+                if (projetosPesquisa != null && projetosPesquisa.isArray()) {
+                    for (JsonNode p: projetosPesquisa) {
+                        ProjetoPesquisa projetoPesquisa = new ProjetoPesquisa();
+
+                        projetoPesquisa.setPesquisador(pesquisador);
+                        projetoPesquisa.setTitulo(getValue(p, "titulo", MISSING_STRING_VALUE, String.class));
+                        projetoPesquisa.setFinanciador(getValue(p, "financiador", MISSING_STRING_VALUE, String.class));
+                        projetoPesquisa.setDescricao(getValue(p, "descricao", MISSING_STRING_VALUE, String.class));
+                        projetoPesquisa.setAno(getValue(p, "ano", MISSING_INTEGER_VALUE, Integer.class));
+                        projetoPesquisa.setSequencia(getValue(p, "sequencia", MISSING_INTEGER_VALUE, Integer.class));
+                        projetoPesquisa.setInstituicao(instituicao);
+                        projetoPesquisa.setDestaque(false);
+
+                        projetoPesquisaList.add(projetoPesquisa);
+                    }
+                }
             }
 
-            return  atuacaoProfissionalList;
+            atuacaoProfissionalRepository.saveAll(atuacaoProfissionalList);
+            projetoPesquisaRepository.saveAll(projetoPesquisaList);
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao converter JSON para Atuação Profissional", e);

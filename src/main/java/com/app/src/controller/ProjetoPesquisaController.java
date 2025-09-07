@@ -62,8 +62,7 @@ public class ProjetoPesquisaController {
         projetoPesquisa.setTitulo(projetoPesquisaAtualizado.getTitulo());
         projetoPesquisa.setDescricao(projetoPesquisaAtualizado.getDescricao());
         projetoPesquisa.setInstituicao(projetoPesquisaAtualizado.getInstituicao());
-        projetoPesquisa.setAnoInicio(projetoPesquisaAtualizado.getAnoInicio());
-        projetoPesquisa.setAnoFim(projetoPesquisaAtualizado.getAnoFim());
+        projetoPesquisa.setAno(projetoPesquisaAtualizado.getAno());
         projetoPesquisa.setFinanciador(projetoPesquisaAtualizado.getFinanciador());
         projetoPesquisa.setDestaque(projetoPesquisaAtualizado.getDestaque());
 

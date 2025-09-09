@@ -1,7 +1,7 @@
-package com.app.src.mapper;
+package com.app.src.mappers;
 
 import com.app.src.dto.TrabalhoEventoDTO;
-import com.app.src.model.TrabalhoEvento;
+import com.app.src.models.TrabalhoEvento;
 
 public class TrabalhoEventoMapper {
 

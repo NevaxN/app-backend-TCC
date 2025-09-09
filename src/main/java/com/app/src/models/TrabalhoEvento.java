@@ -1,4 +1,4 @@
-package com.app.src.model;
+package com.app.src.models;
 
 import jakarta.persistence.*;
 

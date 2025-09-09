@@ -1,6 +1,6 @@
 package com.app.src.dto;
 
-import com.app.src.model.Pesquisador;
+import com.app.src.models.Pesquisador;
 
 public record CapituloDTO(
          Integer sequenciaProducao,

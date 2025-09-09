@@ -1,0 +1,38 @@
+package com.app.src.models;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "seguidores")
+public class Seguidor {
+         
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "pesquisador_id", nullable = false)
+    private Pesquisador pesquisador;
+
+    public Seguidor() {}
+
+    public Seguidor(Pesquisador pesquisador){
+        this.pesquisador = pesquisador;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Pesquisador getPesquisador() {
+        return pesquisador;
+    }
+
+    public void setPesquisador(Pesquisador pesquisador) {
+        this.pesquisador = pesquisador;
+    }
+}

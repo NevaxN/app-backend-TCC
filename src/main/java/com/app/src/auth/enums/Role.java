@@ -2,6 +2,7 @@ package com.app.src.auth.enums;
 
 import com.app.src.auth.models.RoleName;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,5 +28,6 @@ public class Role {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
     private RoleName name;
 }

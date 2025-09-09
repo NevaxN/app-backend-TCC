@@ -15,10 +15,6 @@ public class AtuacaoProfissionalDTO {
     
     private String instituicao;
     
-    private String vinculo;
-    
-    private String departamento;
-    
     private String cargo;
     
     private Integer anoInicio;
@@ -26,4 +22,12 @@ public class AtuacaoProfissionalDTO {
     private Integer anoFim;
     
     private Boolean destaque;
+
+    private Integer sequenciaAtuacao;
+
+    private Integer sequenciaVinculo;
+
+    private Integer mesInicio;
+
+    private Integer mesFim;
 }

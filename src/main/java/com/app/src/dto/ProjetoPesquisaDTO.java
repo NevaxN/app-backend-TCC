@@ -18,9 +18,7 @@ public class ProjetoPesquisaDTO {
     
     private String instituicao;
     
-    private Integer anoInicio;
-    
-    private Integer anoFim;
+    private Integer ano;
     
     private String financiador;
     

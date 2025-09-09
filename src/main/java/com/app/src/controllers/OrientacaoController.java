@@ -67,9 +67,10 @@ public class OrientacaoController {
         orientacao.setNomeOrientado(orientacaoAtualizado.getNomeOrientado());
         orientacao.setTituloTrabalho(orientacaoAtualizado.getTituloTrabalho());
         orientacao.setInstituicao(orientacaoAtualizado.getInstituicao());
-        orientacao.setAnoInicio(orientacaoAtualizado.getAnoInicio());
-        orientacao.setAnoFim(orientacaoAtualizado.getAnoFim());
+        orientacao.setSequencia(orientacaoAtualizado.getSequencia());
+        orientacao.setAno(orientacaoAtualizado.getAno());
         orientacao.setDestaque(orientacaoAtualizado.getDestaque());
+        orientacao.setNomeCurso(orientacaoAtualizado.getNomeCurso());
 
         Orientacao salvo = orientacaoRepository.save(orientacao);
 

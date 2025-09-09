@@ -15,8 +15,7 @@ public class ProjetoPesquisaMapper {
         dto.setTitulo(projetoPesquisa.getTitulo());
         dto.setDescricao(projetoPesquisa.getDescricao());
         dto.setInstituicao(projetoPesquisa.getInstituicao());
-        dto.setAnoInicio(projetoPesquisa.getAnoInicio());
-        dto.setAnoFim(projetoPesquisa.getAnoFim());
+        dto.setAno(projetoPesquisa.getAno());
         dto.setFinanciador(projetoPesquisa.getFinanciador());
         dto.setDestaque(projetoPesquisa.getDestaque());
         return dto;
@@ -32,8 +31,7 @@ public class ProjetoPesquisaMapper {
         projetoPesquisa.setTitulo(dto.getTitulo());
         projetoPesquisa.setDescricao(dto.getDescricao());
         projetoPesquisa.setInstituicao(dto.getInstituicao());
-        projetoPesquisa.setAnoInicio(dto.getAnoInicio());
-        projetoPesquisa.setAnoFim(dto.getAnoFim());
+        projetoPesquisa.setAno(dto.getAno());
         projetoPesquisa.setFinanciador(dto.getFinanciador());
         projetoPesquisa.setDestaque(dto.getDestaque());
         return projetoPesquisa;

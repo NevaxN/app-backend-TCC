@@ -64,11 +64,13 @@ public class AtuacaoProfissionalController {
                 .orElseThrow(() -> new NoSuchElementException("Atuação Profissional não encontrada com id: " + id));
 
         atuacaoProfissional.setInstituicao(atuacaoProfissionalAtualizada.getInstituicao());
-        atuacaoProfissional.setVinculo(atuacaoProfissionalAtualizada.getVinculo());
-        atuacaoProfissional.setDepartamento(atuacaoProfissionalAtualizada.getDepartamento());
+        atuacaoProfissional.setSequenciaAtuacao(atuacaoProfissionalAtualizada.getSequenciaAtuacao());
+        atuacaoProfissional.setSequenciaVinculo(atuacaoProfissionalAtualizada.getSequenciaVinculo());
         atuacaoProfissional.setCargo(atuacaoProfissionalAtualizada.getCargo());
         atuacaoProfissional.setAnoInicio(atuacaoProfissionalAtualizada.getAnoInicio());
         atuacaoProfissional.setAnoFim(atuacaoProfissionalAtualizada.getAnoFim());
+        atuacaoProfissional.setMesInicio(atuacaoProfissionalAtualizada.getMesInicio());
+        atuacaoProfissional.setMesFim(atuacaoProfissionalAtualizada.getMesFim());
         atuacaoProfissional.setDestaque(atuacaoProfissionalAtualizada.getDestaque());
 
         AtuacaoProfissional salvo = atuacaoProfissionalRepository.save(atuacaoProfissional);

@@ -17,9 +17,10 @@ public class OrientacaoMapper {
         dto.setNomeOrientado(orientacao.getNomeOrientado());
         dto.setTituloTrabalho(orientacao.getTituloTrabalho());
         dto.setInstituicao(orientacao.getInstituicao());
-        dto.setAnoInicio(orientacao.getAnoInicio());
-        dto.setAnoFim(orientacao.getAnoFim());
+        dto.setAno(orientacao.getAno());
+        dto.setSequencia(orientacao.getSequencia());
         dto.setDestaque(orientacao.getDestaque());
+        dto.setNomeCurso(orientacao.getNomeCurso());
         return dto;
     }
 
@@ -34,9 +35,10 @@ public class OrientacaoMapper {
         orientacao.setNomeOrientado(dto.getNomeOrientado());
         orientacao.setTituloTrabalho(dto.getTituloTrabalho());
         orientacao.setInstituicao(dto.getInstituicao());
-        orientacao.setAnoInicio(dto.getAnoInicio());
-        orientacao.setAnoFim(dto.getAnoFim());
+        orientacao.setAno(dto.getAno());
+        orientacao.setSequencia(dto.getSequencia());
         orientacao.setDestaque(dto.getDestaque());
+        orientacao.setNomeCurso(dto.getNomeCurso());
         return orientacao;
     }
 }

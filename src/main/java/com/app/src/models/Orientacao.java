@@ -14,11 +14,17 @@ public class Orientacao {
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
 
+    @Column(name = "sequencia", nullable = false)
+    private Integer sequencia;
+
     @Column(name = "tipo", nullable = false)
     private String tipo;
 
     @Column(name = "nome_orientado", nullable = false)
     private String nomeOrientado;
+
+    @Column(name = "nome_curso", nullable = false)
+    private String nomeCurso;
 
     @Column(name = "titulo_trabalho", nullable = false)
     private String tituloTrabalho;
@@ -26,11 +32,8 @@ public class Orientacao {
     @Column(name = "instituicao", nullable = false)
     private String instituicao;
 
-    @Column(name = "ano_inicio", nullable = false)
-    private Integer anoInicio;
-
-    @Column(name = "ano_fim", nullable = false)
-    private Integer anoFim;
+    @Column(name = "ano", nullable = false)
+    private Integer ano;
 
     @Column(name = "destaque", nullable = false)
     private Boolean destaque;
@@ -38,16 +41,17 @@ public class Orientacao {
     public Orientacao() {
     }
 
-    public Orientacao(Pesquisador pesquisador, String tipo, String nomeOrientado, String tituloTrabalho,
-                      String instituicao, Integer anoInicio, Integer anoFim, Boolean destaque) {
+    public Orientacao(Pesquisador pesquisador, Integer sequencia, String tipo, String nomeOrientado, String tituloTrabalho,
+                      String instituicao, Integer ano, Boolean destaque, String nomeCurso) {
         this.pesquisador = pesquisador;
+        this.sequencia = sequencia;
         this.tipo = tipo;
         this.nomeOrientado = nomeOrientado;
         this.tituloTrabalho = tituloTrabalho;
         this.instituicao = instituicao;
-        this.anoInicio = anoInicio;
-        this.anoFim = anoFim;
+        this.ano = ano;
         this.destaque = destaque;
+        this.nomeCurso = nomeCurso;
     }
 
     public Integer getId() {
@@ -98,27 +102,35 @@ public class Orientacao {
         this.instituicao = instituicao;
     }
 
-    public Integer getAnoInicio() {
-        return anoInicio;
-    }
-
-    public void setAnoInicio(Integer anoInicio) {
-        this.anoInicio = anoInicio;
-    }
-
-    public Integer getAnoFim() {
-        return anoFim;
-    }
-
-    public void setAnoFim(Integer anoFim) {
-        this.anoFim = anoFim;
-    }
-
     public Boolean getDestaque() {
         return destaque;
     }
 
     public void setDestaque(Boolean destaque) {
         this.destaque = destaque;
+    }
+
+    public Integer getAno() {
+        return ano;
+    }
+
+    public void setAno(Integer ano) {
+        this.ano = ano;
+    }
+
+    public Integer getSequencia() {
+        return sequencia;
+    }
+
+    public void setSequencia(Integer sequencia) {
+        this.sequencia = sequencia;
+    }
+
+    public String getNomeCurso() {
+        return nomeCurso;
+    }
+
+    public void setNomeCurso(String nomeCurso) {
+        this.nomeCurso = nomeCurso;
     }
 }

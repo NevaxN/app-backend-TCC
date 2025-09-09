@@ -23,11 +23,8 @@ public class ProjetoPesquisa {
     @Column(name = "instituicao", nullable = false)
     private String instituicao;
 
-    @Column(name = "anoInicio", nullable = false)
-    private Integer anoInicio;
-
-    @Column(name = "anoFim", nullable = false)
-    private Integer anoFim;
+    @Column(name = "ano", nullable = false)
+    private Integer ano;
 
     @Column(name = "financiador", nullable = false)
     private String financiador;
@@ -35,18 +32,21 @@ public class ProjetoPesquisa {
     @Column(name = "destaque", nullable = false)
     private Boolean destaque;
 
+    @Column(name = "sequencia", nullable = false)
+    private Integer sequencia;
+
     public ProjetoPesquisa() {}
 
     public ProjetoPesquisa(Pesquisador pesquisador, String titulo, String descricao, String instituicao,
-                           Integer anoInicio, Integer anoFim, String financiador, Boolean destaque) {
+                           Integer ano, String financiador, Boolean destaque, Integer sequencia) {
         this.pesquisador = pesquisador;
         this.titulo = titulo;
         this.descricao = descricao;
         this.instituicao = instituicao;
-        this.anoInicio = anoInicio;
-        this.anoFim = anoFim;
+        this.ano = ano;
         this.financiador = financiador;
         this.destaque = destaque;
+        this.sequencia = sequencia;
     }
 
     public Integer getId() {
@@ -89,20 +89,12 @@ public class ProjetoPesquisa {
         this.instituicao = instituicao;
     }
 
-    public Integer getAnoInicio() {
-        return anoInicio;
+    public Integer getAno() {
+        return ano;
     }
 
-    public void setAnoInicio(Integer anoInicio) {
-        this.anoInicio = anoInicio;
-    }
-
-    public Integer getAnoFim() {
-        return anoFim;
-    }
-
-    public void setAnoFim(Integer anoFim) {
-        this.anoFim = anoFim;
+    public void setAno(Integer ano) {
+        this.ano = ano;
     }
 
     public String getFinanciador() {
@@ -121,4 +113,11 @@ public class ProjetoPesquisa {
         this.destaque = destaque;
     }
 
+    public Integer getSequencia() {
+        return sequencia;
+    }
+
+    public void setSequencia(Integer sequencia) {
+        this.sequencia = sequencia;
+    }
 }

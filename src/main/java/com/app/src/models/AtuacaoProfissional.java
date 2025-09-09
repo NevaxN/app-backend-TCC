@@ -10,18 +10,18 @@ public class AtuacaoProfissional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "sequencia_atuacao", nullable = false)
+    private Integer sequenciaAtuacao;
+
+    @Column(name = "sequencia_vinculo", nullable = false)
+    private Integer sequenciaVinculo;
+
     @ManyToOne
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
 
     @Column(name = "instituicao", nullable = false)
     private String instituicao;
-
-    @Column(name = "vinculo", nullable = false)
-    private String vinculo;
-
-    @Column(name = "departamento", nullable = false)
-    private String departamento;
 
     @Column(name = "cargo", nullable = false)
     private String cargo;
@@ -32,22 +32,30 @@ public class AtuacaoProfissional {
     @Column(name = "ano_fim", nullable = false)
     private Integer anoFim;
 
+    @Column(name = "mes_inicio", nullable = false)
+    private Integer mesInicio;
+
+    @Column(name = "mes_fim", nullable = false)
+    private Integer mesFim;
+
     @Column(name = "destaque", nullable = false)
     private Boolean destaque;
 
     public AtuacaoProfissional() {
     }
 
-    public AtuacaoProfissional(Pesquisador pesquisador, String instituicao, String vinculo, String departamento,
-                               String cargo, Integer anoInicio, Integer anoFim, Boolean destaque) {
-        this.pesquisador = pesquisador;
-        this.instituicao = instituicao;
-        this.vinculo = vinculo;
-        this.departamento = departamento;
-        this.cargo = cargo;
-        this.anoInicio = anoInicio;
+    public AtuacaoProfissional(Integer anoFim, Integer anoInicio, String cargo, Boolean destaque, Integer id, String instituicao, Integer mesFim, Integer mesInicio, Pesquisador pesquisador, Integer sequenciaAtuacao, Integer sequenciaVinculo) {
         this.anoFim = anoFim;
+        this.anoInicio = anoInicio;
+        this.cargo = cargo;
         this.destaque = destaque;
+        this.id = id;
+        this.instituicao = instituicao;
+        this.mesFim = mesFim;
+        this.mesInicio = mesInicio;
+        this.pesquisador = pesquisador;
+        this.sequenciaAtuacao = sequenciaAtuacao;
+        this.sequenciaVinculo = sequenciaVinculo;
     }
 
     public Integer getId() {
@@ -72,22 +80,6 @@ public class AtuacaoProfissional {
 
     public void setInstituicao(String instituicao) {
         this.instituicao = instituicao;
-    }
-
-    public String getVinculo() {
-        return vinculo;
-    }
-
-    public void setVinculo(String vinculo) {
-        this.vinculo = vinculo;
-    }
-
-    public String getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
     }
 
     public String getCargo() {
@@ -120,5 +112,37 @@ public class AtuacaoProfissional {
 
     public void setDestaque(Boolean destaque) {
         this.destaque = destaque;
+    }
+
+    public Integer getMesFim() {
+        return mesFim;
+    }
+
+    public void setMesFim(Integer mesFim) {
+        this.mesFim = mesFim;
+    }
+
+    public Integer getMesInicio() {
+        return mesInicio;
+    }
+
+    public void setMesInicio(Integer mesInicio) {
+        this.mesInicio = mesInicio;
+    }
+
+    public Integer getSequenciaAtuacao() {
+        return sequenciaAtuacao;
+    }
+
+    public void setSequenciaAtuacao(Integer sequenciaAtuacao) {
+        this.sequenciaAtuacao = sequenciaAtuacao;
+    }
+
+    public Integer getSequenciaVinculo() {
+        return sequenciaVinculo;
+    }
+
+    public void setSequenciaVinculo(Integer sequenciaVinculo) {
+        this.sequenciaVinculo = sequenciaVinculo;
     }
 }

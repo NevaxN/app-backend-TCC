@@ -1,13 +1,17 @@
 package com.app.src.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "producao_bibliografica")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "producao_bibliografica")
 public class ProducaoBibliografica {
 
     @Id

@@ -1,7 +1,15 @@
 package com.app.src.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "listas")
 public class Lista {
@@ -16,35 +24,4 @@ public class Lista {
 
     @Column(name = "nome_lista", nullable = false)
     private String nomeLista;
-
-    public Lista() {}
-
-    public Lista(Pesquisador pesquisador, String nomeLista) {
-        this.pesquisador = pesquisador;
-        this.nomeLista = nomeLista;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Pesquisador getPesquisador() {
-        return pesquisador;
-    }
-
-    public void setPesquisador(Pesquisador pesquisador) {
-        this.pesquisador = pesquisador;
-    }
-
-    public String getNomeLista() {
-        return nomeLista;
-    }
-
-    public void setNomeLista(String nomeLista) {
-        this.nomeLista = nomeLista;
-    }
 }

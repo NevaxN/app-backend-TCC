@@ -1,7 +1,15 @@
 package com.app.src.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "empresas")
 public class Empresa {
@@ -54,154 +62,4 @@ public class Empresa {
 
     @Column(name = "logradouro", nullable = false)
     private String logradouro;
-
-    public Empresa() {}
-
-    public Empresa(String nomeRegistro, String nomeComercial, String cnpj,
-    String numeroEndereco, String bairro, String cidade, String estado, String cep, 
-    String telefone, String email, String site, String setor, String frase, String textoEmpresa, String logradouro){
-        this.nomeRegistro = nomeRegistro;
-        this.nomeComercial = nomeComercial;
-        this.cnpj = cnpj;
-        this.numeroEndereco = numeroEndereco;
-        this.bairro = bairro;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.cep = cep;
-        this.telefone = telefone;
-        this.email = email;
-        this.site = site;
-        this.setor = setor;
-        this.frase = frase;
-        this.textoEmpresa = textoEmpresa;
-        this.logradouro = logradouro;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNomeRegistro() {
-        return nomeRegistro;
-    }
-
-    public void setNomeRegistro(String nomeRegistro) {
-        this.nomeRegistro = nomeRegistro;
-    }
-
-    public String getNomeComercial() {
-        return nomeComercial;
-    }
-
-    public void setNomeComercial(String nomeComercial) {
-        this.nomeComercial = nomeComercial;
-    }
-
-    public String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public String getNumeroEndereco() {
-        return numeroEndereco;
-    }
-
-    public void setNumeroEndereco(String numeroEndereco) {
-        this.numeroEndereco = numeroEndereco;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
-    }
-
-    public String getSetor() {
-        return setor;
-    }
-
-    public void setSetor(String setor) {
-        this.setor = setor;
-    }
-
-    public String getFrase() {
-        return frase;
-    }
-
-    public void setFrase(String frase) {
-        this.frase = frase;
-    }
-
-    public String getTextoEmpresa() {
-        return textoEmpresa;
-    }
-
-    public void setTextoEmpresa(String textoEmpresa) {
-        this.textoEmpresa = textoEmpresa;
-    }
-
-    public String getLogradouro(){
-        return logradouro;
-    }
-
-    public void setLogradouro(String logradouro){
-        this.logradouro = logradouro;
-    }
 }

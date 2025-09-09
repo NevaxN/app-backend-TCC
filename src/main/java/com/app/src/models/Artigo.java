@@ -1,7 +1,16 @@
 package com.app.src.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "artigos")
 public class Artigo extends ProducaoBibliografica {
@@ -21,56 +30,4 @@ public class Artigo extends ProducaoBibliografica {
 
     @Column(name = "idioma", nullable = false)
     private String idioma;
-
-    public Artigo(String doi, Integer id, String idioma, String periodico, String titulo) {
-        super();
-        this.doi = doi;
-        this.id = id;
-        this.idioma = idioma;
-        this.periodico = periodico;
-        this.titulo = titulo;
-    }
-
-    public Artigo() {
-    }
-
-    public String getDoi() {
-        return doi;
-    }
-
-    public void setDoi(String doi) {
-        this.doi = doi;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getIdioma() {
-        return idioma;
-    }
-
-    public void setIdioma(String idioma) {
-        this.idioma = idioma;
-    }
-
-    public String getPeriodico() {
-        return periodico;
-    }
-
-    public void setPeriodico(String periodico) {
-        this.periodico = periodico;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
 }

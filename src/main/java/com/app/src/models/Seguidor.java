@@ -1,7 +1,15 @@
 package com.app.src.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "seguidores")
 public class Seguidor {
@@ -13,26 +21,4 @@ public class Seguidor {
     @ManyToOne
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
-
-    public Seguidor() {}
-
-    public Seguidor(Pesquisador pesquisador){
-        this.pesquisador = pesquisador;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Pesquisador getPesquisador() {
-        return pesquisador;
-    }
-
-    public void setPesquisador(Pesquisador pesquisador) {
-        this.pesquisador = pesquisador;
-    }
 }

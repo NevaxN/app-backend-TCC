@@ -3,7 +3,15 @@ package com.app.src.models;
 import java.util.List;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tags")
 public class Tag {
@@ -23,38 +31,4 @@ public class Tag {
     )
     @Column(name = "tag")
     private List<String> listaTags;
-
-    public Tag() {}
-
-    public Tag(Pesquisador pesquisador, List<String> listaTags) {
-        this.pesquisador = pesquisador;
-        this.listaTags = listaTags;
-    }
-
-    // Getters e setters
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Pesquisador getPesquisador() {
-        return pesquisador;
-    }
-
-    public void setPesquisador(Pesquisador pesquisador) {
-        this.pesquisador = pesquisador;
-    }
-
-    public List<String> getListaTags() {
-        return listaTags;
-    }
-
-    public void setListaTags(List<String> listaTags) {
-        this.listaTags = listaTags;
-    }
-    
 }

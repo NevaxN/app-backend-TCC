@@ -11,7 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "livros")
 public class Livro extends ProducaoBibliografica {
 
     @Id

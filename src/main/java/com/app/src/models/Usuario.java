@@ -31,7 +31,9 @@ public class Usuario {
     private String password;
 
     @ManyToOne
-    @Column(name = "tipo_usuario", nullable = false)
+    @JoinTable(name = "user_type",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name="type_id"))
     private TipoUsuario tipoUsuario;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

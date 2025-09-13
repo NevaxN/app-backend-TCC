@@ -1,7 +1,6 @@
-package com.app.src.auth.enums;
+package com.app.src.auth.models;
 
-import com.app.src.auth.models.RoleName;
-
+import com.app.src.auth.enums.RoleName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

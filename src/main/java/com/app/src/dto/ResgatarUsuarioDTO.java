@@ -2,7 +2,7 @@ package com.app.src.dto;
 
 import java.util.List;
 
-import com.app.src.auth.enums.Role;
+import com.app.src.auth.models.Role;
 
 public record ResgatarUsuarioDTO(
     Integer id,

@@ -1,4 +1,4 @@
-package com.app.src.auth.models;
+package com.app.src.auth.enums;
 
 public enum RoleName {
     

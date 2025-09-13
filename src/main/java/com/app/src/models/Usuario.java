@@ -1,8 +1,8 @@
 package com.app.src.models;
 
-import java.util.List;
+import java.util.Set;
 
-import com.app.src.auth.enums.Role;
+import com.app.src.auth.models.Role;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,8 +30,7 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String password;
 
-    // Novo campo para o tipo de usuário
-    @Enumerated(EnumType.STRING) // Grava o nome do enum no banco, em vez do índice (0)
+    @ManyToOne
     @Column(name = "tipo_usuario", nullable = false)
     private TipoUsuario tipoUsuario;
 
@@ -39,5 +38,5 @@ public class Usuario {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
-    private List<Role> roles;
+    private Set<Role> roles;
 }

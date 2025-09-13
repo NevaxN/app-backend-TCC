@@ -1,10 +1,11 @@
 package com.app.src.services;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.app.src.enums.TipoUsuarioName;
 import com.app.src.models.TipoUsuario;
+import com.app.src.repositories.TipoUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,8 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.app.src.auth.config.SecurityConfiguration;
-import com.app.src.auth.enums.Role;
-import com.app.src.auth.models.RoleName;
+import com.app.src.auth.models.Role;
+import com.app.src.auth.enums.RoleName;
 import com.app.src.auth.models.UsuarioDetailsImpl;
 import com.app.src.auth.services.JwtTokenService;
 import com.app.src.dto.CriarUsuarioDTO;
@@ -37,6 +38,9 @@ public class UsuarioService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private TipoUsuarioRepository tipoUsuarioRepository;
 
     @Autowired
     private SecurityConfiguration securityConfiguration;
@@ -77,14 +81,19 @@ public class UsuarioService {
             userRoles.add(userRoleEntity);
         }
 
-        // 3. Coverte a string 'tipo_usuario' do DTO para o Enum
-        TipoUsuario tipoUsuarioEnum = TipoUsuario.valueOf(criarUsuarioDTO.tipo_usuario().toUpperCase());
+        String tipoUsuarioStr = criarUsuarioDTO.tipo_usuario();
+        TipoUsuarioName tipoUsuarioEnum = "pesquisador".equalsIgnoreCase(tipoUsuarioStr)
+                ? TipoUsuarioName.PESQUISADOR
+                : TipoUsuarioName.EMPRESA;
+
+        TipoUsuario tipoUsuarioEntity = tipoUsuarioRepository.findByName(tipoUsuarioEnum)
+                .orElseThrow(() -> new RuntimeException("Erro: Tipo de Usuário" + tipoUsuarioEnum + "não encontrado no banco de dados"));
 
         Usuario novoUsuario = Usuario.builder()
                 .login(criarUsuarioDTO.login())
                 .password(securityConfiguration.passwordEncoder()
                         .encode(criarUsuarioDTO.password()))
-                .tipoUsuario(tipoUsuarioEnum)
+                .tipoUsuario(tipoUsuarioEntity)
                 .roles(userRoles)
                 .build();
 

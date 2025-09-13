@@ -30,6 +30,11 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String password;
 
+    // Novo campo para o tipo de usuário
+    @Enumerated(EnumType.STRING) // Grava o nome do enum no banco, em vez do índice (0)
+    @Column(name = "tipo_usuario", nullable = false)
+    private TipoUsuario tipoUsuario;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

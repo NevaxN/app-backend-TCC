@@ -1,7 +1,10 @@
 package com.app.src.services;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.app.src.models.TipoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,19 +56,37 @@ public class UsuarioService {
 
     public void createUser(CriarUsuarioDTO criarUsuarioDTO){
 
-        RoleName roleEnum = "admin".equalsIgnoreCase(criarUsuarioDTO.role())
-            ? RoleName.ROLE_ADM
-            : RoleName.ROLE_USUARIO;
+        // 1. Validar se o login ja existe para evitar erros no banco de dados
+        if (usuarioRepository.findByLogin(criarUsuarioDTO.login()).isPresent()) {
+            throw new RuntimeException("Erro: Login já está em uso!");
+        }
 
-        Role userRoleEntity = roleRepository.findByName(roleEnum)
-                .orElseThrow(() -> new RuntimeException("Erro: Role" + roleEnum + "não encontrada no banco de dados."));
+        // 2. Processar as MÚLTIPLAS roles que vem do DTO
+        Set<Role> userRoles = new HashSet<>();
+
+        // Itera sobre cada nome de role recebido no DTO
+        for (String roleStr : criarUsuarioDTO.roles()) {
+            // A lógica aqui pode variar, to assumindo que que "admin" vira "ROLE_ADM" e "comum" vira "ROLE_USUARIO"
+            RoleName roleEnum = "admin".equalsIgnoreCase(roleStr)
+                    ? RoleName.ROLE_ADM
+                    : RoleName.ROLE_USUARIO;
+
+            Role userRoleEntity = roleRepository.findByName(roleEnum)
+                    .orElseThrow(() -> new RuntimeException("Erro: Role" + roleEnum + "não encontrada no banco de dados."));
+
+            userRoles.add(userRoleEntity);
+        }
+
+        // 3. Coverte a string 'tipo_usuario' do DTO para o Enum
+        TipoUsuario tipoUsuarioEnum = TipoUsuario.valueOf(criarUsuarioDTO.tipo_usuario().toUpperCase());
 
         Usuario novoUsuario = Usuario.builder()
-                    .login(criarUsuarioDTO.login())
-                    .password(securityConfiguration.passwordEncoder()
-                    .encode(criarUsuarioDTO.password()))
-                    .roles(List.of(userRoleEntity))
-                    .build();
+                .login(criarUsuarioDTO.login())
+                .password(securityConfiguration.passwordEncoder()
+                        .encode(criarUsuarioDTO.password()))
+                .tipoUsuario(tipoUsuarioEnum)
+                .roles(userRoles)
+                .build();
 
         usuarioRepository.save(novoUsuario);
     }

@@ -3,3 +3,7 @@ INSERT INTO usuarios (login, password) VALUES ('admin', '1234') ON CONFLICT DO N
 INSERT INTO roles (name) VALUES ('ROLE_USUARIO') ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name) VALUES ('ROLE_ADM') ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO tipo_usuarios (name) VALUES ('PESQUISADOR') ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO tipo_usuarios (name) VALUES ('EMPRESA') ON CONFLICT (name) DO NOTHING;

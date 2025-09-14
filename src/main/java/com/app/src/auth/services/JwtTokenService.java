@@ -16,28 +16,27 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 public class JwtTokenService {
     
     private static final String SECRET_KEY = "4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P";
-
     private static final String ISSUER = "admin";
 
     public String generateToken(UsuarioDetailsImpl usuario){
         try {
-            Algorithm algoritmo = Algorithm.HMAC256(SECRET_KEY);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.create()
                     .withIssuer(ISSUER)
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
                     .withSubject(usuario.getUsername())
-                    .sign(algoritmo);
+                    .sign(algorithm);
 
-        }catch(JWTCreationException exception){
+        } catch(JWTCreationException exception){
             throw new JWTCreationException("Erro ao gerar token.", exception);
         }
     }
 
     public String getSubjectFromToken(String token) {
         try {
-            Algorithm algoritmo = Algorithm.HMAC256(SECRET_KEY);
-            return JWT.require(algoritmo)
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            return JWT.require(algorithm)
                     .withIssuer(ISSUER)
                     .build()
                     .verify(token)

@@ -6,5 +6,5 @@ public record CriarUsuarioDTO(
     String login,
     String password,
     String tipo_usuario,
-    Set<String> roles) { // Para recebermos mais do que apenas um tipo de role
-}
+    Set<String> roles // Para recebermos mais do que apenas um tipo de role
+) {}

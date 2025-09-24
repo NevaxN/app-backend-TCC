@@ -3,10 +3,13 @@ package com.app.src.controllers;
 import com.app.src.dto.ListaDTO;
 import com.app.src.mappers.ListaMapper;
 import com.app.src.models.Lista;
+import com.app.src.models.Usuario;
 import com.app.src.repositories.ListaRepository;
 import com.app.src.repositories.PesquisadorRepository;
+import com.app.src.repositories.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +25,9 @@ public class ListaController {
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/listarListas")
     public List<ListaDTO> listarTodos() {
@@ -55,6 +61,22 @@ public class ListaController {
         Lista salvo = listaRepository.save(lista);
 
         return ListaMapper.toDTO(salvo); 
+    }
+
+    @PostMapping("salvarLista/{listaId}/perfil/{usuarioId}")
+    public ResponseEntity<Void> adicionarPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer usuarioId){
+        Lista lista = listaRepository.findById(listaId)
+                .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
+
+        Usuario perfilParaAdicionar = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado com o id: " + usuarioId));
+
+        
+        lista.getPerfisSalvos().add(perfilParaAdicionar);
+
+        listaRepository.save(lista);
+
+        return ResponseEntity.ok().build();
     }
 
     // Atualizar endereço

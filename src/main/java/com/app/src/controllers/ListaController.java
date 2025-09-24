@@ -63,7 +63,7 @@ public class ListaController {
         return ListaMapper.toDTO(salvo); 
     }
 
-    @PostMapping("salvarLista/{listaId}/perfil/{usuarioId}")
+    @PostMapping("/salvarLista/{listaId}/perfil/{usuarioId}")
     public ResponseEntity<Void> adicionarPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer usuarioId){
         Lista lista = listaRepository.findById(listaId)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
@@ -76,6 +76,25 @@ public class ListaController {
 
         listaRepository.save(lista);
 
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/alterarLista/{listaId}/perfil/{usuarioId}")
+    public ResponseEntity<Void> removerPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer usuarioId){
+        Lista lista = listaRepository.findById(listaId)
+                .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
+
+        Usuario perfilParaRemover = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado com o id: " + usuarioId));
+
+        boolean removido = lista.getPerfisSalvos().remove(perfilParaRemover);
+
+        if(!removido){
+            throw new NoSuchElementException("O usuário com id " + usuarioId + " não está na lista com id " + listaId);
+        }
+
+        listaRepository.save(lista);
+        
         return ResponseEntity.ok().build();
     }
 

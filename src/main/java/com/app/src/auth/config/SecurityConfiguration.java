@@ -24,7 +24,8 @@ public class SecurityConfiguration {
     
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
         "/api/usuarios/login",
-        "/api/usuarios/salvarUsuario"
+        "/api/usuarios/salvarUsuario",
+        "/api/usuarios/**" // Apenas para teste, ajuste depois
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
@@ -39,24 +40,24 @@ public class SecurityConfiguration {
         "/api/usuarios/test/administrador"
     };
 
-    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeHttpRequests()
-                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
-                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRADOR")
-                .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CLIENTE")
-                .anyRequest().denyAll()
-                .and().addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        return httpSecurity
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
+                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
+                    .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRADOR")
+                    .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CLIENTE")
+                    .anyRequest().denyAll()
+                )
+                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-
         return authenticationConfiguration.getAuthenticationManager();
     }
 

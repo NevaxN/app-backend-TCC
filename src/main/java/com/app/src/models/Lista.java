@@ -1,5 +1,8 @@
 package com.app.src.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,4 +27,12 @@ public class Lista {
 
     @Column(name = "nome_lista", nullable = false)
     private String nomeLista;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "lista_perfis",
+        joinColumns = @JoinColumn(name = "lista_id"),
+        inverseJoinColumns = @JoinColumn(name = "usuario_salvo_id")
+    )
+    private Set<Usuario> perfisSalvos = new HashSet<>();
 }

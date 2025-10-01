@@ -2,14 +2,20 @@ package com.app.src.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.app.src.dto.AtuacaoProfissionalDTO;
+import com.app.src.mappers.AtuacaoProfissionalMapper;
 import com.app.src.models.AtuacaoProfissional;
 import com.app.src.models.Pesquisador;
 import com.app.src.models.ProjetoPesquisa;
 import com.app.src.repositories.AtuacaoProfissionalRepository;
+import com.app.src.repositories.PesquisadorRepository;
 import com.app.src.repositories.ProjetoPesquisaRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,12 +27,72 @@ public class AtuacaoProfissionalService {
     AtuacaoProfissionalRepository atuacaoProfissionalRepository;
 
     @Autowired
+    PesquisadorRepository pesquisadorRepository;
+
+    @Autowired
     ProjetoPesquisaRepository projetoPesquisaRepository;
 
     final ObjectMapper mapper = new ObjectMapper();
 
     private static final String MISSING_STRING_VALUE = "Não informado";
     private static final int MISSING_INTEGER_VALUE = 0;
+
+    public List<AtuacaoProfissionalDTO> buscarTodos(){
+        return atuacaoProfissionalRepository.findAll().stream()
+                .map(AtuacaoProfissionalMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "atuacoesProfissionais", key = "#id")
+    public AtuacaoProfissionalDTO buscarPorId(Integer id){
+        AtuacaoProfissional atuacaoProfissional = atuacaoProfissionalRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Atuação Profissional não encontrado com id: " + id));
+        
+        return AtuacaoProfissionalMapper.toDTO(atuacaoProfissional);
+    }
+
+    public AtuacaoProfissionalDTO salvar(AtuacaoProfissionalDTO atuacaoProfissionalDTO){
+        AtuacaoProfissional atuacaoProfissional = AtuacaoProfissionalMapper.toEntity(atuacaoProfissionalDTO);
+        
+        if (atuacaoProfissional.getPesquisador() == null || atuacaoProfissional.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+    
+        if (!pesquisadorRepository.existsById(atuacaoProfissional.getPesquisador().getId())) {
+            throw new NoSuchElementException("Pesquisador não encontrado com id: " + atuacaoProfissional.getPesquisador().getId());
+        }
+
+        AtuacaoProfissional salvo = atuacaoProfissionalRepository.save(atuacaoProfissional);
+        
+        return AtuacaoProfissionalMapper.toDTO(salvo);
+    }
+
+    public AtuacaoProfissionalDTO atualizar(Integer id, AtuacaoProfissional atuacaoProfissionalAtualizada){
+        AtuacaoProfissional atuacaoProfissional = AtuacaoProfissionalMapper.toEntity(buscarPorId(id));
+
+        atuacaoProfissional.setInstituicao(atuacaoProfissionalAtualizada.getInstituicao());
+        atuacaoProfissional.setSequenciaAtuacao(atuacaoProfissionalAtualizada.getSequenciaAtuacao());
+        atuacaoProfissional.setSequenciaVinculo(atuacaoProfissionalAtualizada.getSequenciaVinculo());
+        atuacaoProfissional.setCargo(atuacaoProfissionalAtualizada.getCargo());
+        atuacaoProfissional.setAnoInicio(atuacaoProfissionalAtualizada.getAnoInicio());
+        atuacaoProfissional.setAnoFim(atuacaoProfissionalAtualizada.getAnoFim());
+        atuacaoProfissional.setMesInicio(atuacaoProfissionalAtualizada.getMesInicio());
+        atuacaoProfissional.setMesFim(atuacaoProfissionalAtualizada.getMesFim());
+        atuacaoProfissional.setDestaque(atuacaoProfissionalAtualizada.getDestaque());
+
+        AtuacaoProfissional salvo = atuacaoProfissionalRepository.save(atuacaoProfissional);
+
+        return AtuacaoProfissionalMapper.toDTO(salvo);
+    }
+
+    public String excluir(Integer id){
+        if (!atuacaoProfissionalRepository.existsById(id)) {
+            throw new NoSuchElementException("Atuação Profissional não encontrado com id: " + id);
+        }
+        atuacaoProfissionalRepository.deleteById(id);
+
+        return "Atuação Profissional com id: " + id + " excluido com sucesso!";
+    }
     
     public void converterJsonParaAtuacaoProfissional (String jsonBody, Pesquisador pesquisador) {
         try {

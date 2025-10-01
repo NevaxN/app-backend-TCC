@@ -15,6 +15,7 @@ import com.app.src.dto.ResgatarJWTTokenDTO;
 import com.app.src.enums.TipoUsuarioName;
 import com.app.src.models.TipoUsuario;
 import com.app.src.models.Usuario;
+
 import com.app.src.repositories.TipoUsuarioRepository;
 import com.app.src.repositories.UsuarioRepository;
 

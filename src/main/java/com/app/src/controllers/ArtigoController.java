@@ -2,7 +2,6 @@ package com.app.src.controllers;
 
 import com.app.src.dto.ArtigoDTO;
 import com.app.src.models.Artigo;
-import com.app.src.repositories.ArtigoRepository;
 import com.app.src.services.ArtigoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/artigos")
 public class ArtigoController {
-
-    @Autowired
-    private ArtigoRepository artigoRepository;
 
     @Autowired
     private ArtigoService artigoService;

@@ -1,8 +1,5 @@
 package com.app.src.services;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +15,6 @@ import com.app.src.dto.ResgatarJWTTokenDTO;
 import com.app.src.enums.TipoUsuarioName;
 import com.app.src.models.TipoUsuario;
 import com.app.src.models.Usuario;
-import com.app.src.repositories.RoleRepository;
 import com.app.src.repositories.TipoUsuarioRepository;
 import com.app.src.repositories.UsuarioRepository;
 
@@ -33,9 +29,6 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
 
     @Autowired
     private TipoUsuarioRepository tipoUsuarioRepository;

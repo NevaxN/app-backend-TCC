@@ -1,10 +1,9 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.PesquisadorDTO;
-import com.app.src.mappers.PesquisadorMapper;
 import com.app.src.models.Pesquisador;
 import com.app.src.repositories.PesquisadorRepository;
-import com.app.src.repositories.UsuarioRepository;
+import com.app.src.services.PesquisadorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pesquisadores")
@@ -31,73 +29,37 @@ public class PesquisadorController {
     private PesquisadorRepository pesquisadorRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private PesquisadorService pesquisadorService;
 
-    // Criar pesquisador
-    @PostMapping("/salvarPesquisador")
-    public PesquisadorDTO criar(@RequestBody PesquisadorDTO pesquisadorDTO) {
-        Pesquisador pesquisador = PesquisadorMapper.toEntity(pesquisadorDTO);
-
-        if (pesquisador.getUsuario() == null || pesquisador.getUsuario().getId() == null) {
-            throw new IllegalArgumentException("ID do usuario é obrigatório.");
-        }
-
-        if (!usuarioRepository.existsById(pesquisador.getUsuario().getId())) {
-            throw new NoSuchElementException("Usuario não encontrado com id: " + pesquisador.getUsuario().getId());
-        }
-
-        Pesquisador salvo = pesquisadorRepository.save(pesquisador);
-
-        return PesquisadorMapper.toDTO(salvo);
-    }
-
-    // Listar todos os pesquisadores
     @GetMapping("/listarPesquisadores")
-    public List<PesquisadorDTO> listar() {
-        return pesquisadorRepository.findAll().stream()
-                .map(PesquisadorMapper::toDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<PesquisadorDTO>> listarTodos() {
+        List<PesquisadorDTO> pesquisadores = pesquisadorService.buscarTodos();
+        return ResponseEntity.ok(pesquisadores);
     }
 
-    // Buscar pesquisador por ID
     @GetMapping("/listarPesquisador/{id}")
-    public PesquisadorDTO buscarPorId(@PathVariable Integer id) {
-        Pesquisador pesquisador = pesquisadorRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
-        
-        return PesquisadorMapper.toDTO(pesquisador);
+    public ResponseEntity<PesquisadorDTO> buscarPorId(@PathVariable Integer id) {
+        PesquisadorDTO pesquisador = pesquisadorService.buscarPorId(id);
+        return ResponseEntity.ok(pesquisador);
     }
 
-    // Atualizar pesquisador
+    @PostMapping("/salvarPesquisador")
+    public ResponseEntity<PesquisadorDTO> criar(@RequestBody PesquisadorDTO pesquisadorDTO) {
+        PesquisadorDTO salvo = pesquisadorService.salvar(pesquisadorDTO);
+        return ResponseEntity.ok(salvo);
+    }
+
     @PutMapping("/alterarPesquisador/{id}")
-    public PesquisadorDTO atualizar(@PathVariable Integer id, @RequestBody Pesquisador dadosAtualizados) {
-        Pesquisador existente = pesquisadorRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
-
-        existente.setNomePesquisador(dadosAtualizados.getNomePesquisador());
-        existente.setSobrenome(dadosAtualizados.getSobrenome());
-        existente.setDataNascimento(dadosAtualizados.getDataNascimento());
-        existente.setNomeCitacoesBibliograficas(dadosAtualizados.getNomeCitacoesBibliograficas());
-        existente.setDataAtualizacao(dadosAtualizados.getDataAtualizacao());
-        existente.setHoraAtualizacao(dadosAtualizados.getHoraAtualizacao());
-        existente.setNacionalidade(dadosAtualizados.getNacionalidade());
-        existente.setPaisNascimento(dadosAtualizados.getPaisNascimento());
-        existente.setLattesId(dadosAtualizados.getLattesId());
-        existente.setUsuario(dadosAtualizados.getUsuario());
-
-        Pesquisador salvo = pesquisadorRepository.save(existente);
-
-        return PesquisadorMapper.toDTO(salvo);
+    public ResponseEntity<PesquisadorDTO> atualizar(@PathVariable Integer id, @RequestBody Pesquisador dadosAtualizados) {
+        PesquisadorDTO salvo = pesquisadorService.atualizar(id, dadosAtualizados);
+        return ResponseEntity.ok(salvo);
     }
 
     // Deletar pesquisador
     @DeleteMapping("/excluirPesquisador/{id}")
-    public String deletar(@PathVariable Integer id) {
-        if (!pesquisadorRepository.existsById(id)) {
-            return "Pesquisador não encontrado";
-        }
-        pesquisadorRepository.deleteById(id);
-        return "Pesquisador deletado com sucesso";
+    public ResponseEntity<String> deletar(@PathVariable Integer id) {
+        String mensagem = pesquisadorService.deletar(id);
+        return ResponseEntity.ok(mensagem);
     }
 
     @PutMapping("/{id}/imagem")

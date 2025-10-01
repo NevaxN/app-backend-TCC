@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class XmlService {
 
     @Autowired
-    GenericoService genericoService;
+    DetectEncodeService detectEncodeServiceService;
 
     @Autowired
     PesquisadorService pesquisadorService;
@@ -73,7 +73,7 @@ public class XmlService {
     public String processarXml(MultipartFile xml) {
         try {
             byte[] conteudoBytes = xml.getBytes();
-            String encoding = genericoService.detectEncoding(conteudoBytes);
+            String encoding = detectEncodeServiceService.detectEncoding(conteudoBytes);
             String conteudo = new String(conteudoBytes, Charset.forName(encoding));
 
             // XML -> JSON

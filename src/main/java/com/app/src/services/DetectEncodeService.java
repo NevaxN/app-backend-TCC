@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GenericoService {
+public class DetectEncodeService {
 
     public String detectEncoding(byte[] xmlBytes) {
         String header = new String(xmlBytes, 0, Math.min(xmlBytes.length, 100), StandardCharsets.US_ASCII);

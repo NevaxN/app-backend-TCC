@@ -33,33 +33,28 @@ public class PesquisadorController {
 
     @GetMapping("/listarPesquisadores")
     public ResponseEntity<List<PesquisadorDTO>> listarTodos() {
-        List<PesquisadorDTO> pesquisadores = pesquisadorService.buscarTodos();
-        return ResponseEntity.ok(pesquisadores);
+        return ResponseEntity.ok(pesquisadorService.buscarTodos());
     }
 
     @GetMapping("/listarPesquisador/{id}")
     public ResponseEntity<PesquisadorDTO> buscarPorId(@PathVariable Integer id) {
-        PesquisadorDTO pesquisador = pesquisadorService.buscarPorId(id);
-        return ResponseEntity.ok(pesquisador);
+        return ResponseEntity.ok(pesquisadorService.buscarPorId(id));
     }
 
     @PostMapping("/salvarPesquisador")
     public ResponseEntity<PesquisadorDTO> criar(@RequestBody PesquisadorDTO pesquisadorDTO) {
-        PesquisadorDTO salvo = pesquisadorService.salvar(pesquisadorDTO);
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(pesquisadorService.salvar(pesquisadorDTO));
     }
 
     @PutMapping("/alterarPesquisador/{id}")
     public ResponseEntity<PesquisadorDTO> atualizar(@PathVariable Integer id, @RequestBody Pesquisador dadosAtualizados) {
-        PesquisadorDTO salvo = pesquisadorService.atualizar(id, dadosAtualizados);
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(pesquisadorService.atualizar(id, dadosAtualizados));
     }
 
     // Deletar pesquisador
     @DeleteMapping("/excluirPesquisador/{id}")
     public ResponseEntity<String> deletar(@PathVariable Integer id) {
-        String mensagem = pesquisadorService.deletar(id);
-        return ResponseEntity.ok(mensagem);
+        return ResponseEntity.ok(pesquisadorService.deletar(id));
     }
 
     @PutMapping("/{id}/imagem")

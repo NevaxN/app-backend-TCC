@@ -47,14 +47,14 @@ public class PesquisadorController {
     }
 
     @PutMapping("/alterarPesquisador/{id}")
-    public ResponseEntity<PesquisadorDTO> atualizar(@PathVariable Integer id, @RequestBody Pesquisador dadosAtualizados) {
+    public ResponseEntity<PesquisadorDTO> atualizar(@PathVariable Integer id, @RequestBody PesquisadorDTO dadosAtualizados) {
         return ResponseEntity.ok(pesquisadorService.atualizar(id, dadosAtualizados));
     }
 
     // Deletar pesquisador
     @DeleteMapping("/excluirPesquisador/{id}")
     public ResponseEntity<String> deletar(@PathVariable Integer id) {
-        return ResponseEntity.ok(pesquisadorService.deletar(id));
+        return ResponseEntity.ok(pesquisadorService.excluir(id));
     }
 
     @PutMapping("/{id}/imagem")

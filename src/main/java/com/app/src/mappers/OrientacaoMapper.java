@@ -1,44 +1,14 @@
 package com.app.src.mappers;
 
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
 import com.app.src.dto.OrientacaoDTO;
 import com.app.src.models.Orientacao;
 
-public class OrientacaoMapper {
-    
-    public static OrientacaoDTO toDTO(Orientacao orientacao) {
-        if (orientacao == null) {
-            return null;
-        }
-
-        OrientacaoDTO dto = new OrientacaoDTO();
-        dto.setId(orientacao.getId());
-        dto.setPesquisador(orientacao.getPesquisador());
-        dto.setTipo(orientacao.getTipo());
-        dto.setNomeOrientado(orientacao.getNomeOrientado());
-        dto.setTituloTrabalho(orientacao.getTituloTrabalho());
-        dto.setInstituicao(orientacao.getInstituicao());
-        dto.setAno(orientacao.getAno());
-        dto.setSequencia(orientacao.getSequencia());
-        dto.setDestaque(orientacao.getDestaque());
-        dto.setNomeCurso(orientacao.getNomeCurso());
-        return dto;
-    }
-
-    public static Orientacao toEntity(OrientacaoDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        Orientacao orientacao = new Orientacao();
-        orientacao.setPesquisador(dto.getPesquisador());
-        orientacao.setTipo(dto.getTipo());
-        orientacao.setNomeOrientado(dto.getNomeOrientado());
-        orientacao.setTituloTrabalho(dto.getTituloTrabalho());
-        orientacao.setInstituicao(dto.getInstituicao());
-        orientacao.setAno(dto.getAno());
-        orientacao.setSequencia(dto.getSequencia());
-        orientacao.setDestaque(dto.getDestaque());
-        orientacao.setNomeCurso(dto.getNomeCurso());
-        return orientacao;
-    }
+@Mapper
+public interface OrientacaoMapper extends GenericMapper<Orientacao, OrientacaoDTO> {
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(OrientacaoDTO dto, Orientacao entity);
 }

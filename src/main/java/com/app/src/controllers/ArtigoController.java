@@ -1,7 +1,6 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.ArtigoDTO;
-import com.app.src.models.Artigo;
 import com.app.src.services.ArtigoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class ArtigoController {
 
     // Atualizar artigo
     @PutMapping("/alterarArtigo/{id}")
-    public ResponseEntity<ArtigoDTO> atualizar(@PathVariable Integer id, @RequestBody Artigo dadosAtualizados) {
+    public ResponseEntity<ArtigoDTO> atualizar(@PathVariable Integer id, @RequestBody ArtigoDTO dadosAtualizados) {
         return ResponseEntity.ok(artigoService.atualizar(id, dadosAtualizados));
     }
 

@@ -1,37 +1,14 @@
 package com.app.src.mappers;
 
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
 import com.app.src.dto.EventoDTO;
 import com.app.src.models.Evento;
 
-public class EventoMapper {
-        public static EventoDTO toDTO(Evento evento) {
-        if (evento == null) {
-            return null;
-        }
-
-        EventoDTO dto = new EventoDTO();
-        dto.setId(evento.getId());
-        dto.setPesquisador(evento.getPesquisador());
-        dto.setNomeEvento(evento.getNomeEvento());
-        dto.setTipo(evento.getTipo());
-        dto.setTituloTrabalho(evento.getTituloTrabalho());
-        dto.setAno(evento.getAno());
-        dto.setLocal(evento.getLocal());
-        return dto;
-    }
-
-    public static Evento toEntity(EventoDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        Evento evento = new Evento();
-        evento.setPesquisador(dto.getPesquisador());
-        evento.setNomeEvento(dto.getNomeEvento());
-        evento.setTipo(dto.getTipo());
-        evento.setTituloTrabalho(dto.getTituloTrabalho());
-        evento.setAno(dto.getAno());
-        evento.setLocal(evento.getLocal());
-        return evento;
-    }
+@Mapper
+public interface EventoMapper extends GenericMapper<Evento, EventoDTO> {
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(EventoDTO dto, Evento evento);
 }

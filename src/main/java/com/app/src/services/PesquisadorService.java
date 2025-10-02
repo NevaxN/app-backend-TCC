@@ -3,9 +3,7 @@ package com.app.src.services;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,32 +19,26 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class PesquisadorService {
+public class PesquisadorService extends GenericCrudService<Pesquisador, PesquisadorDTO, Integer, PesquisadorRepository> {
 
-    final ObjectMapper mapper = new ObjectMapper();
-
-    @Autowired
-    private PesquisadorRepository pesquisadorRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<PesquisadorDTO> buscarTodos(){
-        return pesquisadorRepository.findAll().stream()
-                .map(PesquisadorMapper::toDTO)
-                .collect(Collectors.toList());
+    public PesquisadorService(PesquisadorRepository repository, PesquisadorMapper mapper){
+        super(repository, mapper);
     }
 
+    @Override
     @Cacheable(value = "pesquisadores", key = "#id")
     public PesquisadorDTO buscarPorId(Integer id){
-        Pesquisador pesquisador = pesquisadorRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
-        
-        return PesquisadorMapper.toDTO(pesquisador);
+        return super.buscarPorId(id);
     }
 
+    @Override
     public PesquisadorDTO salvar(PesquisadorDTO pesquisadorDTO){
-        Pesquisador pesquisador = PesquisadorMapper.toEntity(pesquisadorDTO);
+        Pesquisador pesquisador = mapper.toEntity(pesquisadorDTO);
 
         if (pesquisador.getUsuario() == null || pesquisador.getUsuario().getId() == null) {
             throw new IllegalArgumentException("ID do usuario é obrigatório.");
@@ -55,46 +47,26 @@ public class PesquisadorService {
         if (!usuarioRepository.existsById(pesquisador.getUsuario().getId())) {
             throw new NoSuchElementException("Usuario não encontrado com id: " + pesquisador.getUsuario().getId());
         }
-        
-        Pesquisador salvo = pesquisadorRepository.save(pesquisador);
 
-        return PesquisadorMapper.toDTO(salvo);
+        return super.salvar(pesquisadorDTO);
     }
 
-    public PesquisadorDTO atualizar(Integer id, Pesquisador dadosAtualizados){
+    public PesquisadorDTO atualizar(Integer id, PesquisadorDTO dadosAtualizados){
 
-        PesquisadorDTO existenteDTO = buscarPorId(id);
-        Pesquisador existente = PesquisadorMapper.toEntity(existenteDTO);
+        Pesquisador existente = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado com id: " + id));
 
-        existente.setNomePesquisador(dadosAtualizados.getNomePesquisador());
-        existente.setSobrenome(dadosAtualizados.getSobrenome());
-        existente.setDataNascimento(dadosAtualizados.getDataNascimento());
-        existente.setNomeCitacoesBibliograficas(dadosAtualizados.getNomeCitacoesBibliograficas());
-        existente.setDataAtualizacao(dadosAtualizados.getDataAtualizacao());
-        existente.setHoraAtualizacao(dadosAtualizados.getHoraAtualizacao());
-        existente.setNacionalidade(dadosAtualizados.getNacionalidade());
-        existente.setPaisNascimento(dadosAtualizados.getPaisNascimento());
-        existente.setLattesId(dadosAtualizados.getLattesId());
-        existente.setUsuario(dadosAtualizados.getUsuario());
+        ((PesquisadorMapper) mapper).updateEntityFromDto(dadosAtualizados, existente);
 
-        Pesquisador salvo = pesquisadorRepository.save(existente);
+        Pesquisador salvo = repository.save(existente);
 
-        return PesquisadorMapper.toDTO(salvo);
-    }
-
-    public String deletar(Integer id){
-        if (!pesquisadorRepository.existsById(id)) {
-            return "Pesquisador com id: " + id + " não encontrado";
-        }
-        pesquisadorRepository.deleteById(id);
-
-        return "Pesquisador com id: " + id + " deletado com sucesso";
+        return mapper.toDTO(salvo);
     }
 
     public Pesquisador converterJsonParaPesquisador(String jsonBody, Usuario usuario) {
         try {
 
-            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode root = objectMapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador");
 
             DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");

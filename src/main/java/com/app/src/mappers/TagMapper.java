@@ -1,29 +1,14 @@
 package com.app.src.mappers;
 
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
 import com.app.src.dto.TagDTO;
 import com.app.src.models.Tag;
 
-public class TagMapper {
-    public static TagDTO toDTO(Tag tag) {
-        if (tag == null) {
-            return null;
-        }
-
-        TagDTO dto = new TagDTO();
-        dto.setId(tag.getId());
-        dto.setPesquisador(tag.getPesquisador());
-        dto.setListaTags(tag.getListaTags());
-        return dto;
-    }
-
-    public static Tag toEntity(TagDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        Tag tag = new Tag();
-        tag.setPesquisador(dto.getPesquisador());
-        tag.setListaTags(dto.getListaTags());
-        return tag;
-    }
+@Mapper
+public interface TagMapper extends GenericMapper<Tag, TagDTO>{
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(TagDTO dto, Tag entity);
 }

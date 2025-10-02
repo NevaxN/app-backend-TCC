@@ -2,24 +2,32 @@ package com.app.src.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.app.src.dto.ProducaoBibliograficaDTO;
+import com.app.src.mappers.ProducaoBibliograficaMapper;
 import com.app.src.models.Artigo;
 import com.app.src.models.Capitulo;
 import com.app.src.models.Livro;
 import com.app.src.models.Pesquisador;
+import com.app.src.models.ProducaoBibliografica;
 import com.app.src.models.TrabalhoEvento;
 import com.app.src.repositories.ArtigoRepository;
 import com.app.src.repositories.CapituloRepository;
 import com.app.src.repositories.LivroRepository;
+import com.app.src.repositories.PesquisadorRepository;
+import com.app.src.repositories.ProducaoBibliograficaRepository;
 import com.app.src.repositories.TrabalhoEventoRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class ProducaoBibliograficaService {
+public class ProducaoBibliograficaService extends 
+GenericCrudService<ProducaoBibliografica, ProducaoBibliograficaDTO, Integer, ProducaoBibliograficaRepository> {
 
     @Autowired
     TrabalhoEventoRepository trabalhoEventoRepository;
@@ -33,14 +41,53 @@ public class ProducaoBibliograficaService {
     @Autowired
     CapituloRepository capituloRepository;
 
-    final ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private PesquisadorRepository pesquisadorRepository;
+
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String MISSING_STRING_VALUE = "Não informado";
     private static final int MISSING_INTEGER_VALUE = 0;
+
+    public ProducaoBibliograficaService(ProducaoBibliograficaRepository repository, ProducaoBibliograficaMapper mapper){
+        super(repository, mapper);
+    }
+
+    @Override
+    @Cacheable(value = "producoes", key = "#id")
+    public ProducaoBibliograficaDTO buscarPorId(Integer id){
+        return super.buscarPorId(id);
+    }
+
+    @Override
+    public ProducaoBibliograficaDTO salvar(ProducaoBibliograficaDTO producaoBibliograficaDTO){
+        ProducaoBibliografica producaoBibliografica = mapper.toEntity(producaoBibliograficaDTO);
+        
+        if (producaoBibliografica.getPesquisador() == null || producaoBibliografica.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
+        if (!pesquisadorRepository.existsById(producaoBibliografica.getPesquisador().getId())) {
+            throw new NoSuchElementException("Pesquisador não encontrado com id: " + producaoBibliografica.getPesquisador().getId());
+        }
+
+        return super.salvar(producaoBibliograficaDTO);
+    }
+
+    public ProducaoBibliograficaDTO atualizar(Integer id, ProducaoBibliograficaDTO producaoBibliograficaDTO){
+        ProducaoBibliografica producaoBibliografica = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Produção Bibliografica não encontrado com id: " + id));
+
+        ((ProducaoBibliograficaMapper) mapper).updateEntityFromDto(producaoBibliograficaDTO, producaoBibliografica);
+
+        ProducaoBibliografica salvo = repository.save(producaoBibliografica);
+
+        return mapper.toDTO(salvo);
+    }
     
     public void converterJsonParaProducaoBibliografica (String jsonBody, Pesquisador pesquisador) {
         try {
-            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode root = objectMapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador").get("producoes_bibliograficas");
 
             // Eventos

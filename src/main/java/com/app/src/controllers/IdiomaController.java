@@ -1,84 +1,47 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.IdiomaDTO;
-import com.app.src.mappers.IdiomaMapper;
-import com.app.src.models.Idioma;
-import com.app.src.repositories.IdiomaRepository;
-import com.app.src.repositories.PesquisadorRepository;
+import com.app.src.services.IdiomaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/idiomas")
 public class IdiomaController {
     
     @Autowired
-    private IdiomaRepository idiomaRepository;
-
-    @Autowired
-    private PesquisadorRepository pesquisadorRepository;
+    private IdiomaService idiomaService;
 
     @GetMapping("/listarIdiomas")
-    public List<IdiomaDTO> listarTodos() {
-        return idiomaRepository.findAll().stream()
-                .map(IdiomaMapper::toDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<IdiomaDTO>> listarTodos() {
+        return ResponseEntity.ok(idiomaService.buscarTodos());
     }
 
     // Buscar endereço por ID
     @GetMapping("/listarIdioma/{id}")
-    public IdiomaDTO buscarPorId(@PathVariable Integer id) {
-        Idioma idioma = idiomaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Idioma não encontrado com id: " + id));
-
-        return IdiomaMapper.toDTO(idioma);
+    public ResponseEntity<IdiomaDTO> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(idiomaService.buscarPorId(id));
     }
 
     // Criar novo endereço
     @PostMapping("/salvarIdioma")
-    public IdiomaDTO criar(@RequestBody IdiomaDTO idiomaDTO) {
-        Idioma idioma = IdiomaMapper.toEntity(idiomaDTO);
-        
-        if (idioma.getPesquisador() == null || idioma.getPesquisador().getId() == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
-        }
-
-        if (!pesquisadorRepository.existsById(idioma.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + idioma.getPesquisador().getId());
-        }
-
-        Idioma salvo = idiomaRepository.save(idioma);
-
-        return IdiomaMapper.toDTO(salvo);
+    public ResponseEntity<IdiomaDTO> criar(@RequestBody IdiomaDTO idiomaDTO) {
+        return ResponseEntity.ok(idiomaService.salvar(idiomaDTO));
     }
 
     // Atualizar endereço
     @PutMapping("/alterarIdioma/{id}")
-    public IdiomaDTO atualizar(@PathVariable Integer id, @RequestBody Idioma idiomaAtualizada) {
-        Idioma idioma = idiomaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Idioma não encontrado com id: " + id));
-
-        idioma.setIdioma(idiomaAtualizada.getIdioma());
-        idioma.setLeitura(idiomaAtualizada.getLeitura());
-        idioma.setEscrita(idiomaAtualizada.getEscrita());
-        idioma.setFala(idiomaAtualizada.getFala());
-
-        Idioma salvo = idiomaRepository.save(idioma);
-
-        return IdiomaMapper.toDTO(salvo);
+    public ResponseEntity<IdiomaDTO> atualizar(@PathVariable Integer id, @RequestBody IdiomaDTO idiomaAtualizada) {
+        return ResponseEntity.ok(idiomaService.atualizar(id, idiomaAtualizada));
     }
 
     // Deletar endereço
     @DeleteMapping("/excluirIdioma/{id}")
-    public void deletar(@PathVariable Integer id) {
-        if (!idiomaRepository.existsById(id)) {
-            throw new NoSuchElementException("Idioma não encontrado com id: " + id);
-        }
-        idiomaRepository.deleteById(id);
+    public ResponseEntity<String> deletar(@PathVariable Integer id) {
+        return ResponseEntity.ok(idiomaService.excluir(id));
     }
 }

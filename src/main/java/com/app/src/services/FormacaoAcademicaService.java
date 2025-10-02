@@ -2,27 +2,74 @@ package com.app.src.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.app.src.dto.FormacaoAcademicaDTO;
+import com.app.src.mappers.FormacaoAcademicaMapper;
 import com.app.src.models.FormacaoAcademica;
 import com.app.src.models.Pesquisador;
+import com.app.src.repositories.FormacaoAcademicaRepository;
+import com.app.src.repositories.PesquisadorRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class FormacaoAcademicaService {
+public class FormacaoAcademicaService extends 
+GenericCrudService<FormacaoAcademica, FormacaoAcademicaDTO, Integer, FormacaoAcademicaRepository> {
 
-    final ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private PesquisadorRepository pesquisadorRepository;
+
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String MISSING_STRING_VALUE = "Não informado";
     private static final int MISSING_INTEGER_VALUE = 0;
+
+    public FormacaoAcademicaService(FormacaoAcademicaRepository repository, FormacaoAcademicaMapper mapper){
+        super(repository, mapper);
+    }
+
+    @Override
+    @Cacheable(value = "formacoes", key = "#id")
+    public FormacaoAcademicaDTO buscarPorId(Integer id){
+        return super.buscarPorId(id);
+    }
+
+    @Override
+    public FormacaoAcademicaDTO salvar(FormacaoAcademicaDTO formacaoAcademicaDTO){
+        FormacaoAcademica graduacao = mapper.toEntity(formacaoAcademicaDTO);
+
+        if (graduacao.getPesquisador() == null || graduacao.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
+        if (!pesquisadorRepository.existsById(graduacao.getPesquisador().getId())) {
+            throw new NoSuchElementException("Pesquisador não encontrado com id: " + graduacao.getPesquisador().getId());
+        }
+
+        return super.salvar(formacaoAcademicaDTO);
+    }
+
+    public FormacaoAcademicaDTO atualizar(Integer id, FormacaoAcademicaDTO dadosAtualizados){
+        FormacaoAcademica graduacao = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Graduacao não encontrado com ID: " + id));
+
+        ((FormacaoAcademicaMapper) mapper).updateEntityFromDto(dadosAtualizados, graduacao);
+
+        FormacaoAcademica salvo = repository.save(graduacao);
+
+        return mapper.toDTO(salvo);
+    }
 
     public List<FormacaoAcademica> converterJsonParaFormacaoAcademica (String jsonBody, Pesquisador pesquisador) {
         try {
             List<FormacaoAcademica> formacaoAcademicaList = new ArrayList<>();
 
-            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode root = objectMapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador").get("formacao_academica");
 
             for (JsonNode fa: dados) {

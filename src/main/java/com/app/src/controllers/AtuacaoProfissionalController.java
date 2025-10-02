@@ -1,7 +1,6 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.AtuacaoProfissionalDTO;
-import com.app.src.models.AtuacaoProfissional;
 import com.app.src.services.AtuacaoProfissionalService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class AtuacaoProfissionalController {
 
     // Atualizar endereço
     @PutMapping("/alterarAtuacaoProfissional/{id}")
-    public ResponseEntity<AtuacaoProfissionalDTO> atualizar(@PathVariable Integer id, @RequestBody AtuacaoProfissional atuacaoProfissionalAtualizada) {
+    public ResponseEntity<AtuacaoProfissionalDTO> atualizar(@PathVariable Integer id, @RequestBody AtuacaoProfissionalDTO atuacaoProfissionalAtualizada) {
         return ResponseEntity.ok(atuacaoProfissionalService.atualizar(id, atuacaoProfissionalAtualizada));
     }
 

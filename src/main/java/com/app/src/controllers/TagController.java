@@ -1,79 +1,49 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.TagDTO;
-import com.app.src.mappers.TagMapper;
-import com.app.src.models.Tag;
-import com.app.src.repositories.PesquisadorRepository;
-import com.app.src.repositories.TagRepository;
+import com.app.src.services.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
 
     @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private PesquisadorRepository pesquisadorRepository;
+    private TagService tagService;
 
     // Listar todas as tags
     @GetMapping("/listarTags")
-    public List<TagDTO> listarTodas() {
-        return tagRepository.findAll().stream()
-                .map(TagMapper::toDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<TagDTO>> listarTodas() {
+        return ResponseEntity.ok(tagService.buscarTodos());
     }
 
     // Buscar tag por ID
     @GetMapping("/listarTag/{id}")
-    public TagDTO buscarPorId(@PathVariable Integer id) {
-        Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Tag não encontrada com id: " + id));
-        return TagMapper.toDTO(tag);
+    public ResponseEntity<TagDTO> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(tagService.buscarPorId(id));
     }
 
     // Criar nova tag
     @PostMapping("/salvarTag")
-    public TagDTO criar(@RequestBody TagDTO tagDTO) {
-        Tag tag = TagMapper.toEntity(tagDTO);
-    
-        if (tag.getPesquisador() == null || tag.getPesquisador().getId() == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
-        }
-    
-        if (!pesquisadorRepository.existsById(tag.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + tag.getPesquisador().getId());
-        }
-    
-        Tag salvo = tagRepository.save(tag);
-        return TagMapper.toDTO(salvo);
+    public ResponseEntity<TagDTO> criar(@RequestBody TagDTO tagDTO) {
+        return ResponseEntity.ok(tagService.salvar(tagDTO));
     }
 
     // Atualizar tag
     @PutMapping("/alterarTag/{id}")
-    public TagDTO atualizar(@PathVariable Integer id, @RequestBody Tag tagAtualizada) {
-        Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Tag não encontrada com id: " + id));
-
-        tag.setListaTags(tagAtualizada.getListaTags());
-
-        Tag salvo = tagRepository.save(tag);
-        return TagMapper.toDTO(salvo);
+    public ResponseEntity<TagDTO> atualizar(@PathVariable Integer id, @RequestBody TagDTO tagAtualizada) {
+        return ResponseEntity.ok(tagService.atualizar(id, tagAtualizada));
     }
 
     // Deletar tag
     @DeleteMapping("/excluirTag/{id}")
-    public void deletar(@PathVariable Integer id) {
-        if (!tagRepository.existsById(id)) {
-            throw new NoSuchElementException("Tag não encontrada com id: " + id);
-        }
-        tagRepository.deleteById(id);
+    public ResponseEntity<String> deletar(@PathVariable Integer id) {
+        return ResponseEntity.ok(tagService.excluir(id));
     }
 }

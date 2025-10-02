@@ -2,27 +2,73 @@ package com.app.src.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.app.src.dto.OrientacaoDTO;
+import com.app.src.mappers.OrientacaoMapper;
 import com.app.src.models.Orientacao;
 import com.app.src.models.Pesquisador;
+import com.app.src.repositories.OrientacaoRepository;
+import com.app.src.repositories.PesquisadorRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class OrientacaoService {
+public class OrientacaoService extends GenericCrudService<Orientacao, OrientacaoDTO, Integer, OrientacaoRepository> {
 
-    final ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private PesquisadorRepository pesquisadorRepository;
+
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String MISSING_STRING_VALUE = "Não informado";
     private static final int MISSING_INTEGER_VALUE = 0;
+
+    public OrientacaoService(OrientacaoRepository repository, OrientacaoMapper mapper){
+        super(repository, mapper);
+    }
     
+    @Override
+    @Cacheable(value = "orientacoes", key = "#id")
+    public OrientacaoDTO buscarPorId(Integer id){
+        return super.buscarPorId(id);
+    }
+
+    @Override
+    public OrientacaoDTO salvar(OrientacaoDTO orientacaoDTO){
+        Orientacao orientacao = mapper.toEntity(orientacaoDTO);
+
+        if (orientacao.getPesquisador() == null || orientacao.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
+        if (!pesquisadorRepository.existsById(orientacao.getPesquisador().getId())) {
+            throw new NoSuchElementException("Pesquisador não encontrado com id: " + orientacao.getPesquisador().getId());
+        }
+
+        return super.salvar(orientacaoDTO);
+    }
+
+    public OrientacaoDTO atualizar(Integer id, OrientacaoDTO orientacaoDTO){
+        Orientacao orientacao = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Orientação não encontrada com id: " + id));
+
+        ((OrientacaoMapper) mapper).updateEntityFromDto(orientacaoDTO, orientacao);
+
+        Orientacao salvo = repository.save(orientacao);
+
+        return mapper.toDTO(salvo);
+    }
+
     public List<Orientacao> converterJsonParaOrientacao (String jsonBody, Pesquisador pesquisador) {
         try {
             List<Orientacao> orientacoesList = new ArrayList<>();
 
-            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode root = objectMapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador").get("orientacoes");
 
             for (JsonNode o : dados) {

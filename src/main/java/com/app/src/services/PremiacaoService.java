@@ -2,26 +2,73 @@ package com.app.src.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.app.src.dto.PremiacaoDTO;
+import com.app.src.mappers.PremiacaoMapper;
 import com.app.src.models.Pesquisador;
 import com.app.src.models.Premiacao;
+import com.app.src.repositories.PesquisadorRepository;
+import com.app.src.repositories.PremiacaoRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class PremiacaoService {
+public class PremiacaoService extends GenericCrudService<Premiacao, PremiacaoDTO, Integer, PremiacaoRepository>{
 
-    final ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private PesquisadorRepository pesquisadorRepository;
+    
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String MISSING_STRING_VALUE = "Não informado";
     private static final int MISSING_INTEGER_VALUE = 0;
+
+    public PremiacaoService(PremiacaoRepository repository, PremiacaoMapper mapper){
+        super(repository, mapper);
+    }
+
+    @Override
+    @Cacheable
+    public PremiacaoDTO buscarPorId(Integer id){
+        return super.buscarPorId(id);
+    }
+
+    @Override
+    public PremiacaoDTO salvar(PremiacaoDTO premiacaoDTO){
+        Premiacao premiacao = mapper.toEntity(premiacaoDTO);
+
+        if (premiacao.getPesquisador() == null || premiacao.getPesquisador().getId() == null) {
+            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+        }
+
+        if (!pesquisadorRepository.existsById(premiacao.getPesquisador().getId())) {
+            throw new NoSuchElementException("Pesquisador não encontrado com id: " + premiacao.getPesquisador().getId());
+        }
+
+        return super.salvar(premiacaoDTO);
+    }
+
+    public PremiacaoDTO atualizar(Integer id, PremiacaoDTO premiacaoDTO){
+        Premiacao premiacao = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Premiacao não encontrado com id: " + id));
+
+        ((PremiacaoMapper) mapper).updateEntityFromDto(premiacaoDTO, premiacao);
+
+        Premiacao salvo = repository.save(premiacao);
     
+        return mapper.toDTO(salvo);
+    }
+
+
     public List<Premiacao> converterJsonParaPremiacao (String jsonBody, Pesquisador pesquisador) {
         try {
             List<Premiacao> premiacaoList = new ArrayList<>();
-            JsonNode root = mapper.readTree(jsonBody);
+            JsonNode root = objectMapper.readTree(jsonBody);
             JsonNode dados = root.get("dados_pesquisador").get("premiacoes");
 
             for (JsonNode p: dados) {

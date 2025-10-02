@@ -1,81 +1,49 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.PremiacaoDTO;
-import com.app.src.mappers.PremiacaoMapper;
-import com.app.src.models.Premiacao;
-import com.app.src.repositories.PesquisadorRepository;
-import com.app.src.repositories.PremiacaoRepository;
+import com.app.src.services.PremiacaoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/premiacoes")
 public class PremiacaoController {
         
     @Autowired
-    private PremiacaoRepository premiacaoRepository;
+    private PremiacaoService premiacaoService;
 
-    @Autowired
-    private PesquisadorRepository pesquisadorRepository;
+    
 
     @GetMapping("/listarPremiacoes")
-    public List<PremiacaoDTO> listarTodos() {
-        return premiacaoRepository.findAll().stream()
-                .map(PremiacaoMapper::toDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<PremiacaoDTO>> listarTodos() {
+        return ResponseEntity.ok(premiacaoService.buscarTodos()); 
     }
 
     // Buscar endereço por ID
     @GetMapping("/listarPremiacao/{id}")
-    public PremiacaoDTO buscarPorId(@PathVariable Integer id) {
-        Premiacao premiacao = premiacaoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Premiacao não encontrado com id: " + id));
-
-        return PremiacaoMapper.toDTO(premiacao);
+    public ResponseEntity<PremiacaoDTO> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(premiacaoService.buscarPorId(id));
     }
 
     // Criar novo endereço
     @PostMapping("/salvarPremiacao")
-    public PremiacaoDTO criar(@RequestBody PremiacaoDTO premiacaoDTO) {
-        Premiacao premiacao = PremiacaoMapper.toEntity(premiacaoDTO);
-
-        if (premiacao.getPesquisador() == null || premiacao.getPesquisador().getId() == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
-        }
-
-        if (!pesquisadorRepository.existsById(premiacao.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + premiacao.getPesquisador().getId());
-        }
-
-        Premiacao salvo = premiacaoRepository.save(premiacao);
-        return PremiacaoMapper.toDTO(salvo);
+    public ResponseEntity<PremiacaoDTO> criar(@RequestBody PremiacaoDTO premiacaoDTO) {
+        return ResponseEntity.ok(premiacaoService.salvar(premiacaoDTO));
     }
 
     // Atualizar endereço
     @PutMapping("/alterarPremiacao/{id}")
-    public PremiacaoDTO atualizar(@PathVariable Integer id, @RequestBody Premiacao premiacaoAtualizada) {
-        Premiacao premiacao = premiacaoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Premiacao não encontrado com id: " + id));
-
-        premiacao.setTitulo(premiacaoAtualizada.getTitulo());
-        premiacao.setInstituicao(premiacaoAtualizada.getInstituicao());
-        premiacao.setAno(premiacaoAtualizada.getAno());
-
-        Premiacao salvo = premiacaoRepository.save(premiacao);
-        return PremiacaoMapper.toDTO(salvo);
+    public ResponseEntity<PremiacaoDTO> atualizar(@PathVariable Integer id, @RequestBody PremiacaoDTO premiacaoAtualizada) {
+        return ResponseEntity.ok(premiacaoService.atualizar(id, premiacaoAtualizada));
     }
 
     // Deletar endereço
     @DeleteMapping("/excluirPremiacao/{id}")
-    public void deletar(@PathVariable Integer id) {
-        if (!premiacaoRepository.existsById(id)) {
-            throw new NoSuchElementException("Premiacao não encontrado com id: " + id);
-        }
-        premiacaoRepository.deleteById(id);
+    public ResponseEntity<String> deletar(@PathVariable Integer id) {
+        return ResponseEntity.ok(premiacaoService.excluir(id));
     }
 }

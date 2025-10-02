@@ -25,7 +25,8 @@ public class SecurityConfiguration {
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
         "/api/usuarios/login",
         "/api/usuarios/salvarUsuario",
-        "/api/usuarios/**" // Apenas para teste, ajuste depois
+        "/api/usuarios/**",
+        "/api/upload"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {

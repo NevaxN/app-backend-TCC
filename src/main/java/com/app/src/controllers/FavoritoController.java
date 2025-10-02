@@ -1,7 +1,7 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.FavoritoDTO;
-import com.app.src.services.FavoritosService;
+import com.app.src.services.FavoritoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 public class FavoritoController {
         
     @Autowired
-    private FavoritosService favoritoService;
+    private FavoritoService favoritoService;
 
     @GetMapping("/listarFavoritos")
     public ResponseEntity<List<FavoritoDTO>> listarTodos() {

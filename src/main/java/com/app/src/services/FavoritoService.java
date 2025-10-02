@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import com.app.src.dto.FavoritoDTO;
 import com.app.src.mappers.FavoritoMapper;
@@ -11,12 +12,13 @@ import com.app.src.models.Favorito;
 import com.app.src.repositories.FavoritoRepository;
 import com.app.src.repositories.PesquisadorRepository;
 
-public class FavoritosService extends GenericCrudService<Favorito, FavoritoDTO, Integer, FavoritoRepository> {
+@Service
+public class FavoritoService extends GenericCrudService<Favorito, FavoritoDTO, Integer, FavoritoRepository> {
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
 
-    public FavoritosService(FavoritoRepository repository, FavoritoMapper mapper){
+    public FavoritoService(FavoritoRepository repository, FavoritoMapper mapper){
         super(repository, mapper);
     }
 

@@ -1,14 +1,12 @@
 package com.app.src.repositories;
 
+import com.app.src.models.Pesquisador;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import com.app.src.models.Pesquisador;
-
-@Repository
 public interface PesquisadorRepository extends JpaRepository<Pesquisador, Integer> {
 
     Optional<Pesquisador> findById(Integer id);
@@ -20,4 +18,11 @@ public interface PesquisadorRepository extends JpaRepository<Pesquisador, Intege
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    // Novo método para busca por termo
+    @Query("SELECT p FROM Pesquisador p WHERE " +
+           "LOWER(p.nomePesquisador) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(p.sobrenome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(p.nomeCitacoesBibliograficas) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Pesquisador> findByTermo(@Param("termo") String termo);
 }

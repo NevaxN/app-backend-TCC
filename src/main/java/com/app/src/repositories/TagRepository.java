@@ -1,14 +1,14 @@
 package com.app.src.repositories;
 
+import com.app.src.models.Tag;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+public interface TagRepository extends JpaRepository<Tag, Integer> {
 
-import com.app.src.models.Tag;
-
-public interface TagRepository extends JpaRepository<Tag, Integer>{
-    
     Optional<Tag> findById(Integer id);
 
     List<Tag> findAll();
@@ -18,4 +18,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer>{
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    // Novo método para busca por tag
+    @Query("SELECT t FROM Tag t JOIN t.listaTags tag WHERE LOWER(tag) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Tag> findByTagContaining(@Param("termo") String termo);
 }

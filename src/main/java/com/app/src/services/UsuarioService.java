@@ -1,5 +1,8 @@
 package com.app.src.services;
 
+import com.app.src.auth.enums.RoleName;
+import com.app.src.auth.models.Role;
+import com.app.src.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +22,9 @@ import com.app.src.models.Usuario;
 import com.app.src.repositories.TipoUsuarioRepository;
 import com.app.src.repositories.UsuarioRepository;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class UsuarioService {
     
@@ -36,6 +42,9 @@ public class UsuarioService {
 
     @Autowired
     private SecurityConfiguration securityConfiguration;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public ResgatarJWTTokenDTO authenticateUser(LoginUsuarioDTO loginUsuarioDTO){
         // Validação básica
@@ -82,11 +91,17 @@ public class UsuarioService {
         TipoUsuario tipoUsuarioEntity = tipoUsuarioRepository.findByName(tipoUsuarioEnum)
                 .orElseThrow(() -> new RuntimeException("Tipo de usuário não encontrado"));
 
+        // Buscamos a role padrão de usuário
+        Role role = roleRepository.findByName(RoleName.ROLE_USUARIO).get();
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+
         // Criar usuário com senha criptografada
         Usuario novoUsuario = Usuario.builder()
                 .login(criarUsuarioDTO.login())
                 .password(securityConfiguration.passwordEncoder().encode(criarUsuarioDTO.password()))
                 .tipoUsuario(tipoUsuarioEntity)
+                .roles(roles)
                 .build();
 
         usuarioRepository.save(novoUsuario);

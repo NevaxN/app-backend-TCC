@@ -25,8 +25,6 @@ public class SecurityConfiguration {
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
         "/api/usuarios/login",
         "/api/usuarios/salvarUsuario",
-        "/api/usuarios/**",
-        "/api/upload"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
@@ -34,7 +32,7 @@ public class SecurityConfiguration {
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {
-        "/api/usuarios/test/cliente"
+        "/api/pesquisadores/**",
     };
 
     public static final String [] ENDPOINTS_ADMIN = {
@@ -49,8 +47,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                     .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                    .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRADOR")
-                    .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CLIENTE")
+                    .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADM")
+                    .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("USUARIO")
                     .anyRequest().denyAll()
                 )
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

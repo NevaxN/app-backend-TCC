@@ -39,7 +39,9 @@ public class UsuarioController {
     public ResponseEntity<?> criarUsuario(@RequestBody CriarUsuarioDTO criarUsuarioDTO) {
         try {
             usuarioService.createUser(criarUsuarioDTO);
-            return new ResponseEntity<>(Map.of("message", "Usuário criado com sucesso"), HttpStatus.CREATED);
+            LoginUsuarioDTO login = new LoginUsuarioDTO(criarUsuarioDTO.login(), criarUsuarioDTO.password());
+            ResgatarJWTTokenDTO token = usuarioService.authenticateUser(login);
+            return new ResponseEntity<>(token, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(
                 Map.of("error", "Falha ao criar usuário", "message", e.getMessage()),

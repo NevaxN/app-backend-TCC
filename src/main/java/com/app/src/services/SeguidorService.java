@@ -1,8 +1,10 @@
 package com.app.src.services;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,13 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
         return super.buscarPorId(id);
     }
 
+    @Cacheable(value = "usuarios_seguidores", key = "#id")
+    public List<Seguidor> buscarPorUsuarioId(Integer id){
+        return repository.findByUsuarioId(id);
+    }
+
     @Override
+    @CacheEvict(value = "usuarios_seguidores", key = "#novoSeguidor.usuario.id")
     public SeguidorDTO salvar(SeguidorDTO seguidorDTO){
         Seguidor seguidor = mapper.toEntity(seguidorDTO);
 

@@ -11,6 +11,8 @@ public interface SeguidorRepository extends JpaRepository<Seguidor, Integer>{
         
     Optional<Seguidor> findById(Integer id);
 
+    List<Seguidor> findByUsuarioId(Integer id);
+
     List<Seguidor> findAll();
 
     <S extends Seguidor> S save(S seguidor);

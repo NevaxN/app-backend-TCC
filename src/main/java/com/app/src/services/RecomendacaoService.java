@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.src.dto.PesquisadorDTO;
+import com.app.src.mappers.PesquisadorMapper;
 import com.app.src.models.Pesquisador;
 import com.app.src.models.Seguidor;
 import com.app.src.models.Tag;
@@ -27,7 +29,10 @@ public class RecomendacaoService {
     @Autowired
     TagRepository tagRepository;
 
-    public List<Pesquisador> getRecomendacao(Integer usuarioId) {
+    @Autowired
+    PesquisadorMapper pesquisadorMapper;
+
+    public List<PesquisadorDTO> getRecomendacao(Integer usuarioId) {
         // Obter os IDs dos pesquisadores que o usuário já segue.
         List<Seguidor> seguindo = seguidorService.buscarPorUsuarioId(usuarioId);
         Set<Integer> idsPesquisadoresSeguidos = seguindo.stream()
@@ -60,12 +65,14 @@ public class RecomendacaoService {
                     candidato -> calcularPontuacao(candidato, frequenciaTags)
                 ));
 
-        // Ordenar os candidatos pela pontuação em ordem decrescente e retornar.
-        return candidatosPontuados.entrySet().stream()
+        List<Pesquisador> lista = candidatosPontuados.entrySet().stream()
                 .sorted(Map.Entry.<Pesquisador, Long>comparingByValue().reversed())
                 .map(Map.Entry::getKey)
                 .limit(10)
                 .collect(Collectors.toList());
+
+        // Ordenar os candidatos pela pontuação em ordem decrescente e retornar.
+        return lista.stream().map(pesquisadorMapper::toDTO).collect(Collectors.toList());
     }
 
     private Long calcularPontuacao(Pesquisador pesquisador, Map<String, Long> frequenciaTags) {

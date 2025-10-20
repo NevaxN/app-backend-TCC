@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.src.models.Pesquisador;
+import com.app.src.dto.PesquisadorDTO;
 import com.app.src.services.RecomendacaoService;
 
 @RestController
@@ -20,7 +20,7 @@ public class RecomendacaoController {
     RecomendacaoService recomendacaoService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Pesquisador>> listarTodas(@PathVariable Integer id){
+    public ResponseEntity<List<PesquisadorDTO>> listarTodas(@PathVariable Integer id){
         return ResponseEntity.ok(recomendacaoService.getRecomendacao(id));
     }
 }

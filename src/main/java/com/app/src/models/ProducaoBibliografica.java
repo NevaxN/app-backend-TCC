@@ -18,34 +18,34 @@ public class ProducaoBibliografica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "sequencia_producao", nullable = false)
+    @Column(name = "sequencia_producao", nullable = true)
     private Integer sequenciaProducao;
 
     @ManyToOne
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
 
-    @Column(name = "tipo", nullable = false)
+    @Column(name = "tipo", nullable = true)
     private String tipo;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = true)
     private String titulo;
 
-    @Column(name = "autores", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "autores", columnDefinition = "TEXT", nullable = true)
     private String autores;
 
-    @Column(name = "ano", nullable = false)
+    @Column(name = "ano", nullable = true)
     private Integer ano;
 
-    @Column(name = "veiculo_publicacao", nullable = false)
+    @Column(name = "veiculo_publicacao", nullable = true)
     private String veiculoPublicacao;
 
-    @Column(name = "issn", nullable = false)
+    @Column(name = "issn", nullable = true)
     private String issn;
 
-    @Column(name = "doi", nullable = false)
+    @Column(name = "doi", nullable = true)
     private String doi;
 
-    @Column(name = "destaque", nullable = false)
+    @Column(name = "destaque", nullable = true)
     private Boolean destaque;
 }

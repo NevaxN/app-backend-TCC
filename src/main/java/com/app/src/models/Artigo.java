@@ -18,15 +18,15 @@ public class Artigo extends ProducaoBibliografica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = true)
     private String titulo;
 
-    @Column(name = "periodico", nullable = false)
+    @Column(name = "periodico", nullable = true)
     private String periodico;
     
-    @Column(name = "doi", nullable = false)
+    @Column(name = "doi", nullable = true)
     private String doi;
 
-    @Column(name = "idioma", nullable = false)
+    @Column(name = "idioma", nullable = true)
     private String idioma;
 }

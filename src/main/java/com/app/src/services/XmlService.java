@@ -117,7 +117,8 @@ public class XmlService {
             return flaskResponse.getBody();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao processar XML: " + e.getMessage(), e);
         }
     }    
 }

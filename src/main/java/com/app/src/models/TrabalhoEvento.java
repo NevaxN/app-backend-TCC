@@ -17,15 +17,15 @@ public class TrabalhoEvento extends ProducaoBibliografica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = true)
     private String titulo;
 
-    @Column(name = "classificacao_evento", nullable = false)
+    @Column(name = "classificacao_evento", nullable = true)
     private String classificacaoEvento;
 
-    @Column(name = "nome_evento", nullable = false)
+    @Column(name = "nome_evento", nullable = true)
     private String nomeEvento;
 
-    @Column(name = "cidade_evento", nullable = false)
+    @Column(name = "cidade_evento", nullable = true)
     private String cidadeEvento;
 }

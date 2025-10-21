@@ -17,18 +17,18 @@ public class Livro extends ProducaoBibliografica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = true)
     private String titulo;
 
-    @Column(name = "isbn", nullable = false)
+    @Column(name = "isbn", nullable = true)
     private String isbn;
 
-    @Column(name = "editora", nullable = false)
+    @Column(name = "editora", nullable = true)
     private String editora;
 
-    @Column(name = "idioma", nullable = false)
+    @Column(name = "idioma", nullable = true)
     private String idioma;
 
-    @Column(name = "numero_paginas", nullable = false)
+    @Column(name = "numero_paginas", nullable = true)
     private Integer numeroPaginas;
 }

@@ -17,24 +17,24 @@ public class Capitulo extends ProducaoBibliografica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "titulo_capitulo", nullable = false)
+    @Column(name = "titulo_capitulo", nullable = true)
     private String tituloCapitulo;
 
-    @Column(name = "nome_livro", nullable = false)
+    @Column(name = "nome_livro", nullable = true)
     private String nomeLivro;
 
-    @Column(name = "editora", nullable = false)
+    @Column(name = "editora", nullable = true)
     private String editora;
 
-    @Column(name = "idioma", nullable = false)
+    @Column(name = "idioma", nullable = true)
     private String idioma;
 
-    @Column(name = "doi", nullable = false)
+    @Column(name = "doi", nullable = true)
     private String doi;
 
-    @Column(name = "pagina_inicial", nullable = false)
+    @Column(name = "pagina_inicial", nullable = true)
     private Integer paginaInicial;
 
-    @Column(name = "pagina_final", nullable = false)
+    @Column(name = "pagina_final", nullable = true)
     private Integer paginaFinal;
 }

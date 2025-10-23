@@ -1,6 +1,5 @@
 package com.app.src.dto;
 
-import com.app.src.models.Pesquisador;
 
 public record TrabalhoEventoDTO(
         Integer sequenciaProducao,

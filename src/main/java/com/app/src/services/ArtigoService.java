@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import com.app.src.dto.FormacaoAcademicaDTO;
-import com.app.src.models.FormacaoAcademica;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 

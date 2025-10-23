@@ -1,7 +1,5 @@
 package com.app.src.dto;
 
-import com.app.src.models.Pesquisador;
-
 public record LivroDTO(
         Integer sequenciaProducao,
         PesquisadorDTO pesquisador,

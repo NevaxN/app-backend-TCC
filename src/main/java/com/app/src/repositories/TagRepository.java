@@ -11,7 +11,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     Optional<Tag> findById(Integer id);
 
-    List<Tag> findByPesquisadorId(Integer id); 
+    List<Tag> findListaByPesquisadorId(Integer id); 
 
     List<Tag> findAll();
 

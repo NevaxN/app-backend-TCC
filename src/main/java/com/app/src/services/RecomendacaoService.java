@@ -41,7 +41,7 @@ public class RecomendacaoService {
 
         // Coletar todas as tags desses pesquisadores e calcular a frequência (peso).
         Map<String, Long> frequenciaTags = idsPesquisadoresSeguidos.stream()
-                .map(tagRepository::findByPesquisadorId)
+                .map(tagRepository::findListaByPesquisadorId)
                 .flatMap(List::stream)
                 .flatMap(tag -> tag.getListaTags().stream())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
@@ -76,7 +76,7 @@ public class RecomendacaoService {
     }
 
     private Long calcularPontuacao(Pesquisador pesquisador, Map<String, Long> frequenciaTags) {
-        return tagRepository.findByPesquisadorId(pesquisador.getId()).stream()
+        return tagRepository.findListaByPesquisadorId(pesquisador.getId()).stream()
                 .flatMap(tag -> tag.getListaTags().stream())
                 .mapToLong(tag -> frequenciaTags.getOrDefault(tag, 0L))
                 .sum();

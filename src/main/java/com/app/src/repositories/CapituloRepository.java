@@ -1,6 +1,5 @@
 package com.app.src.repositories;
 
-import com.app.src.models.AtuacaoProfissional;
 import com.app.src.models.Capitulo;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -26,8 +26,7 @@ public class SecurityConfiguration {
         "/api/usuarios/login",
         "/api/usuarios/salvarUsuario",
         "/api/upload",
-        "/api/tags/salvarTag",
-        "/api/dadosPesquisador/**"
+        "/api/tags/salvarTag"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {

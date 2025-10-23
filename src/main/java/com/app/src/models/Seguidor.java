@@ -21,4 +21,8 @@ public class Seguidor {
     @ManyToOne
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 }

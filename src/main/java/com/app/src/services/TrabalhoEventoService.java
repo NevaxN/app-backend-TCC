@@ -1,6 +1,8 @@
 package com.app.src.services;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,13 @@ GenericCrudService<TrabalhoEvento, TrabalhoEventoDTO, Integer, TrabalhoEventoRep
     @Cacheable(value = "trabalhos-evento", key = "#id")
     public TrabalhoEventoDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    public List<TrabalhoEventoDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<TrabalhoEvento> formacoes = repository.findByPesquisadorId(idPesquisador);
+        return formacoes.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     public TrabalhoEventoDTO atualizar(Integer id, TrabalhoEventoDTO trabalhoEventoDTO){

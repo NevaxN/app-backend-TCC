@@ -11,7 +11,7 @@ public class IdiomaDTO {
     
     private Integer id;
 
-    private Pesquisador pesquisador;
+    private PesquisadorDTO pesquisador;
     
     private String idioma;
     

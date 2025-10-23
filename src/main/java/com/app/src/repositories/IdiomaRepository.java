@@ -18,4 +18,6 @@ public interface IdiomaRepository extends JpaRepository<Idioma, Integer>{
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<Idioma> findByPesquisadorId(Integer pesquisadorId);
 }

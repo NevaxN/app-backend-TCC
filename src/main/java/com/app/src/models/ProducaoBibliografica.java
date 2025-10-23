@@ -1,5 +1,6 @@
 package com.app.src.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class ProducaoBibliografica {
 
     @ManyToOne
     @JoinColumn(name = "pesquisador_id", nullable = false)
+    @JsonIgnore
     private Pesquisador pesquisador;
 
     @Column(name = "tipo", nullable = true)

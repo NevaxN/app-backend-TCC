@@ -17,4 +17,6 @@ public interface ProjetoPesquisaRepository extends JpaRepository<ProjetoPesquisa
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<ProjetoPesquisa> findByPesquisadorId(Integer pesquisadorId);
 }

@@ -3,6 +3,7 @@ package com.app.src.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,6 +36,13 @@ public class IdiomaService extends GenericCrudService<Idioma, IdiomaDTO, Integer
     @Cacheable(value = "idiomas", key = "#id")
     public IdiomaDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    public List<IdiomaDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<Idioma> idiomas = repository.findByPesquisadorId(idPesquisador);
+        return idiomas.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

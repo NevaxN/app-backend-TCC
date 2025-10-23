@@ -3,6 +3,7 @@ package com.app.src.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +38,14 @@ GenericCrudService<FormacaoAcademica, FormacaoAcademicaDTO, Integer, FormacaoAca
     @Cacheable(value = "formacoes", key = "#id")
     public FormacaoAcademicaDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+
+    public List<FormacaoAcademicaDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<FormacaoAcademica> formacoes = repository.findByPesquisadorId(idPesquisador);
+        return formacoes.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

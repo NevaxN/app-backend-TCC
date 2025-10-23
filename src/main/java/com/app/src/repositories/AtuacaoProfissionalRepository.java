@@ -18,4 +18,6 @@ public interface AtuacaoProfissionalRepository extends JpaRepository<AtuacaoProf
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<AtuacaoProfissional> findByPesquisadorId(Integer pesquisadorId);
 }

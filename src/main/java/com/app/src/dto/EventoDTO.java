@@ -11,7 +11,7 @@ public class EventoDTO {
 
     private Integer id;
     
-    private Pesquisador pesquisador;
+    private PesquisadorDTO pesquisador;
     
     private String nomeEvento;
     

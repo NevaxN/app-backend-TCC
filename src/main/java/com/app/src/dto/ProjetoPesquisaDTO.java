@@ -10,7 +10,7 @@ import lombok.Setter;
 public class ProjetoPesquisaDTO {
     private Integer id;
 
-    private Pesquisador pesquisador;
+    private PesquisadorDTO pesquisador;
     
     private String titulo;
     

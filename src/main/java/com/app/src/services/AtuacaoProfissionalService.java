@@ -3,7 +3,10 @@ package com.app.src.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import com.app.src.dto.IdiomaDTO;
+import com.app.src.models.Idioma;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,13 @@ GenericCrudService<AtuacaoProfissional, AtuacaoProfissionalDTO, Integer, Atuacao
     @Cacheable(value = "atuacoesProfissionais", key = "#id")
     public AtuacaoProfissionalDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    public List<AtuacaoProfissionalDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<AtuacaoProfissional> atuacaoProfissionals = repository.findByPesquisadorId(idPesquisador);
+        return atuacaoProfissionals.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

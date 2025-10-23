@@ -1,6 +1,8 @@
 package com.app.src.services;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,6 +30,13 @@ GenericCrudService<ProjetoPesquisa, ProjetoPesquisaDTO, Integer, ProjetoPesquisa
     @Cacheable(value = "projetos_pesquisa", key = "#id")
     public ProjetoPesquisaDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    public List<ProjetoPesquisaDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<ProjetoPesquisa> formacoes = repository.findByPesquisadorId(idPesquisador);
+        return formacoes.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

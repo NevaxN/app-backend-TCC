@@ -18,4 +18,7 @@ public interface FormacaoAcademicaRepository extends JpaRepository<FormacaoAcade
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<FormacaoAcademica> findByPesquisadorId(Integer pesquisadorId);
+
 }

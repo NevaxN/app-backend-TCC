@@ -1,6 +1,7 @@
 package com.app.src.services;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +27,11 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
     @Cacheable(value = "tags", key = "#id")
     public TagDTO buscarPorId(Integer id){
         return super.buscarPorId(id);        
+    }
+
+    public TagDTO buscarPorIdPesquisador (Integer idPesquisador) {
+        Tag tag = repository.findByPesquisadorId(idPesquisador);
+        return mapper.toDTO(tag);
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.app.src.models.Pesquisador;
 
 public record LivroDTO(
         Integer sequenciaProducao,
-        Pesquisador pesquisador,
+        PesquisadorDTO pesquisador,
         String autores,
         String isbn,
         String editora,

@@ -10,7 +10,7 @@ import lombok.Setter;
 public class ProducaoBibliograficaDTO {
     private Integer id;
 
-    private Pesquisador pesquisador;
+    private PesquisadorDTO pesquisador;
     
     private String tipo;
     

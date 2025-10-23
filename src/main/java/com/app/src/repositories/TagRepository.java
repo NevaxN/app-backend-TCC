@@ -19,6 +19,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     boolean existsById(Integer id);
 
+    Tag findByPesquisadorId(Integer pesquisadorId);
+
     // Novo método para busca por tag
     @Query("SELECT t FROM Tag t JOIN t.listaTags tag WHERE LOWER(tag) LIKE LOWER(CONCAT('%', :termo, '%'))")
     List<Tag> findByTagContaining(@Param("termo") String termo);

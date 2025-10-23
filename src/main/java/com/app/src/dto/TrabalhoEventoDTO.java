@@ -1,6 +1,5 @@
 package com.app.src.dto;
 
-
 public record TrabalhoEventoDTO(
         Integer sequenciaProducao,
         PesquisadorDTO pesquisador,

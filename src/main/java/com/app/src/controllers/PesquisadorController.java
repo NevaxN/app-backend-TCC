@@ -75,6 +75,11 @@ public class PesquisadorController {
 
     }
 
+    @GetMapping("/buscarPesquisadores/{nomeTag}")
+    public ResponseEntity<List<Pesquisador>> buscarPesquisadorPorNomeTag(@PathVariable String nomeTag){
+        return ResponseEntity.ok(pesquisadorService.buscarPesquisadoresPorTag(nomeTag));
+    }
+
     // Obter imagem de perfil do pesquisador
     @GetMapping("/{id}/imagem")
     public ResponseEntity<byte[]> obterImagem(@PathVariable Integer id) throws IOException {

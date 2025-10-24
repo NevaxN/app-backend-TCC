@@ -3,6 +3,7 @@ package com.app.src.services;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import com.app.src.mappers.PesquisadorMapper;
 import com.app.src.models.Pesquisador;
 import com.app.src.models.Usuario;
 import com.app.src.repositories.PesquisadorRepository;
+import com.app.src.repositories.TagRepository;
 import com.app.src.repositories.UsuarioRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +27,9 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     public PesquisadorService(PesquisadorRepository repository, PesquisadorMapper mapper){
         super(repository, mapper);
@@ -61,6 +66,10 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         Pesquisador salvo = repository.save(existente);
 
         return mapper.toDTO(salvo);
+    }
+
+    public List<Pesquisador> buscarPesquisadoresPorTag(String nomeTag){
+        return tagRepository.findPesquisadoresByTagName(nomeTag);
     }
 
     public Pesquisador converterJsonParaPesquisador(String jsonBody, Usuario usuario) {

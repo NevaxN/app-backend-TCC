@@ -13,6 +13,10 @@ public interface SeguidorRepository extends JpaRepository<Seguidor, Integer>{
 
     List<Seguidor> findByUsuarioId(Integer id);
 
+    boolean existsByUsuarioIdAndPesquisadorId(Integer usuarioId, Integer pesquisadorId);
+
+    long deleteByUsuarioIdAndPesquisadorId(Integer usuarioId, Integer pesquisadorId);
+
     List<Seguidor> findAll();
 
     <S extends Seguidor> S save(S seguidor);

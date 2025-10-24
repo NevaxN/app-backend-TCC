@@ -15,6 +15,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,7 +29,7 @@ public class Pesquisador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
@@ -59,6 +60,9 @@ public class Pesquisador {
 
     @Column(name = "lattes_id")
     private Long lattesId;
+
+    @OneToMany(mappedBy = "pesquisador")
+    private Set<Seguidor> seguidores;
 
     @Column()
     @JdbcTypeCode(Types.VARBINARY)

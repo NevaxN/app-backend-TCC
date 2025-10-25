@@ -44,4 +44,7 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario")
     private Set<Seguidor> seguindo;
+
+    @Column(nullable = false)
+    private boolean emailVerificado;
 }

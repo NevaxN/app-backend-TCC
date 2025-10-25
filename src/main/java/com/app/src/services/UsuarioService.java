@@ -3,7 +3,9 @@ package com.app.src.services;
 import com.app.src.auth.enums.RoleName;
 import com.app.src.auth.models.Role;
 import com.app.src.repositories.RoleRepository;
+import com.app.src.utils.SecureRandomGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +25,9 @@ import com.app.src.repositories.TipoUsuarioRepository;
 import com.app.src.repositories.UsuarioRepository;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UsuarioService {
@@ -45,6 +49,20 @@ public class UsuarioService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    public Usuario findById (int id) {
+        return usuarioRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    public void updateUsuario(Usuario usuario) {
+        usuarioRepository.save(usuario);
+    }
 
     public ResgatarJWTTokenDTO authenticateUser(LoginUsuarioDTO loginUsuarioDTO){
         // Validação básica
@@ -69,17 +87,21 @@ public class UsuarioService {
     }
 
     public void createUser(CriarUsuarioDTO criarUsuarioDTO){
+
+        String emailUsuario = criarUsuarioDTO.login();
+        String senhaUsuario = criarUsuarioDTO.password();
+
         // Validar se o login já existe
-        if (usuarioRepository.findByLogin(criarUsuarioDTO.login()).isPresent()) {
+        if (usuarioRepository.findByLogin(emailUsuario).isPresent()) {
             throw new RuntimeException("Erro: Login já está em uso!");
         }
 
         // Validar campos obrigatórios
-        if (criarUsuarioDTO.login() == null || criarUsuarioDTO.login().trim().isEmpty()) {
-            throw new RuntimeException("Login é obrigatório");
+        if (emailUsuario == null || emailUsuario.trim().isEmpty()) {
+            throw new RuntimeException("Login é obrigatório.");
         }
-        if (criarUsuarioDTO.password() == null || criarUsuarioDTO.password().trim().isEmpty()) {
-            throw new RuntimeException("Senha é obrigatória");
+        if (senhaUsuario == null || senhaUsuario.trim().isEmpty()) {
+            throw new RuntimeException("Senha é obrigatória.");
         }
 
         // Processar tipo de usuário
@@ -102,8 +124,17 @@ public class UsuarioService {
                 .password(securityConfiguration.passwordEncoder().encode(criarUsuarioDTO.password()))
                 .tipoUsuario(tipoUsuarioEntity)
                 .roles(roles)
+                .emailVerificado(false)
                 .build();
 
-        usuarioRepository.save(novoUsuario);
+        Usuario salvoUsuario = usuarioRepository.save(novoUsuario);
+
+        // Gera o código único da confirmação do e-mail
+        String codigoLink = SecureRandomGenerator.generateToken();
+        redisTemplate.opsForValue().set("verificacaoEmail:" + codigoLink, salvoUsuario.getId(), 1, TimeUnit.HOURS);
+
+        mailService.enviarVerificacaoEmail(emailUsuario, "http://localhost:3000/api/usuarios/verificarEmail?token=" + codigoLink);
     }
+
+
 }

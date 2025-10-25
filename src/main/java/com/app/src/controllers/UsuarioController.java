@@ -2,13 +2,12 @@ package com.app.src.controllers;
 
 import java.util.Map;
 
+import com.app.src.models.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.app.src.dto.CriarUsuarioDTO;
 import com.app.src.dto.LoginUsuarioDTO;
@@ -21,6 +20,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginUsuarioDTO loginUsuarioDTO) {
@@ -49,4 +51,26 @@ public class UsuarioController {
             );
         }
     }
+
+    @PostMapping("/verificarEmail")
+    public ResponseEntity<String> verificarEmail(@RequestParam("token") String token) {
+
+        Integer idUsuario = (Integer) redisTemplate.opsForValue().getAndDelete("verificacaoEmail:" + token);
+
+        if (idUsuario == null) {
+            return ResponseEntity.badRequest().body("Token inválido ou expirado.");
+        }
+
+        Usuario usuario = usuarioService.findById(idUsuario);
+
+        if (usuario.isEmailVerificado()) {
+            return ResponseEntity.badRequest().body("ERRO: Conta já verificada!");
+        } else {
+            usuario.setEmailVerificado(true);
+            usuarioService.updateUsuario(usuario);
+            return ResponseEntity.ok("Conta verificada com sucesso!");
+        }
+
+    }
+
 }

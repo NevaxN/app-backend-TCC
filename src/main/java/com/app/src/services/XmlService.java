@@ -70,7 +70,7 @@ public class XmlService {
         this.orientacaoRepository = orientacaoRepository;
     }
 
-    public String processarXml(MultipartFile xml) {
+    public String processarXml(MultipartFile xml, Integer usuarioId) {
         try {
             byte[] conteudoBytes = xml.getBytes();
             String encoding = detectEncodeServiceService.detectEncoding(conteudoBytes);
@@ -95,7 +95,7 @@ public class XmlService {
 
             String flaskJson = flaskResponse.getBody();
 
-            Usuario usuario = usuarioRepository.findById(1).orElseThrow();
+            Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow();
             
             Pesquisador pesquisador = pesquisadorService.converterJsonParaPesquisador(flaskJson, usuario);
             Pesquisador pesquisadorSalvo = pesquisadorRepository.save(pesquisador);

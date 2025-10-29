@@ -35,6 +35,7 @@ public class SecurityConfiguration {
 
     public static final String [] ENDPOINTS_CUSTOMER = {
         "/api/pesquisadores/**",
+        "/api/seguidores/**"
     };
 
     public static final String [] ENDPOINTS_ADMIN = {

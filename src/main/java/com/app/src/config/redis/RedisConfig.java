@@ -11,33 +11,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.time.Duration;
 
 @Configuration
 @EnableCaching
 public class RedisConfig {
+    @Bean
+    public RedisCacheConfiguration cacheConfiguration() {
 
-@Bean
-    public ObjectMapper hibernateAwareObjectMapper() {
+
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType(Object.class)
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        
-        objectMapper.registerModule(new Hibernate6Module());
-        
-        objectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
+        ObjectMapper redisObjectMapper = new ObjectMapper();
 
-        return objectMapper;
-    }
+        redisObjectMapper.registerModule(new Hibernate6Module());
+        redisObjectMapper.registerModule(new JavaTimeModule());
 
-    @Bean
-    public RedisCacheConfiguration cacheConfiguration(ObjectMapper hibernateAwareObjectMapper) {
+        redisObjectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
 
         GenericJackson2JsonRedisSerializer jacksonSerializer = 
-            new GenericJackson2JsonRedisSerializer(hibernateAwareObjectMapper);
+            new GenericJackson2JsonRedisSerializer(redisObjectMapper);
 
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(60))

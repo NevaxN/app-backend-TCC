@@ -1,7 +1,5 @@
 package com.app.src.dto;
 
-import com.app.src.models.Pesquisador;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class SeguidorDTO {
     private Integer id;
-    private Pesquisador pesquisador;
+    private Integer pesquisadorId;
 }

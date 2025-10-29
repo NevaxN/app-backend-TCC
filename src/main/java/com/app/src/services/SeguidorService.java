@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.app.src.dto.SeguidorDTO;
 import com.app.src.mappers.SeguidorMapper;
+import com.app.src.models.Pesquisador;
 import com.app.src.models.Seguidor;
+import com.app.src.models.Usuario;
 import com.app.src.repositories.PesquisadorRepository;
 import com.app.src.repositories.SeguidorRepository;
 
@@ -35,19 +37,21 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
         return repository.findByUsuarioId(id);
     }
 
-    @Override
-    @CacheEvict(value = "usuarios_seguidores", key = "#novoSeguidor.usuario.id")
-    public SeguidorDTO salvar(SeguidorDTO seguidorDTO){
-        Seguidor seguidor = mapper.toEntity(seguidorDTO);
-
-        if(seguidor.getPesquisador() == null || seguidor.getPesquisador().getId() == null){
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+    @CacheEvict(value = "usuarios_seguidores", key = "#usuarioLogado.id")
+    public SeguidorDTO salvar(SeguidorDTO seguidorDTO, Usuario usuarioLogado){
+        if (seguidorDTO.getPesquisadorId() == null) {
+            throw new IllegalArgumentException("pesquisadorId não pode ser nulo");
         }
 
-        if (!pesquisadorRepository.existsById(seguidor.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + seguidor.getPesquisador().getId());
-        }
+        Pesquisador pesquisadorASerSeguido = pesquisadorRepository.findById(seguidorDTO.getPesquisadorId())
+        .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
 
-        return super.salvar(seguidorDTO);
+        Seguidor novoSeguidor = new Seguidor();
+        novoSeguidor.setUsuario(usuarioLogado);
+        novoSeguidor.setPesquisador(pesquisadorASerSeguido);
+
+        Seguidor seguidorSalvo = repository.save(novoSeguidor);
+
+        return mapper.toDTO(seguidorSalvo);
     }
 }

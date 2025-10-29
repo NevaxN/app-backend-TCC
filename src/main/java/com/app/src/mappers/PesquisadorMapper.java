@@ -8,7 +8,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.app.src.dto.PesquisadorDTO;
 import com.app.src.models.Pesquisador;
 
-@Mapper
+@Mapper( componentModel = "spring", uses = {UsuarioMapper.class})
 public interface PesquisadorMapper extends GenericMapper<Pesquisador, PesquisadorDTO> {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

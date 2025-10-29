@@ -8,7 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.app.src.dto.AtuacaoProfissionalDTO;
 import com.app.src.models.AtuacaoProfissional;
 
-@Mapper
+@Mapper(
+    componentModel = "spring", 
+    uses = { UsuarioMapper.class }
+)
 public interface AtuacaoProfissionalMapper extends GenericMapper<AtuacaoProfissional, AtuacaoProfissionalDTO> {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

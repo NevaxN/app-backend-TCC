@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public interface PesquisadorRepository extends JpaRepository<Pesquisador, Integer> {
 
-    Optional<Pesquisador> findById(Integer id);
+    @Query("SELECT p FROM Pesquisador p LEFT JOIN FETCH p.usuario u LEFT JOIN FETCH u.roles LEFT JOIN FETCH u.tipoUsuario WHERE p.id = :id")
+    Optional<Pesquisador> findById(@Param("id") Integer id);
 
     List<Pesquisador> findAll();
 

@@ -8,7 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.app.src.dto.FavoritoDTO;
 import com.app.src.models.Favorito;
 
-@Mapper
+@Mapper(
+    componentModel = "spring", 
+    uses = { UsuarioMapper.class }
+)
 public interface FavoritoMapper extends GenericMapper<Favorito, FavoritoDTO> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(FavoritoDTO dto, @MappingTarget Favorito entity);

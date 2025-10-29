@@ -8,7 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.app.src.dto.PremiacaoDTO;
 import com.app.src.models.Premiacao;
 
-@Mapper
+@Mapper(
+    componentModel = "spring", 
+    uses = { UsuarioMapper.class }
+)
 public interface PremiacaoMapper extends GenericMapper<Premiacao, PremiacaoDTO> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(PremiacaoDTO dto, @MappingTarget Premiacao entity);

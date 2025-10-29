@@ -3,8 +3,6 @@ package com.app.src.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import com.app.src.models.Usuario;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -19,7 +17,7 @@ import lombok.Setter;
 public class PesquisadorDTO {
     private Integer id;
 
-    private Usuario usuario;
+    private UsuarioDTO usuario;
 
     private String nomePesquisador;
 

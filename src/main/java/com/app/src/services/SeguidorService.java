@@ -16,16 +16,12 @@ import com.app.src.models.Seguidor;
 import com.app.src.models.Usuario;
 import com.app.src.repositories.PesquisadorRepository;
 import com.app.src.repositories.SeguidorRepository;
-import com.app.src.repositories.UsuarioRepository;
 
 @Service
 public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, Integer, SeguidorRepository> {
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
     
     public SeguidorService(SeguidorRepository repository, SeguidorMapper mapper){
         super(repository, mapper);
@@ -46,9 +42,6 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
     public SeguidorDTO salvar(SeguidorDTO seguidorDTO, Usuario usuarioLogado){
         if (seguidorDTO.getPesquisadorId() == null) {
             throw new IllegalArgumentException("pesquisadorId não pode ser nulo");
-        }
-        if (usuarioId == null) {
-            throw new IllegalArgumentException("ID do usuário é obrigatório.");
         }
 
         Pesquisador pesquisadorASerSeguido = pesquisadorRepository.findById(seguidorDTO.getPesquisadorId())

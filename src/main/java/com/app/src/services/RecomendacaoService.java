@@ -59,7 +59,12 @@ public class RecomendacaoService {
 
         // Pontuar os candidatos com base na frequência das tags.
         Map<Pesquisador, Long> candidatosPontuados = pesquisadoresCandidatos.stream()
-                .filter(candidato -> !idsPesquisadoresSeguidos.contains(candidato.getId()))
+                .filter(candidato -> {
+                        boolean naoSeguido = !idsPesquisadoresSeguidos.contains(candidato.getId());
+                        boolean naoEUsuarioAtual =!candidato.getUsuario().getId().equals(usuarioId);
+
+                        return naoSeguido && naoEUsuarioAtual;
+                })
                 .collect(Collectors.toMap(
                     Function.identity(),
                     candidato -> calcularPontuacao(candidato, frequenciaTags)

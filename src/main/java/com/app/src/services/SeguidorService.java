@@ -32,9 +32,9 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
         return super.buscarPorId(id);
     }
 
-    @Cacheable(value = "usuarios_seguidores", key = "#id")
-    public List<Seguidor> buscarPorUsuarioId(Integer id){
-        return repository.findByUsuarioId(id);
+    @Cacheable(value = "seguidores_usuario", key = "#usuarioId")
+    public List<Seguidor> buscarPorUsuarioId(Integer usuarioId){
+        return repository.findByUsuarioId(usuarioId);
     }
 
     @CacheEvict(value = "usuarios_seguidores", key = "#usuarioLogado.id")

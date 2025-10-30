@@ -11,7 +11,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     Optional<Tag> findById(Integer id);
 
-    List<Tag> findListaByPesquisadorId(Integer id); 
+    @Query("SELECT t FROM Tag t LEFT JOIN FETCH t.listaTags WHERE t.pesquisador.id = :id")
+    List<Tag> findListaByPesquisadorId(@Param("id") Integer id); 
 
     List<Tag> findAll();
 
@@ -24,6 +25,6 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     Tag findByPesquisadorId(Integer pesquisadorId);
 
     // Novo método para busca por tag
-    @Query("SELECT t FROM Tag t JOIN t.listaTags tag WHERE LOWER(tag) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    @Query("SELECT t FROM Tag t JOIN FETCH t.pesquisador JOIN t.listaTags tagString WHERE tagString = :termo")
     List<Tag> findByTagContaining(@Param("termo") String termo);
 }

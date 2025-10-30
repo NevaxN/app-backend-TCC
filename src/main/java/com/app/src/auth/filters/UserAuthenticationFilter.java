@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.app.src.auth.config.SecurityConfiguration;
-import com.app.src.auth.models.UsuarioDetailsImpl;
 import com.app.src.auth.services.JwtTokenService;
 import com.app.src.models.Usuario;
 import com.app.src.repositories.UsuarioRepository;
@@ -38,15 +37,15 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 String token = recoveryToken(request);
                 if (token != null) {
                     String subject = jwtTokenService.getSubjectFromToken(token);
+                    
                     Usuario usuario = usuarioRepository.findByLogin(subject)
                             .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-                    UsuarioDetailsImpl usuarioDetails = new UsuarioDetailsImpl(usuario);
 
                     Authentication authentication = 
                         new UsernamePasswordAuthenticationToken(
-                            usuarioDetails.getUsername(), 
+                            usuario, 
                             null, 
-                            usuarioDetails.getAuthorities());
+                            usuario.getAuthorities());
                     
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {

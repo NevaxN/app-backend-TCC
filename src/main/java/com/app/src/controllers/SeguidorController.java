@@ -2,11 +2,12 @@ package com.app.src.controllers;
 
 import com.app.src.dto.SeguidorDTO;
 import com.app.src.models.Seguidor;
+import com.app.src.models.Usuario;
 import com.app.src.services.SeguidorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +30,15 @@ public class SeguidorController {
     }
 
     @PostMapping("/salvarSeguidor")
-    public ResponseEntity<SeguidorDTO> seguir(@RequestBody SeguidorDTO seguidorDTO) {
-        SeguidorDTO novoSeguidor = seguidorService.salvar(seguidorDTO);
-        return new ResponseEntity<>(novoSeguidor, HttpStatus.CREATED);
+    public ResponseEntity<SeguidorDTO> criar(
+        @RequestBody SeguidorDTO seguidorDTO, 
+        @AuthenticationPrincipal Usuario usuarioLogado) {
+        
+        if (usuarioLogado == null) {
+            return ResponseEntity.status(401).build(); 
+        }
+
+        return ResponseEntity.ok(seguidorService.salvar(seguidorDTO, usuarioLogado));
     }
 
     @DeleteMapping("/excluirSeguidor")

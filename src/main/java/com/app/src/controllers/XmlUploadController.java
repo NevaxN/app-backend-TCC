@@ -15,7 +15,7 @@ public class XmlUploadController {
     private XmlService xmlService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadXml(@RequestParam("xml") MultipartFile xml) {
+    public ResponseEntity<?> uploadXml(@RequestParam("xml") MultipartFile xml, @RequestParam("usuarioId") Integer usuarioId) {
         if (xml.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"mensagem\": \"Arquivo não enviado.\"}");
         }
@@ -25,7 +25,7 @@ public class XmlUploadController {
         }
 
         try {
-            return ResponseEntity.ok(xmlService.processarXml(xml));
+            return ResponseEntity.ok(xmlService.processarXml(xml, usuarioId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"mensagem\": \"Erro ao processar o arquivo: " + e.getMessage() + "\"}");
         }

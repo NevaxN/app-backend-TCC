@@ -8,7 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.app.src.dto.LivroDTO;
 import com.app.src.models.Livro;
 
-@Mapper
+@Mapper(
+    componentModel = "spring", 
+    uses = { UsuarioMapper.class }
+)
 public interface LivroMapper extends GenericMapper<Livro, LivroDTO> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(LivroDTO dto, @MappingTarget Livro entity);

@@ -1,5 +1,7 @@
 package com.app.src.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "seguidores")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Seguidor {
          
     @Id

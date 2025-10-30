@@ -1,6 +1,8 @@
 package com.app.src.models;
 
 import com.app.src.enums.TipoUsuarioName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="tipo_usuarios")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

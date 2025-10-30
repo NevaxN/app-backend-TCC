@@ -1,6 +1,7 @@
 package com.app.src.controllers;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.app.src.models.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import com.app.src.dto.CriarUsuarioDTO;
 import com.app.src.dto.LoginUsuarioDTO;
 import com.app.src.dto.ResgatarJWTTokenDTO;
+import com.app.src.dto.RespostaUsuarioDTO;
+import com.app.src.repositories.UsuarioRepository;
 import com.app.src.services.UsuarioService;
 
 @RestController
@@ -22,7 +25,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    UsuarioRepository usuarioRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginUsuarioDTO loginUsuarioDTO) {
@@ -43,7 +46,9 @@ public class UsuarioController {
             usuarioService.createUser(criarUsuarioDTO);
             LoginUsuarioDTO login = new LoginUsuarioDTO(criarUsuarioDTO.login(), criarUsuarioDTO.password());
             ResgatarJWTTokenDTO token = usuarioService.authenticateUser(login);
-            return new ResponseEntity<>(token, HttpStatus.CREATED);
+            Optional<Usuario> usuario = usuarioRepository.findByLogin(criarUsuarioDTO.login());
+            RespostaUsuarioDTO resposta = new RespostaUsuarioDTO(token, usuario.get().getId());
+            return new ResponseEntity<>(resposta, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(
                 Map.of("error", "Falha ao criar usuário", "message", e.getMessage()),

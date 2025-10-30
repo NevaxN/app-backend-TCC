@@ -8,7 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.app.src.dto.IdiomaDTO;
 import com.app.src.models.Idioma;
 
-@Mapper
+@Mapper(
+    componentModel = "spring", 
+    uses = { UsuarioMapper.class }
+)
 public interface IdiomaMapper extends GenericMapper<Idioma, IdiomaDTO> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(IdiomaDTO dto, @MappingTarget Idioma entity);

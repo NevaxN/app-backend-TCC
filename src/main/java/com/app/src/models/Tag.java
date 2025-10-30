@@ -2,6 +2,8 @@ package com.app.src.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tags")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Tag {
 
     @Id

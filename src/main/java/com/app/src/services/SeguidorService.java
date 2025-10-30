@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.src.dto.SeguidorDTO;
 import com.app.src.mappers.SeguidorMapper;
+import com.app.src.models.Pesquisador;
 import com.app.src.models.Seguidor;
+import com.app.src.models.Usuario;
 import com.app.src.repositories.PesquisadorRepository;
 import com.app.src.repositories.SeguidorRepository;
 import com.app.src.repositories.UsuarioRepository;
@@ -35,38 +37,30 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
         return super.buscarPorId(id);
     }
 
-    @Cacheable(value = "usuarios_seguidores", key = "#id")
-    public List<Seguidor> buscarPorUsuarioId(Integer id){
-        return repository.findByUsuarioId(id);
+    @Cacheable(value = "seguidores_usuario", key = "#usuarioId")
+    public List<Seguidor> buscarPorUsuarioId(Integer usuarioId){
+        return repository.findByUsuarioId(usuarioId);
     }
 
-    @Override
-    @CacheEvict(value = "usuarios_seguidores", key = "#seguidorDTO.usuarioId")
-    public SeguidorDTO salvar(SeguidorDTO seguidorDTO){
-
-        Integer pesquisadorId = seguidorDTO.getPesquisador().getId();
-        Integer usuarioId = seguidorDTO.getUsuario().getId();
-
-        if (pesquisadorId == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
+    @CacheEvict(value = "usuarios_seguidores", key = "#usuarioLogado.id")
+    public SeguidorDTO salvar(SeguidorDTO seguidorDTO, Usuario usuarioLogado){
+        if (seguidorDTO.getPesquisadorId() == null) {
+            throw new IllegalArgumentException("pesquisadorId não pode ser nulo");
         }
         if (usuarioId == null) {
             throw new IllegalArgumentException("ID do usuário é obrigatório.");
         }
 
-        if (!pesquisadorRepository.existsById(pesquisadorId)) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + pesquisadorId);
-        }
+        Pesquisador pesquisadorASerSeguido = pesquisadorRepository.findById(seguidorDTO.getPesquisadorId())
+        .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
 
-        if (!usuarioRepository.existsById(usuarioId)) {
-            throw new NoSuchElementException("Usuário não encontrado com id: " + usuarioId);
-        }
+        Seguidor novoSeguidor = new Seguidor();
+        novoSeguidor.setUsuario(usuarioLogado);
+        novoSeguidor.setPesquisador(pesquisadorASerSeguido);
 
-        if (repository.existsByUsuarioIdAndPesquisadorId(usuarioId, pesquisadorId)) {
-            throw new IllegalStateException("Usuário já segue este pesquisador.");
-        }
+        Seguidor seguidorSalvo = repository.save(novoSeguidor);
 
-        return super.salvar(seguidorDTO);
+        return mapper.toDTO(seguidorSalvo);
     }
 
     @Transactional

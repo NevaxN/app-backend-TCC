@@ -50,6 +50,9 @@ public class Usuario implements UserDetails{
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<Role> roles;
 
+    @Column(nullable = false)
+    private boolean emailVerificado;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

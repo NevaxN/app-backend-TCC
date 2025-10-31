@@ -22,6 +22,9 @@ import com.app.src.services.UsuarioService;
 public class UsuarioController {
 
     @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
     private UsuarioService usuarioService;
 
     @Autowired

@@ -27,7 +27,8 @@ public class SecurityConfiguration {
         "/api/usuarios/salvarUsuario",
         "/api/usuarios/verificarEmail",
         "/api/upload",
-        "/api/tags/salvarTag"
+        "/api/tags/salvarTag",
+        "/api/empresas/salvarEmpresa"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
@@ -38,7 +39,9 @@ public class SecurityConfiguration {
         "/api/pesquisadores/**",
         "/api/seguidores/**",
         "/api/recomendacoes/**",
-        "/api/dadosPesquisador/**"
+        "/api/dadosPesquisador/**",
+        "/api/empresas/**",
+        "/api/usuarios/listarUsuario/**"
     };
 
     public static final String [] ENDPOINTS_ADMIN = {

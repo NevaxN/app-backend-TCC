@@ -1,6 +1,7 @@
 package com.app.src.controllers;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.app.src.models.Usuario;
@@ -81,4 +82,11 @@ public class UsuarioController {
 
     }
 
+    @GetMapping("/listarUsuario/{login:.+}")
+    public ResponseEntity<?> buscarUsuarioPorLogin(@PathVariable String login){
+        if(login == null){
+            throw new NoSuchElementException("Usuario não encontrado com login: " + login);
+        }
+        return ResponseEntity.ok(usuarioRepository.findByLogin(login));
+    }
 }

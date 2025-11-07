@@ -12,6 +12,8 @@ public interface PesquisadorRepository extends JpaRepository<Pesquisador, Intege
     @Query("SELECT p FROM Pesquisador p LEFT JOIN FETCH p.usuario u LEFT JOIN FETCH u.roles LEFT JOIN FETCH u.tipoUsuario WHERE p.id = :id")
     Optional<Pesquisador> findById(@Param("id") Integer id);
 
+    Optional<Pesquisador> findByUsuarioId(Integer usuarioId);
+
     List<Pesquisador> findAll();
 
     <S extends Pesquisador> S save(S pesquisador);

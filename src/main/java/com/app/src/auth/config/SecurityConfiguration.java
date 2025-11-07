@@ -42,7 +42,8 @@ public class SecurityConfiguration {
         "/api/recomendacoes/**",
         "/api/dadosPesquisador/**",
         "/api/empresas/**",
-        "/api/usuarios/listarUsuario/**"
+        "/api/usuarios/listarUsuario/**",
+        "/api/tags/listarTag/**"
     };
 
     public static final String [] ENDPOINTS_ADMIN = {

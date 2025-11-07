@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -43,17 +44,38 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
 
     @Override
     public PesquisadorDTO salvar(PesquisadorDTO pesquisadorDTO){
-        Pesquisador pesquisador = mapper.toEntity(pesquisadorDTO);
+        Integer usuarioId = pesquisadorDTO.getUsuario().getId();
+    
+        // Tenta encontrar um pesquisador EXISTENTE para este usuário
+        Optional<Pesquisador> pesquisadorExistenteOpt = repository.findByUsuarioId(usuarioId);
 
-        if (pesquisador.getUsuario() == null || pesquisador.getUsuario().getId() == null) {
-            throw new IllegalArgumentException("ID do usuario é obrigatório.");
+        Pesquisador pesquisadorParaSalvar;
+
+        if (pesquisadorExistenteOpt.isPresent()) {
+            pesquisadorParaSalvar = pesquisadorExistenteOpt.get();
+            System.out.println("LOG: /salvarPesquisador - Encontrou ID " + pesquisadorParaSalvar.getId() + ". ATUALIZANDO.");
+            
+        } else {
+            pesquisadorParaSalvar = new Pesquisador();
+            System.out.println("LOG: /salvarPesquisador - Não encontrou. CRIANDO NOVO.");
+
+            Usuario usuario = usuarioRepository.findById(usuarioId)
+                    .orElseThrow(() -> new RuntimeException("Usuario não encontrado!"));
+            pesquisadorParaSalvar.setUsuario(usuario);
         }
 
-        if (!usuarioRepository.existsById(pesquisador.getUsuario().getId())) {
-            throw new NoSuchElementException("Usuario não encontrado com id: " + pesquisador.getUsuario().getId());
-        }
+        pesquisadorParaSalvar.setNomePesquisador(pesquisadorDTO.getNomePesquisador());
+        pesquisadorParaSalvar.setSobrenome(pesquisadorDTO.getSobrenome());
+        pesquisadorParaSalvar.setDataAtualizacao(pesquisadorDTO.getDataAtualizacao());
+        pesquisadorParaSalvar.setHoraAtualizacao(pesquisadorDTO.getHoraAtualizacao());
+        pesquisadorParaSalvar.setNacionalidade(pesquisadorDTO.getNacionalidade());
+        pesquisadorParaSalvar.setPaisNascimento(pesquisadorDTO.getPaisNascimento());
+        pesquisadorParaSalvar.setNomeCitacoesBibliograficas(pesquisadorDTO.getNomeCitacoesBibliograficas());
+        pesquisadorParaSalvar.setLattesId(pesquisadorDTO.getLattesId());
 
-        return super.salvar(pesquisadorDTO);
+        Pesquisador salvo = repository.save(pesquisadorParaSalvar);
+
+        return mapper.toDTO(salvo);
     }
 
     public PesquisadorDTO atualizar(Integer id, PesquisadorDTO dadosAtualizados){

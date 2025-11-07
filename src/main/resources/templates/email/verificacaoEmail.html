@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirme seu e-mail | LaVerse</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #ffffff;
+            text-align: center;
+            padding: 30px 20px 10px;
+            border-bottom: 4px solid #990000;
+        }
+        .header img {
+            width: 140px;
+            height: auto;
+        }
+        .accent-bar {
+            height: 2px;
+            background: linear-gradient(90deg, #990000, #cc0000);
+        }
+        .content {
+            padding: 40px 50px 50px;
+            text-align: center;
+        }
+        h2 {
+            color: #990000;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        p {
+            color: #555;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #990000;
+            color: #ffffff !important;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(153, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #b30000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(153, 0, 0, 0.35);
+        }
+        .divider {
+            width: 60%;
+            height: 1px;
+            background-color: #eee;
+            margin: 40px auto;
+        }
+        .info {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.4;
+        }
+        .footer {
+            background-color: #990000;
+            padding: 10px 5px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .footer p,
+        .footer a {
+            margin: 6px 0;
+            font-size: 13px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+            color: #ffd9d9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="cid:logoEmpresa" alt="Logo LaVerse" />
+    </div>
+    <div class="accent-bar"></div>
+    <div class="content">
+        <h2>Bem-vindo(a) ao LaVerse!</h2>
+        <p>
+            Estamos quase lá! Para ativar sua conta LaVerse e começar a explorar
+            nossa plataforma, confirme seu e-mail clicando no botão abaixo.
+        </p>
+        <a href="{{LINK}}" class="button">Verificar meu e-mail</a>
+        <div class="divider"></div>
+        <p class="info">
+            Este link expira em <strong>1 hora</strong>.<br/>
+            Se você não se cadastrou no LaVerse, ignore esta mensagem.
+        </p>
+    </div>
+    <div class="footer">
+        <p>© 2025 LaVerse — Conectando Pesquisa e Inovação</p>
+        <p>
+            ✉️ <a href="mailto:projetolaverse@gmail.com">projetolaverse@gmail.com</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

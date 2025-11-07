@@ -1,5 +1,6 @@
 package com.app.src.controllers;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,7 +35,13 @@ public class UsuarioController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginUsuarioDTO loginUsuarioDTO) {
         try {
             ResgatarJWTTokenDTO token = usuarioService.authenticateUser(loginUsuarioDTO);
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            boolean emailVerificado = usuarioService.isUserVerified(loginUsuarioDTO.login());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token.token());
+            response.put("emailVerificado", emailVerificado);
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
             return new ResponseEntity<>(
                 Map.of("error", "Falha na autenticação", "message", e.getMessage()),
@@ -61,22 +68,24 @@ public class UsuarioController {
     }
 
     @PostMapping("/verificarEmail")
-    public ResponseEntity<String> verificarEmail(@RequestParam("token") String token) {
+    public ResponseEntity<?> verificarEmail(@RequestParam("codigo") String codigo) {
 
-        Integer idUsuario = (Integer) redisTemplate.opsForValue().getAndDelete("verificacaoEmail:" + token);
+        String emailUsuario = (String) redisTemplate.opsForValue().getAndDelete("verificacaoEmail:" + codigo);
 
-        if (idUsuario == null) {
-            return ResponseEntity.badRequest().body("Token inválido ou expirado.");
+        if (emailUsuario == null) {
+            return ResponseEntity.badRequest().body("Código inválido ou expirado.");
         }
 
-        Usuario usuario = usuarioService.findById(idUsuario);
+        Usuario usuario = usuarioService.findByLogin(emailUsuario);
 
         if (usuario.isEmailVerificado()) {
             return ResponseEntity.badRequest().body("ERRO: Conta já verificada!");
         } else {
             usuario.setEmailVerificado(true);
             usuarioService.updateUsuario(usuario);
-            return ResponseEntity.ok("Conta verificada com sucesso!");
+            return ResponseEntity.ok(
+                    Map.of("tipo", usuario.getTipoUsuario().getName())
+            );
         }
 
     }

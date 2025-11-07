@@ -27,7 +27,6 @@ import com.app.src.repositories.UsuarioRepository;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class UsuarioService {
@@ -50,14 +49,17 @@ public class UsuarioService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private MailService mailService;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-
     public Usuario findById (int id) {
         return usuarioRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    public boolean isUserVerified(String login) {
+        Usuario usuario = usuarioRepository.findByLogin(login).orElseThrow(NoSuchElementException::new);
+        return usuario.isEmailVerificado();
+    }
+
+    public Usuario findByLogin (String login) {
+        return usuarioRepository.findByLogin(login).orElseThrow(NoSuchElementException::new);
     }
 
     public void updateUsuario(Usuario usuario) {
@@ -127,14 +129,8 @@ public class UsuarioService {
                 .emailVerificado(false)
                 .build();
 
-        Usuario salvoUsuario = usuarioRepository.save(novoUsuario);
+        usuarioRepository.save(novoUsuario);
 
-        // Gera o código único da confirmação do e-mail
-        String codigoLink = SecureRandomGenerator.generateToken();
-        redisTemplate.opsForValue().set("verificacaoEmail:" + codigoLink, salvoUsuario.getId(), 1, TimeUnit.HOURS);
-
-        mailService.enviarVerificacaoEmail(emailUsuario, "http://localhost:3000/api/usuarios/verificarEmail?token=" + codigoLink);
     }
-
 
 }

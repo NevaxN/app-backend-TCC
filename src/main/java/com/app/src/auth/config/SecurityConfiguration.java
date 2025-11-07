@@ -26,19 +26,19 @@ public class SecurityConfiguration {
         "/api/usuarios/login",
         "/api/usuarios/salvarUsuario",
         "/api/usuarios/verificarEmail",
-        "/api/upload",
         "/api/tags/salvarTag"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-        "/api/usuarios/test"
+        "/api/email/enviarVerificacao"
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {
         "/api/pesquisadores/**",
         "/api/seguidores/**",
         "/api/recomendacoes/**",
-        "/api/dadosPesquisador/**"
+        "/api/upload",
+        "/api/dadosPesquisador/**",
     };
 
     public static final String [] ENDPOINTS_ADMIN = {

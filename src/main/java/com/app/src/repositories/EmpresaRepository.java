@@ -11,6 +11,8 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
 
     Optional<Empresa> findById(Integer id);
 
+    Optional<Empresa> findByUsuarioLogin(String login);
+
     List<Empresa> findAll();
 
     <S extends Empresa> S save(S empresa);

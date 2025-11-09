@@ -1,7 +1,9 @@
 package com.app.src.services;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
+import com.app.src.models.Pesquisador;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,11 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
     @Cacheable(value = "empresas", key = "#id")
     public EmpresaDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    @Cacheable(value = "empresas-por-email", key = "#login", unless = "#result == null")
+    public Optional<Empresa> buscarPorLogin(String login){
+        return repository.findByUsuarioLogin(login);
     }
 
     public EmpresaDTO atualizar(Integer id, EmpresaDTO dadosAtualizados){

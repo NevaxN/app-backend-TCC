@@ -2,7 +2,8 @@ package com.app.src.services;
 
 import com.app.src.auth.enums.RoleName;
 import com.app.src.auth.models.Role;
-import com.app.src.dto.AlterarSenhaDTO;
+import com.app.src.auth.services.PerfilUsuarioService;
+import com.app.src.dto.*;
 import com.app.src.exceptions.CodigoInvalidoException;
 import com.app.src.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,6 @@ import org.springframework.stereotype.Service;
 import com.app.src.auth.config.SecurityConfiguration;
 import com.app.src.auth.models.UsuarioDetailsImpl;
 import com.app.src.auth.services.JwtTokenService;
-import com.app.src.dto.CriarUsuarioDTO;
-import com.app.src.dto.LoginUsuarioDTO;
-import com.app.src.dto.ResgatarJWTTokenDTO;
 import com.app.src.enums.TipoUsuarioName;
 import com.app.src.models.TipoUsuario;
 import com.app.src.models.Usuario;
@@ -34,6 +32,9 @@ public class UsuarioService {
     
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PerfilUsuarioService perfilUsuarioService;
 
     @Autowired
     private JwtTokenService jwtTokenService;
@@ -71,6 +72,7 @@ public class UsuarioService {
     }
 
     public ResgatarJWTTokenDTO authenticateUser(LoginUsuarioDTO loginUsuarioDTO){
+
         // Validação básica
         if (loginUsuarioDTO.login() == null || loginUsuarioDTO.login().trim().isEmpty()) {
             throw new RuntimeException("Login é obrigatório");
@@ -89,7 +91,10 @@ public class UsuarioService {
         
         UsuarioDetailsImpl usuarioDetails = (UsuarioDetailsImpl) authentication.getPrincipal();
 
-        return new ResgatarJWTTokenDTO(jwtTokenService.generateToken(usuarioDetails));
+        PerfilUsuario perfilUsuario = perfilUsuarioService.buscarPerfilUsuario(usuarioDetails);
+
+        return new ResgatarJWTTokenDTO(jwtTokenService.generateToken(usuarioDetails, perfilUsuario));
+
     }
 
     public void createUser(CriarUsuarioDTO criarUsuarioDTO){

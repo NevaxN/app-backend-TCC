@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import com.app.src.dto.PerfilUsuario;
 import org.springframework.stereotype.Service;
 
 import com.app.src.auth.models.UsuarioDetailsImpl;
@@ -18,7 +19,7 @@ public class JwtTokenService {
     private static final String SECRET_KEY = "4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P";
     private static final String ISSUER = "admin";
 
-    public String generateToken(UsuarioDetailsImpl usuario){
+    public String generateToken(UsuarioDetailsImpl usuario, PerfilUsuario perfilUsuario){
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.create()
@@ -26,6 +27,9 @@ public class JwtTokenService {
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
                     .withSubject(usuario.getUsername())
+                    .withClaim("tipo_usuario", perfilUsuario.tipo())
+                    .withClaim("id_usuario", perfilUsuario.id())
+                    .withClaim("conta_verificada", usuario.getUsuario().isEmailVerificado())
                     .sign(algorithm);
 
         } catch(JWTCreationException exception){

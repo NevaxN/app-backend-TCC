@@ -42,6 +42,12 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         return super.buscarPorId(id);
     }
 
+
+    @Cacheable(value = "pesquisadores-por-email", key = "#login", unless = "#result == null")
+    public Optional<Pesquisador> buscarPorLogin(String login) {
+        return repository.findByUsuarioLogin(login);
+    }
+
     @Override
     public PesquisadorDTO salvar(PesquisadorDTO pesquisadorDTO){
         Integer usuarioId = pesquisadorDTO.getUsuario().getId();

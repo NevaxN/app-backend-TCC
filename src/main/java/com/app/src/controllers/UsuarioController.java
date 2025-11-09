@@ -36,13 +36,7 @@ public class UsuarioController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginUsuarioDTO loginUsuarioDTO) {
         try {
             ResgatarJWTTokenDTO token = usuarioService.authenticateUser(loginUsuarioDTO);
-            boolean emailVerificado = usuarioService.isUserVerified(loginUsuarioDTO.login());
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token.token());
-            response.put("emailVerificado", emailVerificado);
-            return ResponseEntity.ok(response);
-
+            return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(
                 Map.of("error", "Falha na autenticação", "message", e.getMessage()),

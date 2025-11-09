@@ -14,6 +14,8 @@ public interface PesquisadorRepository extends JpaRepository<Pesquisador, Intege
 
     Optional<Pesquisador> findByUsuarioId(Integer usuarioId);
 
+    Optional<Pesquisador> findByUsuarioLogin(String login);
+
     List<Pesquisador> findAll();
 
     <S extends Pesquisador> S save(S pesquisador);

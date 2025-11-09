@@ -26,6 +26,9 @@ public class SecurityConfiguration {
         "/api/usuarios/login",
         "/api/usuarios/salvarUsuario",
         "/api/usuarios/verificarEmail",
+        "/api/redefinicao/enviar",
+        "/api/redefinicao/validar",
+        "/api/redefinicao/alterar",
         "/api/upload",
         "/api/tags/salvarTag",
         "/api/empresas/salvarEmpresa"

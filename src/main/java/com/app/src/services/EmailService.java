@@ -18,8 +18,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class EmailService {
 
+    private final String TITULO_VERIFICAR_EMAIL = "[LaVerse] Verificação de e-mail";
     private final String TEMPLATE_VERIFICAR_EMAIL = "verificacaoEmail.html";
-    private final String TEMPLATE_ALTERAR_SENHA = "alterarSenha.html";
+
+    private final String TITULO_REDEFINIR_SENHA = "[LaVerse] Redefinição de senha";
+    private final String TEMPLATE_REDEFINIR_SENHA = "redefinicaoSenha.html";
 
     @Autowired
     private JavaMailSender emailSender;
@@ -29,6 +32,8 @@ public class EmailService {
 
     @Value("${spring.mail.username}")
     private String remetente;
+    @Autowired
+    private UsuarioService usuarioService;
 
     public String enviarVerificacaoDeEmail(String destinatario) {
         String codigoUnico = SecureRandomGenerator.generateToken();
@@ -37,15 +42,35 @@ public class EmailService {
         String linkUnico = "http://localhost:3000/verificarEmail?codigo=" + codigoUnico;
 
         try {
-            enviarEmail(destinatario, linkUnico, TEMPLATE_VERIFICAR_EMAIL);
+            enviarEmail(destinatario, linkUnico, TITULO_VERIFICAR_EMAIL, TEMPLATE_VERIFICAR_EMAIL);
             return "E-mail enviado com sucesso.";
         } catch (Exception e){
             return "Falha ao enviar e-mail";
         }
     }
 
+    public String enviarRedefinicaoDeSenha(String destinatario) {
+
+        if (usuarioService.findByLogin(destinatario) == null) {
+            return "Usuário não encontrado.";
+        }
+
+        String codigoUnico = SecureRandomGenerator.generateToken();
+        redisTemplate.opsForValue().set("redefinicaoSenha:" + codigoUnico, destinatario, 1, TimeUnit.HOURS);
+
+        String linkUnico = "http://localhost:3000/redefinirSenha?codigo=" + codigoUnico;
+
+        try {
+            enviarEmail(destinatario, linkUnico, TITULO_REDEFINIR_SENHA, TEMPLATE_REDEFINIR_SENHA);
+            return "E-mail enviado com sucesso.";
+        } catch (Exception e) {
+            return "Falha ao enviar e-mail";
+        }
+
+    }
+
     @Async
-    public void enviarEmail(String destinatario, String link, String htmlTemplate) {
+    public void enviarEmail(String destinatario, String link, String titulo, String htmlTemplate) {
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
@@ -59,7 +84,7 @@ public class EmailService {
 
             helper.setFrom(remetente);
             helper.setTo(destinatario);
-            helper.setSubject("Verificação de e-mail - LaVerse");
+            helper.setSubject(titulo);
             helper.setText(htmlFinal, true);
 
             helper.addInline("logoEmpresa", new ClassPathResource("images/laverse/logo.png"));

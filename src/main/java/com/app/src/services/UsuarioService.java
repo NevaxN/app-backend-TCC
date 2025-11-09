@@ -2,8 +2,11 @@ package com.app.src.services;
 
 import com.app.src.auth.enums.RoleName;
 import com.app.src.auth.models.Role;
+import com.app.src.dto.AlterarSenhaDTO;
+import com.app.src.exceptions.CodigoInvalidoException;
 import com.app.src.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,6 +49,9 @@ public class UsuarioService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public Usuario findById (int id) {
         return usuarioRepository.findById(id).orElseThrow(NoSuchElementException::new);
@@ -128,6 +134,21 @@ public class UsuarioService {
                 .build();
 
         usuarioRepository.save(novoUsuario);
+
+    }
+
+    public void alterarSenha (AlterarSenhaDTO alterarSenhaDTO) {
+
+        String emailUsuario = (String) redisTemplate.opsForValue().getAndDelete("redefinicaoSenha:" + alterarSenhaDTO.codigo());
+
+        if (emailUsuario == null) {
+            throw new CodigoInvalidoException("Código inválido ou expirado.");
+        }
+
+        Usuario usuario = findByLogin(emailUsuario);
+
+        usuario.setPassword(securityConfiguration.passwordEncoder().encode(alterarSenhaDTO.senha()));
+        usuarioRepository.save(usuario);
 
     }
 

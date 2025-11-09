@@ -2,6 +2,7 @@ package com.app.src.config.exception;
 
 import java.util.NoSuchElementException;
 
+import com.app.src.exceptions.CodigoInvalidoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +15,12 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex){
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CodigoInvalidoException.class)
+    public ResponseEntity<Object> handleCodigoInvalido(CodigoInvalidoException ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
     
 }

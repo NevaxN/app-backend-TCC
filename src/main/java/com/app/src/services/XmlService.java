@@ -82,7 +82,7 @@ public class XmlService {
 
             // Envia JSON para Flask
             RestTemplate restTemplate = new RestTemplate();
-            String flaskUrl = "http://keyword-extractor:5000/analyze";
+            String flaskUrl = "http://localhost:5000/analyze";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -96,22 +96,22 @@ public class XmlService {
             String flaskJson = flaskResponse.getBody();
 
             Usuario usuario = usuarioRepository.findByLogin(emailUsuario).orElseThrow();
-            
+
             Pesquisador pesquisador = pesquisadorService.converterJsonParaPesquisador(flaskJson, usuario);
             Pesquisador pesquisadorSalvo = pesquisadorRepository.save(pesquisador);
 
             enderecoRepository.saveAll(enderecoService.converterJsonParaEndereco(flaskJson, pesquisadorSalvo));
-            
+
             formacaoAcademicaRepository.saveAll(formacaoAcademicaService.converterJsonParaFormacaoAcademica(flaskJson, pesquisadorSalvo));
 
             atuacaoProfissionalService.converterJsonParaAtuacaoProfissional(flaskJson, pesquisadorSalvo);
 
             producaoBibliograficaService.converterJsonParaProducaoBibliografica(flaskJson, pesquisadorSalvo);
-            
+
             orientacaoRepository.saveAll(orientacaoService.converterJsonParaOrientacao(flaskJson, pesquisadorSalvo));
-            
+
             premiacaoRepository.saveAll(premiacaoService.converterJsonParaPremiacao(flaskJson, pesquisadorSalvo));
-            
+
             idiomaRepository.saveAll(idiomaService.converterJsonParaIdioma(flaskJson, pesquisadorSalvo));
 
             return flaskResponse.getBody();
@@ -120,5 +120,5 @@ public class XmlService {
             e.printStackTrace();
             throw new RuntimeException("Erro ao processar XML: " + e.getMessage(), e);
         }
-    }    
+    }
 }

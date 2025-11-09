@@ -2,8 +2,6 @@ package com.app.src.services;
 
 import com.app.src.auth.enums.RoleName;
 import com.app.src.auth.models.Role;
-import com.app.src.dto.AlterarSenhaDTO;
-import com.app.src.exceptions.CodigoInvalidoException;
 import com.app.src.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,10 +26,11 @@ import com.app.src.repositories.UsuarioRepository;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UsuarioService {
-    
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -51,6 +50,12 @@ public class UsuarioService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private PesquisadorService pesquisadorService;
+
+    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     public Usuario findById (int id) {
@@ -66,6 +71,11 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(login).orElseThrow(NoSuchElementException::new);
     }
 
+    // NOVO: Buscar pesquisador por ID do usuário
+    public Object buscarPesquisadorPorUsuarioId(Integer usuarioId) {
+        return pesquisadorService.buscarPorUsuarioId(usuarioId);
+    }
+
     public void updateUsuario(Usuario usuario) {
         usuarioRepository.save(usuario);
     }
@@ -79,14 +89,14 @@ public class UsuarioService {
             throw new RuntimeException("Senha é obrigatória");
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-            new UsernamePasswordAuthenticationToken(
-                loginUsuarioDTO.login(), 
-                loginUsuarioDTO.password()
-            );
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginUsuarioDTO.login(),
+                        loginUsuarioDTO.password()
+                );
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        
+
         UsuarioDetailsImpl usuarioDetails = (UsuarioDetailsImpl) authentication.getPrincipal();
 
         return new ResgatarJWTTokenDTO(jwtTokenService.generateToken(usuarioDetails));
@@ -135,21 +145,62 @@ public class UsuarioService {
 
         usuarioRepository.save(novoUsuario);
 
-    }
-
-    public void alterarSenha (AlterarSenhaDTO alterarSenhaDTO) {
-
-        String emailUsuario = (String) redisTemplate.opsForValue().getAndDelete("redefinicaoSenha:" + alterarSenhaDTO.codigo());
-
-        if (emailUsuario == null) {
-            throw new CodigoInvalidoException("Código inválido ou expirado.");
+        // ENVIAR EMAIL DE VERIFICAÇÃO AUTOMATICAMENTE
+        try {
+            emailService.enviarVerificacaoDeEmail(emailUsuario);
+            System.out.println("Email de verificação enviado para: " + emailUsuario);
+        } catch (Exception e) {
+            System.err.println("Erro ao enviar email de verificação: " + e.getMessage());
+            // Não lançar exceção para não impedir a criação do usuário
         }
-
-        Usuario usuario = findByLogin(emailUsuario);
-
-        usuario.setPassword(securityConfiguration.passwordEncoder().encode(alterarSenhaDTO.senha()));
-        usuarioRepository.save(usuario);
-
     }
 
+    // MÉTODO: Processar Esqueci Senha
+    public String processarEsqueciSenha(String email) {
+        try {
+            Usuario usuario = usuarioRepository.findByLogin(email)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado com este email"));
+
+            // Gerar token de recuperação
+            String tokenRecuperacao = com.app.src.utils.SecureRandomGenerator.generateToken();
+
+            // Salvar no Redis com expiração de 1 hora
+            redisTemplate.opsForValue().set("recuperacaoSenha:" + tokenRecuperacao, email, 1, TimeUnit.HOURS);
+
+            // Enviar email de recuperação
+            String linkRecuperacao = "http://localhost:3000/redefinir-senha?token=" + tokenRecuperacao;
+            emailService.enviarEmailRecuperacaoSenha(email, linkRecuperacao);
+
+            return "Email de recuperação enviado com sucesso";
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao processar recuperação de senha: " + e.getMessage());
+        }
+    }
+
+    // NOVO MÉTODO: Redefinir Senha
+    public String redefinirSenha(String token, String novaSenha) {
+        try {
+            String email = (String) redisTemplate.opsForValue().getAndDelete("recuperacaoSenha:" + token);
+
+            if (email == null) {
+                throw new RuntimeException("Token inválido ou expirado");
+            }
+
+            Usuario usuario = usuarioRepository.findByLogin(email)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+            // Validar força da senha
+            if (novaSenha == null || novaSenha.trim().length() < 8) {
+                throw new RuntimeException("A senha deve ter no mínimo 8 caracteres");
+            }
+
+            // Criptografar nova senha
+            usuario.setPassword(securityConfiguration.passwordEncoder().encode(novaSenha));
+            usuarioRepository.save(usuario);
+
+            return "Senha redefinida com sucesso";
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao redefinir senha: " + e.getMessage());
+        }
+    }
 }

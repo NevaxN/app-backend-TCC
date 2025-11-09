@@ -21,36 +21,39 @@ public class SecurityConfiguration {
 
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;
-    
+
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-        "/api/usuarios/login",
-        "/api/usuarios/salvarUsuario",
-        "/api/usuarios/verificarEmail",
-        "/api/redefinicao/enviar",
-        "/api/redefinicao/validar",
-        "/api/redefinicao/alterar",
-        "/api/upload",
-        "/api/tags/salvarTag",
-        "/api/empresas/salvarEmpresa"
+            "/api/usuarios/login",
+            "/api/usuarios/salvarUsuario",
+            "/api/usuarios/verificarEmail",
+            "/api/usuarios/esqueci-senha",
+            "/api/usuarios/verificar-token-recuperacao",
+            "/api/usuarios/redefinir-senha",
+            "/api/email/enviarVerificacao",
+            "/api/email/reenviarVerificacao",
+            "/api/email/alterarEmail",
+            "/api/upload",
+            "/api/tags/salvarTag",
+            "/api/empresas/salvarEmpresa"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-        "/api/email/enviarVerificacao",
-        "/api/pesquisadores/**",
+            "/api/email/enviarVerificacao",
+            "/api/pesquisadores/**",
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {
-        // "/api/pesquisadores/**",
-        "/api/seguidores/**",
-        "/api/recomendacoes/**",
-        "/api/dadosPesquisador/**",
-        "/api/empresas/**",
-        "/api/usuarios/listarUsuario/**",
-        "/api/tags/listarTag/**"
+            // "/api/pesquisadores/**",
+            "/api/seguidores/**",
+            "/api/recomendacoes/**",
+            "/api/dadosPesquisador/**",
+            "/api/empresas/**",
+            "/api/usuarios/listarUsuario/**",
+            "/api/tags/listarTag/**"
     };
 
     public static final String [] ENDPOINTS_ADMIN = {
-        "/api/usuarios/test/administrador"
+            "/api/usuarios/test/administrador"
     };
 
     @Bean
@@ -59,11 +62,11 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
-                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                    .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADM")
-                    .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("USUARIO")
-                    .anyRequest().denyAll()
+                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
+                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
+                        .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADM")
+                        .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("USUARIO")
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

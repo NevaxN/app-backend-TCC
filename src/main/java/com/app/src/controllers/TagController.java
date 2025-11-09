@@ -4,9 +4,11 @@ import com.app.src.dto.TagDTO;
 import com.app.src.services.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,6 +29,20 @@ public class TagController {
     @GetMapping("/listarTag/{id}")
     public ResponseEntity<TagDTO> buscarPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(tagService.buscarPorId(id));
+    }
+
+    // NOVO ENDPOINT: Buscar tags por ID do pesquisador
+    @GetMapping("/pesquisador/{pesquisadorId}")
+    public ResponseEntity<TagDTO> buscarPorPesquisadorId(@PathVariable Integer pesquisadorId) {
+        try {
+            TagDTO tagDTO = tagService.buscarPorIdPesquisador(pesquisadorId);
+            return ResponseEntity.ok(tagDTO);
+        } catch (Exception e) {
+            // Retornar um TagDTO vazio se não encontrar
+            TagDTO tagVazia = new TagDTO();
+            tagVazia.setListaTags(new ArrayList<>());
+            return ResponseEntity.ok(tagVazia);
+        }
     }
 
     // Criar nova tag

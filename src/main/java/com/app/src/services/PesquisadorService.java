@@ -42,10 +42,17 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         return super.buscarPorId(id);
     }
 
+    // NOVO: Buscar pesquisador por ID do usuário
+    public PesquisadorDTO buscarPorUsuarioId(Integer usuarioId) {
+        Pesquisador pesquisador = repository.findByUsuarioId(usuarioId)
+                .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado para o usuário: " + usuarioId));
+        return mapper.toDTO(pesquisador);
+    }
+
     @Override
     public PesquisadorDTO salvar(PesquisadorDTO pesquisadorDTO){
         Integer usuarioId = pesquisadorDTO.getUsuario().getId();
-    
+
         // Tenta encontrar um pesquisador EXISTENTE para este usuário
         Optional<Pesquisador> pesquisadorExistenteOpt = repository.findByUsuarioId(usuarioId);
 
@@ -54,7 +61,7 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         if (pesquisadorExistenteOpt.isPresent()) {
             pesquisadorParaSalvar = pesquisadorExistenteOpt.get();
             System.out.println("LOG: /salvarPesquisador - Encontrou ID " + pesquisadorParaSalvar.getId() + ". ATUALIZANDO.");
-            
+
         } else {
             pesquisadorParaSalvar = new Pesquisador();
             System.out.println("LOG: /salvarPesquisador - Não encontrou. CRIANDO NOVO.");
@@ -74,6 +81,40 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         pesquisadorParaSalvar.setLattesId(pesquisadorDTO.getLattesId());
 
         Pesquisador salvo = repository.save(pesquisadorParaSalvar);
+
+        return mapper.toDTO(salvo);
+    }
+
+    // NOVO: Método específico para atualizar perfil (apenas campos editáveis)
+    public PesquisadorDTO atualizarPerfil(Integer id, PesquisadorDTO dadosAtualizados) {
+        Pesquisador existente = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado com id: " + id));
+
+        // Atualiza apenas os campos permitidos para edição
+        if (dadosAtualizados.getNomePesquisador() != null) {
+            existente.setNomePesquisador(dadosAtualizados.getNomePesquisador());
+        }
+        if (dadosAtualizados.getSobrenome() != null) {
+            existente.setSobrenome(dadosAtualizados.getSobrenome());
+        }
+        if (dadosAtualizados.getDataNascimento() != null) {
+            existente.setDataNascimento(dadosAtualizados.getDataNascimento());
+        }
+        if (dadosAtualizados.getNacionalidade() != null) {
+            existente.setNacionalidade(dadosAtualizados.getNacionalidade());
+        }
+        if (dadosAtualizados.getPaisNascimento() != null) {
+            existente.setPaisNascimento(dadosAtualizados.getPaisNascimento());
+        }
+        if (dadosAtualizados.getNomeCitacoesBibliograficas() != null) {
+            existente.setNomeCitacoesBibliograficas(dadosAtualizados.getNomeCitacoesBibliograficas());
+        }
+
+        // Atualiza data e hora de atualização
+        existente.setDataAtualizacao(LocalDate.now());
+        existente.setHoraAtualizacao(LocalTime.now());
+
+        Pesquisador salvo = repository.save(existente);
 
         return mapper.toDTO(salvo);
     }
@@ -123,6 +164,23 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao converter JSON para Pesquisador", e);
+        }
+    }
+    public PesquisadorDTO buscarPorIdComTratamento(Integer id) {
+        try {
+            Pesquisador pesquisador = repository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado com id: " + id));
+
+            PesquisadorDTO dto = mapper.toDTO(pesquisador);
+
+            // Garantir que os campos obrigatórios não sejam nulos
+            if (dto.getNomePesquisador() == null) dto.setNomePesquisador("");
+            if (dto.getSobrenome() == null) dto.setSobrenome("");
+            if (dto.getPaisNascimento() == null) dto.setPaisNascimento("Não informado");
+
+            return dto;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar pesquisador: " + e.getMessage(), e);
         }
     }
 }

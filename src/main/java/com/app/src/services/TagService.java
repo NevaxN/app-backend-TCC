@@ -1,5 +1,6 @@
 package com.app.src.services;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
-    
+
     public TagService(TagRepository repository, TagMapper mapper){
         super(repository, mapper);
     }
@@ -25,22 +26,37 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
     @Override
     @Cacheable(value = "tags", key = "#id")
     public TagDTO buscarPorId(Integer id){
-        return super.buscarPorId(id);        
+        return super.buscarPorId(id);
     }
 
-    public TagDTO buscarPorIdPesquisador (Integer idPesquisador) {
-        Tag tag = repository.findByPesquisadorId(idPesquisador);
-        return mapper.toDTO(tag);
+    // MÉTODO CORRIGIDO: Buscar tags por ID do pesquisador
+    public TagDTO buscarPorIdPesquisador(Integer pesquisadorId) {
+        try {
+            Tag tag = repository.findByPesquisadorId(pesquisadorId);
+            if (tag != null) {
+                return mapper.toDTO(tag);
+            } else {
+                // Retornar um DTO vazio se não encontrar
+                TagDTO tagVazia = new TagDTO();
+                tagVazia.setListaTags(new ArrayList<>());
+                return tagVazia;
+            }
+        } catch (Exception e) {
+            // Em caso de erro, retornar DTO vazio
+            TagDTO tagVazia = new TagDTO();
+            tagVazia.setListaTags(new ArrayList<>());
+            return tagVazia;
+        }
     }
 
     @Override
     public TagDTO salvar(TagDTO tagDTO){
         Tag tag = mapper.toEntity(tagDTO);
-    
+
         if (tag.getPesquisador() == null || tag.getPesquisador().getId() == null) {
             throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
         }
-    
+
         if (!pesquisadorRepository.existsById(tag.getPesquisador().getId())) {
             throw new NoSuchElementException("Pesquisador não encontrado com id: " + tag.getPesquisador().getId());
         }

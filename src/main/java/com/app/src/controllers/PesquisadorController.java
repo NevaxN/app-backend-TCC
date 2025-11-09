@@ -1,5 +1,7 @@
 package com.app.src.controllers;
-
+import com.app.src.dto.TagDTO;
+import com.app.src.services.ArtigoService;
+import com.app.src.services.TagService;
 import com.app.src.dto.PesquisadorDTO;
 import com.app.src.models.Pesquisador;
 import com.app.src.repositories.PesquisadorRepository;
@@ -18,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -30,6 +34,9 @@ public class PesquisadorController {
 
     @Autowired
     private PesquisadorService pesquisadorService;
+
+    @Autowired
+    private TagService tagService;
 
     @GetMapping("/listarPesquisadores")
     public ResponseEntity<List<PesquisadorDTO>> listarTodos() {
@@ -51,6 +58,20 @@ public class PesquisadorController {
         return ResponseEntity.ok(pesquisadorService.atualizar(id, dadosAtualizados));
     }
 
+    // NOVO: Endpoint para atualizar perfil
+    @PutMapping("/atualizarPerfil/{id}")
+    public ResponseEntity<PesquisadorDTO> atualizarPerfil(
+            @PathVariable Integer id,
+            @RequestBody PesquisadorDTO dadosAtualizados) {
+        return ResponseEntity.ok(pesquisadorService.atualizarPerfil(id, dadosAtualizados));
+    }
+
+    // NOVO: Endpoint para buscar pesquisador por ID do usuário
+    @GetMapping("/buscarPorUsuario/{usuarioId}")
+    public ResponseEntity<PesquisadorDTO> buscarPorUsuarioId(@PathVariable Integer usuarioId) {
+        return ResponseEntity.ok(pesquisadorService.buscarPorUsuarioId(usuarioId));
+    }
+
     // Deletar pesquisador
     @DeleteMapping("/excluirPesquisador/{id}")
     public ResponseEntity<String> deletar(@PathVariable Integer id) {
@@ -58,7 +79,7 @@ public class PesquisadorController {
     }
 
     @PutMapping("/{id}/imagem")
-    public ResponseEntity<?> alterarImagem(@PathVariable Integer id, @RequestParam("file")MultipartFile file) throws IOException {
+    public ResponseEntity<?> alterarImagem(@PathVariable Integer id, @RequestParam("file") MultipartFile file) throws IOException {
         Pesquisador pesquisador = pesquisadorRepository.findById(id).
                 orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
         if (file.isEmpty()) {
@@ -72,7 +93,6 @@ public class PesquisadorController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi possível alterar a imagem");
         }
-
     }
 
     @GetMapping("/buscarPesquisadores/{nomeTag}")
@@ -104,6 +124,50 @@ public class PesquisadorController {
         headers.setContentType(contentType);
 
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
 
+    @GetMapping("/dadosCompletos/{id}")
+    public ResponseEntity<Map<String, Object>> buscarDadosCompletos(@PathVariable Integer id) {
+        try {
+            PesquisadorDTO pesquisadorDTO = pesquisadorService.buscarPorId(id);
+            TagDTO tagDTO = tagService.buscarPorIdPesquisador(id);
+
+            Map<String, Object> dadosCompletos = new HashMap<>();
+            dadosCompletos.put("pesquisador", pesquisadorDTO);
+            dadosCompletos.put("tags", tagDTO);
+
+            return ResponseEntity.ok(dadosCompletos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/listarPesquisadorCompleto/{id}")
+    public ResponseEntity<?> buscarPorIdCompleto(@PathVariable Integer id) {
+        try {
+            PesquisadorDTO pesquisadorDTO = pesquisadorService.buscarPorIdComTratamento(id);
+
+            // Buscar tags do pesquisador
+            TagDTO tagDTO;
+            try {
+                tagDTO = tagService.buscarPorIdPesquisador(id);
+            } catch (Exception e) {
+                // Se não encontrar tags, cria uma vazia
+                tagDTO = new TagDTO();
+                tagDTO.setListaTags(java.util.Collections.emptyList());
+            }
+
+            // Criar resposta completa
+            Map<String, Object> resposta = new java.util.HashMap<>();
+            resposta.put("pesquisador", pesquisadorDTO);
+            resposta.put("tags", tagDTO);
+
+            return ResponseEntity.ok(resposta);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Erro ao buscar pesquisador",
+                    "message", e.getMessage()
+            ));
+        }
     }
 }

@@ -1,7 +1,9 @@
 package com.app.src.services;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
+import com.app.src.models.Pesquisador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -35,17 +37,26 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
 
     @Override
     public TagDTO salvar(TagDTO tagDTO){
-        Tag tag = mapper.toEntity(tagDTO);
-    
-        if (tag.getPesquisador() == null || tag.getPesquisador().getId() == null) {
+
+        if (tagDTO.getIdPesquisador() == null) {
             throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
         }
-    
-        if (!pesquisadorRepository.existsById(tag.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + tag.getPesquisador().getId());
+
+        Optional<Pesquisador> pesquisador = pesquisadorRepository.findById(tagDTO.getIdPesquisador());
+
+        if (pesquisador.isEmpty()) {
+            throw new IllegalArgumentException("Pesquisador não existente");
         }
 
-        return super.salvar(tagDTO);
+        Tag tag = new Tag(
+                tagDTO.getId(),
+                pesquisador.get(),
+                tagDTO.getListaTags()
+        );
+
+        repository.save(tag);
+
+        return mapper.toDTO(tag);
     }
 
     public TagDTO atualizar(Integer id, TagDTO tagDTO){

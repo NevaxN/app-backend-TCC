@@ -43,7 +43,6 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
     }
 
 
-    @Cacheable(value = "pesquisadores-por-email", key = "#login", unless = "#result == null")
     public Optional<Pesquisador> buscarPorLogin(String login) {
         return repository.findByUsuarioLogin(login);
     }

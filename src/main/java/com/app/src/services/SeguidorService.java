@@ -42,7 +42,7 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
         return repository.findByUsuarioId(usuarioId);
     }
 
-    @CacheEvict(value = "usuarios_seguidores", key = "#usuarioLogado.id")
+    @CacheEvict(value = "idsSeguindo", key = "#usuarioLogado.id")
     public SeguidorDTO salvar(SeguidorDTO seguidorDTO, Usuario usuarioLogado){
         if (seguidorDTO.getPesquisadorId() == null) {
             throw new IllegalArgumentException("pesquisadorId não pode ser nulo");

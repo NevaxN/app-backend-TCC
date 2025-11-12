@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 public class TagDTO {
     private Integer id;
-    private Integer idPesquisador;
+    private PesquisadorDTO pesquisador;
     private List<String> listaTags;
 }

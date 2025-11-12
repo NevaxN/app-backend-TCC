@@ -2,6 +2,7 @@ package com.app.src.services;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,6 +23,9 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
+
+    @Autowired
+    SeguidorRepository seguidorRepository;
     
     public SeguidorService(SeguidorRepository repository, SeguidorMapper mapper){
         super(repository, mapper);
@@ -69,4 +73,9 @@ public class SeguidorService extends GenericCrudService<Seguidor, SeguidorDTO, I
             throw new NoSuchElementException("Relação 'seguir' não encontrada para este usuário e pesquisador.");
         }
     }
+
+    @Cacheable(value = "idsSeguindo", key = "#usuarioId") // <-- Cacheie ISSO!
+    public Set<Integer> buscarIdsPesquisadoresPorUsuarioId(Integer usuarioId) {
+        return seguidorRepository.findPesquisadorIdsByUsuarioId(usuarioId);
+}
 }

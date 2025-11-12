@@ -2,6 +2,7 @@ package com.app.src.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,9 @@ import com.app.src.models.Seguidor;
 public interface SeguidorRepository extends JpaRepository<Seguidor, Integer>{
         
     Optional<Seguidor> findById(Integer id);
+
+    @Query("SELECT s.pesquisador.id FROM Seguidor s WHERE s.usuario.id = :usuarioId")
+    Set<Integer> findPesquisadorIdsByUsuarioId(@Param("usuarioId") Integer usuarioId);
 
     @Query("SELECT s FROM Seguidor s " +
            "LEFT JOIN FETCH s.usuario uSeguidor " +

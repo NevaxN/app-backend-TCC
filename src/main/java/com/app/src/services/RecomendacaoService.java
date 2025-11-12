@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.app.src.dto.PesquisadorDTO;
 import com.app.src.mappers.PesquisadorMapper;
 import com.app.src.models.Pesquisador;
-import com.app.src.models.Seguidor;
 import com.app.src.models.Tag;
 import com.app.src.repositories.TagRepository;
 
@@ -34,10 +33,7 @@ public class RecomendacaoService {
 
     public List<PesquisadorDTO> getRecomendacao(Integer usuarioId) {
         // Obter os IDs dos pesquisadores que o usuário já segue.
-        List<Seguidor> seguindo = seguidorService.buscarPorUsuarioId(usuarioId);
-        Set<Integer> idsPesquisadoresSeguidos = seguindo.stream()
-                .map(seguidor -> seguidor.getPesquisador().getId())
-                .collect(Collectors.toSet());
+        Set<Integer> idsPesquisadoresSeguidos = seguidorService.buscarIdsPesquisadoresPorUsuarioId(usuarioId);
 
         // Coletar todas as tags desses pesquisadores e calcular a frequência (peso).
         Map<String, Long> frequenciaTags = idsPesquisadoresSeguidos.stream()
@@ -58,26 +54,24 @@ public class RecomendacaoService {
                 .collect(Collectors.toSet());
 
         // Pontuar os candidatos com base na frequência das tags.
-        Map<Pesquisador, Long> candidatosPontuados = pesquisadoresCandidatos.stream()
+        List<Pesquisador> listaFinal = pesquisadoresCandidatos.stream()
                 .filter(candidato -> {
                         boolean naoSeguido = !idsPesquisadoresSeguidos.contains(candidato.getId());
                         boolean naoEUsuarioAtual =!candidato.getUsuario().getId().equals(usuarioId);
 
                         return naoSeguido && naoEUsuarioAtual;
                 })
-                .collect(Collectors.toMap(
-                    Function.identity(),
-                    candidato -> calcularPontuacao(candidato, frequenciaTags)
-                ));
-
-        List<Pesquisador> lista = candidatosPontuados.entrySet().stream()
+                .map(candidato -> Map.entry(
+                        candidato,
+                        calcularPontuacao(candidato, frequenciaTags))
+                )
                 .sorted(Map.Entry.<Pesquisador, Long>comparingByValue().reversed())
                 .map(Map.Entry::getKey)
                 .limit(10)
                 .collect(Collectors.toList());
 
         // Ordenar os candidatos pela pontuação em ordem decrescente e retornar.
-        return lista.stream().map(pesquisadorMapper::toDTO).collect(Collectors.toList());
+        return listaFinal.stream().map(pesquisadorMapper::toDTO).collect(Collectors.toList());
     }
 
     private Long calcularPontuacao(Pesquisador pesquisador, Map<String, Long> frequenciaTags) {

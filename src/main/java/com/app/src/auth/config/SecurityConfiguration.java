@@ -37,13 +37,15 @@ public class SecurityConfiguration {
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
         "/api/email/enviarVerificacao",
         "/api/pesquisadores/**",
-        "/api/auth/refresh-token"
+        "/api/auth/refresh-token",
+        "/api/seguidores/**",
+        "/api/recomendacoes/**",
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {
         // "/api/pesquisadores/**",
-        "/api/seguidores/**",
-        "/api/recomendacoes/**",
+        // "/api/seguidores/**",
+        // "/api/recomendacoes/**",
         "/api/dadosPesquisador/**",
         "/api/empresas/**",
         "/api/usuarios/listarUsuario/**",

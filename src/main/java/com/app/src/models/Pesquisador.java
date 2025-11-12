@@ -1,5 +1,6 @@
 package com.app.src.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -63,6 +64,7 @@ public class Pesquisador {
     @Column(name = "lattes_id")
     private Long lattesId;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "pesquisador")
     private Set<Seguidor> seguidores;
 

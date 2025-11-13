@@ -52,16 +52,16 @@ public class Empresa {
     @Column(name = "email", nullable = false)
     private String email;
     
-    @Column(name = "site", nullable = false)
+    @Column(name = "site", nullable = true)
     private String site;
 
     @Column(name = "setor", nullable = false)
     private String setor;
 
-    @Column(name = "frase", nullable = false)
+    @Column(name = "frase", nullable = true)
     private String frase;
 
-    @Column(name = "textoEmpresa", nullable = false)
+    @Column(name = "textoEmpresa", nullable = true)
     private String textoEmpresa;
 
     @Column(name = "logradouro", nullable = false)

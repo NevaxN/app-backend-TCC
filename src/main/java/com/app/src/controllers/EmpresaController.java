@@ -1,10 +1,12 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.EmpresaDTO;
+import com.app.src.models.Usuario;
 import com.app.src.services.EmpresaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +31,14 @@ public class EmpresaController {
 
     // Criar novo endereço
     @PostMapping("/salvarEmpresa")
-    public ResponseEntity<EmpresaDTO> salvar(@RequestBody EmpresaDTO empresaDTO) {
-        return ResponseEntity.ok(empresaService.salvar(empresaDTO));
+    public ResponseEntity<EmpresaDTO> salvar(@RequestBody EmpresaDTO empresaDTO,
+                                            @AuthenticationPrincipal Usuario usuarioLogado) {
+
+        if (usuarioLogado == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok(empresaService.salvar(empresaDTO, usuarioLogado));
     }
 
     // Atualizar endereço

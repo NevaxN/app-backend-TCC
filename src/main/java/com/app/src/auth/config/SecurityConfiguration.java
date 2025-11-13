@@ -31,7 +31,6 @@ public class SecurityConfiguration {
         "/api/redefinicao/alterar",
         "/api/upload",
         "/api/tags/salvarTag",
-        "/api/empresas/salvarEmpresa"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
@@ -40,6 +39,7 @@ public class SecurityConfiguration {
         "/api/auth/refresh-token",
         "/api/seguidores/**",
         "/api/recomendacoes/**",
+        "/api/empresas/**",
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {
@@ -47,7 +47,6 @@ public class SecurityConfiguration {
         // "/api/seguidores/**",
         // "/api/recomendacoes/**",
         "/api/dadosPesquisador/**",
-        "/api/empresas/**",
         "/api/usuarios/listarUsuario/**",
         "/api/tags/listarTag/**"
     };

@@ -3,6 +3,7 @@ package com.app.src.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import com.app.src.models.Premiacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.app.src.models.Orientacao;
@@ -18,4 +19,6 @@ public interface OrientacaoRepository extends JpaRepository<Orientacao, Integer>
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<Orientacao> findByPesquisadorId(Integer pesquisadorId);
 }

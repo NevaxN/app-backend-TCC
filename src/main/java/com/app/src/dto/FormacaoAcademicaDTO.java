@@ -1,33 +1,17 @@
 package com.app.src.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public record FormacaoAcademicaDTO(
+        Integer id,
+        PesquisadorDTO pesquisador,
+        String nivel,
+        int sequenciaFormacao,
+        String instituicao,
+        String curso,
+        String status,
+        Integer anoInicio,
+        Integer anoConclusao,
+        String tituloTrabalho,
+        String orientador,
+        Boolean destaque
+) {}
 
-@Getter
-@Setter
-public class FormacaoAcademicaDTO {
-    
-    private Integer id;
-    
-    private PesquisadorDTO pesquisador;
-    
-    private String nivel;
-
-    private int sequenciaFormacao;
-    
-    private String instituicao;
-    
-    private String curso;
-    
-    private String status;
-    
-    private Integer anoInicio;
-    
-    private Integer anoConclusao;
-    
-    private String tituloTrabalho;
-    
-    private String orientador;
-    
-    private Boolean destaque;
-}

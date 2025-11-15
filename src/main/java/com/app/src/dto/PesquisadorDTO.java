@@ -19,6 +19,8 @@ public class PesquisadorDTO {
 
     private UsuarioDTO usuario;
 
+    private String ocupacao;
+
     private String nomePesquisador;
 
     private String sobrenome;

@@ -18,4 +18,6 @@ public interface PremiacaoRepository extends JpaRepository<Premiacao, Integer>{
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<Premiacao> findByPesquisadorId(Integer pesquisadorId);
 }

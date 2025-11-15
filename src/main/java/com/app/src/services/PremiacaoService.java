@@ -3,7 +3,10 @@ package com.app.src.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import com.app.src.dto.TrabalhoEventoDTO;
+import com.app.src.models.TrabalhoEvento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,13 @@ public class PremiacaoService extends GenericCrudService<Premiacao, PremiacaoDTO
     @Cacheable
     public PremiacaoDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    public List<PremiacaoDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<Premiacao> premiacoes = repository.findByPesquisadorId(idPesquisador);
+        return premiacoes.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -77,6 +87,7 @@ public class PremiacaoService extends GenericCrudService<Premiacao, PremiacaoDTO
                 premiacao.setTitulo(getValue(p, "titulo", MISSING_STRING_VALUE, String.class));
                 premiacao.setInstituicao(getValue(p, "instituicao", MISSING_STRING_VALUE, String.class));
                 premiacao.setAno(getValue(p, "ano", MISSING_INTEGER_VALUE, Integer.class));
+                premiacao.setDestaque(false);
                 premiacaoList.add(premiacao);
             }
 

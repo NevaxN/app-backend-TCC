@@ -42,6 +42,9 @@ public class Pesquisador {
     @Column(nullable = false)
     private String sobrenome;
 
+    @Column(nullable = true)
+    private String ocupacao;
+
     @Column(name = "data_nascimento")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)

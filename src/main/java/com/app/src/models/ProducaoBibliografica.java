@@ -30,8 +30,8 @@ public class ProducaoBibliografica {
     @Column(name = "tipo", nullable = true)
     private String tipo;
 
-    @Column(name = "titulo", nullable = true)
-    private String titulo;
+//    @Column(name = "titulo", nullable = true)
+//    private String titulo;
 
     @Column(name = "autores", columnDefinition = "TEXT", nullable = true)
     private String autores;
@@ -39,14 +39,14 @@ public class ProducaoBibliografica {
     @Column(name = "ano", nullable = true)
     private Integer ano;
 
-    @Column(name = "veiculo_publicacao", nullable = true)
-    private String veiculoPublicacao;
-
-    @Column(name = "issn", nullable = true)
-    private String issn;
-
-    @Column(name = "doi", nullable = true)
-    private String doi;
+//    @Column(name = "veiculo_publicacao", nullable = true)
+//    private String veiculoPublicacao;
+//
+//    @Column(name = "issn", nullable = true)
+//    private String issn;
+//
+//    @Column(name = "doi", nullable = true)
+//    private String doi;
 
     @Column(name = "destaque", nullable = true)
     private Boolean destaque;

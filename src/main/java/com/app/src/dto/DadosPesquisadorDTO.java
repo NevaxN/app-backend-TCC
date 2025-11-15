@@ -12,6 +12,9 @@ public record DadosPesquisadorDTO(
         List<CapituloDTO> capitulos,
         List<TrabalhoEventoDTO> trabalhosEvento,
         List<ProjetoPesquisaDTO> projetosPesquisa,
-        TagDTO tags
+        List<PremiacaoDTO> premiacoes,
+        List<OrientacaoDTO> orientacoes,
+        TagDTO tags,
+        List<LinhaTempoDTO> linhaDoTempo
 ) {
 }

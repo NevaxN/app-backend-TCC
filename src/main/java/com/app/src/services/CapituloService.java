@@ -26,8 +26,8 @@ public class CapituloService extends GenericCrudService<Capitulo, CapituloDTO, I
     }
 
     public List<CapituloDTO> buscarPorIdPesquisador (Integer idPesquisador) {
-        List<Capitulo> formacoes = repository.findByPesquisadorId(idPesquisador);
-        return formacoes.stream()
+        List<Capitulo> capitulos = repository.findByPesquisadorId(idPesquisador);
+        return capitulos.stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }

@@ -3,7 +3,10 @@ package com.app.src.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import com.app.src.dto.PremiacaoDTO;
+import com.app.src.models.Premiacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,13 @@ public class OrientacaoService extends GenericCrudService<Orientacao, Orientacao
     @Cacheable(value = "orientacoes", key = "#id")
     public OrientacaoDTO buscarPorId(Integer id){
         return super.buscarPorId(id);
+    }
+
+    public List<OrientacaoDTO> buscarPorIdPesquisador (Integer idPesquisador) {
+        List<Orientacao> orientacoes = repository.findByPesquisadorId(idPesquisador);
+        return orientacoes.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

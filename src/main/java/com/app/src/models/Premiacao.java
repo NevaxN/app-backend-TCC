@@ -30,4 +30,7 @@ public class Premiacao {
 
     @Column(name = "ano", nullable = false)
     private Integer ano;
+
+    @Column(name = "destaque", nullable = false)
+    private Boolean destaque;
 }

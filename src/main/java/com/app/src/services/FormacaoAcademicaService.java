@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.app.src.dto.FormacaoAcademicaDTO;
@@ -48,19 +49,18 @@ GenericCrudService<FormacaoAcademica, FormacaoAcademicaDTO, Integer, FormacaoAca
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public FormacaoAcademicaDTO salvar(FormacaoAcademicaDTO formacaoAcademicaDTO){
-        FormacaoAcademica graduacao = mapper.toEntity(formacaoAcademicaDTO);
+    public FormacaoAcademicaDTO salvar(FormacaoAcademicaDTO formacaoAcademicaDTO, String login){
 
-        if (graduacao.getPesquisador() == null || graduacao.getPesquisador().getId() == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
-        }
+        Pesquisador pesquisadorLogado = pesquisadorRepository.findByUsuarioLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Pesquisador não encontrado com login: " + login));
 
-        if (!pesquisadorRepository.existsById(graduacao.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + graduacao.getPesquisador().getId());
-        }
+        FormacaoAcademica formacaoParaSalvar = mapper.toEntity(formacaoAcademicaDTO);
 
-        return super.salvar(formacaoAcademicaDTO);
+        formacaoParaSalvar.setPesquisador(pesquisadorLogado);
+
+        FormacaoAcademica salvo = repository.save(formacaoParaSalvar);
+
+        return mapper.toDTO(salvo);
     }
 
     public FormacaoAcademicaDTO atualizar(Integer id, FormacaoAcademicaDTO dadosAtualizados){

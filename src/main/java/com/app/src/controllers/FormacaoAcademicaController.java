@@ -1,10 +1,12 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.FormacaoAcademicaDTO;
+import com.app.src.models.Usuario;
 import com.app.src.services.FormacaoAcademicaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +31,11 @@ public class FormacaoAcademicaController {
 
     // Criar nova formação
     @PostMapping("/salvarFormacao")
-    public ResponseEntity<FormacaoAcademicaDTO> criar(@RequestBody FormacaoAcademicaDTO formacaoDTO) {
-        return ResponseEntity.ok(formacaoAcademicaService.salvar(formacaoDTO));
+    public ResponseEntity<FormacaoAcademicaDTO> criar(@RequestBody FormacaoAcademicaDTO formacaoDTO, 
+                                                    @AuthenticationPrincipal Usuario usuarioLogado) {
+        
+        String login = usuarioLogado.getLogin();
+        return ResponseEntity.ok(formacaoAcademicaService.salvar(formacaoDTO, login));
     }
 
     // Atualizar formação

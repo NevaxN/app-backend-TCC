@@ -3,6 +3,7 @@ package com.app.src.services;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,7 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
         return super.salvar(tagDTO);
     }
 
+    @CachePut(value = "tags", key = "#id")
     public TagDTO atualizar(Integer id, TagDTO tagDTO){
         Tag tag = repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Tag não encontrada com id: " + id));

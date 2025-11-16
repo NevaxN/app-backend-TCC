@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -83,6 +84,7 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         return mapper.toDTO(salvo);
     }
 
+    @CachePut(value = "pesquisadores", key = "#id")
     public PesquisadorDTO atualizar(Integer id, PesquisadorDTO dadosAtualizados){
 
         Pesquisador existente = repository.findById(id)

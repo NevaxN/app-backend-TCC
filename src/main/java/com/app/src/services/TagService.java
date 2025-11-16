@@ -18,9 +18,12 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
+
+    private final TagMapper tagMapper;
     
     public TagService(TagRepository repository, TagMapper mapper){
         super(repository, mapper);
+        this.tagMapper = mapper;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class TagService extends GenericCrudService<Tag, TagDTO, Integer, TagRepo
         Tag tag = repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Tag não encontrada com id: " + id));
 
-        ((TagMapper) mapper).updateEntityFromDto(tagDTO, tag);
+        this.tagMapper.updateEntityFromDto(tagDTO, tag);
 
         Tag salvo = repository.save(tag);
 

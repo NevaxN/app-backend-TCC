@@ -42,7 +42,8 @@ public class SecurityConfiguration {
         "/api/empresas/**",
         "/api/tags/alterarTag/**",
         "/api/usuarios/alterarLogin",
-        "/api/formacoes/salvarFormacao"
+        "/api/formacoes/salvarFormacao",
+        "/api/pesquisa/buscar"
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {

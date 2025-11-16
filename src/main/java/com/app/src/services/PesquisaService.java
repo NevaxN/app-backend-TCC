@@ -35,8 +35,10 @@ public class PesquisaService {
         
         String termoLower = termo.toLowerCase().trim();
 
+        List<Tag> todasTags = tagRepository.findAll();
+
         if (tipo == null || "todos".equals(tipo) || "pesquisador".equals(tipo)) {
-            resultados.addAll(pesquisarPesquisadores(termoLower));
+            resultados.addAll(pesquisarPesquisadores(termoLower, todasTags));
         }
 
         if (tipo == null || "todos".equals(tipo) || "empresa".equals(tipo)) {
@@ -46,13 +48,13 @@ public class PesquisaService {
         return resultados;
     }
 
-    private List<PesquisaDTO> pesquisarPesquisadores(String termo) {
+    private List<PesquisaDTO> pesquisarPesquisadores(String termo, List<Tag> todasTags) {
         List<PesquisaDTO> resultados = new ArrayList<>();
         List<Pesquisador> todosPesquisadores = pesquisadorRepository.findAll();
         
         for (Pesquisador pesquisador : todosPesquisadores) {
-            if (correspondeAPesquisa(pesquisador, termo)) {
-                resultados.add(toPesquisaDTO(pesquisador));
+            if (correspondeAPesquisa(pesquisador, termo, todasTags)) {
+                resultados.add(toPesquisaDTO(pesquisador, todasTags));
             }
         }
         
@@ -72,7 +74,7 @@ public class PesquisaService {
         return resultados;
     }
 
-    private boolean correspondeAPesquisa(Pesquisador pesquisador, String termo) {
+    private boolean correspondeAPesquisa(Pesquisador pesquisador, String termo, List<Tag> todasTags) {
         // Pesquisa no nome
         if ((pesquisador.getNomePesquisador() != null && pesquisador.getNomePesquisador().toLowerCase().contains(termo)) ||
             (pesquisador.getSobrenome() != null && pesquisador.getSobrenome().toLowerCase().contains(termo)) ||
@@ -81,7 +83,7 @@ public class PesquisaService {
         }
 
         // Pesquisa nas tags
-        List<Tag> tagsPesquisador = tagRepository.findAll().stream()
+        List<Tag> tagsPesquisador = todasTags.stream()
             .filter(t -> t.getPesquisador() != null && t.getPesquisador().getId().equals(pesquisador.getId()))
             .collect(Collectors.toList());
 
@@ -106,7 +108,7 @@ public class PesquisaService {
                (empresa.getTextoEmpresa() != null && empresa.getTextoEmpresa().toLowerCase().contains(termo));
     }
 
-    private PesquisaDTO toPesquisaDTO(Pesquisador pesquisador) {
+    private PesquisaDTO toPesquisaDTO(Pesquisador pesquisador, List<Tag> todasTags) {
         PesquisaDTO dto = new PesquisaDTO();
         dto.setId(pesquisador.getId());
         dto.setNome(pesquisador.getNomePesquisador() + " " + (pesquisador.getSobrenome() != null ? pesquisador.getSobrenome() : ""));
@@ -114,17 +116,17 @@ public class PesquisaService {
         dto.setArea(pesquisador.getNomeCitacoesBibliograficas() != null ? pesquisador.getNomeCitacoesBibliograficas() : "Pesquisador");
         
         // Buscar tags do pesquisador
-        List<Tag> tags = tagRepository.findAll().stream()
+        List<Tag> tagsDoPesquisador = todasTags.stream()
             .filter(t -> t.getPesquisador() != null && t.getPesquisador().getId().equals(pesquisador.getId()))
             .collect(Collectors.toList());
         
-        List<String> todasTags = new ArrayList<>();
-        for (Tag tag : tags) {
+        List<String> listaDeTags = new ArrayList<>();
+        for (Tag tag : tagsDoPesquisador) {
             if (tag.getListaTags() != null) {
-                todasTags.addAll(tag.getListaTags());
+                listaDeTags.addAll(tag.getListaTags());
             }
         }
-        dto.setTags(todasTags);
+        dto.setTags(listaDeTags);
         
         return dto;
     }

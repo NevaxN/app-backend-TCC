@@ -1,6 +1,5 @@
 package com.app.src.controllers;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -10,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.app.src.dto.AlterarLoginDTO;
 import com.app.src.dto.CriarUsuarioDTO;
 import com.app.src.dto.LoginUsuarioDTO;
 import com.app.src.dto.ResgatarJWTTokenDTO;
@@ -60,6 +61,22 @@ public class UsuarioController {
                 HttpStatus.BAD_REQUEST
             );
         }
+    }
+
+    @PutMapping("/alterarLogin")
+    public ResponseEntity<?> alterarLogin(@RequestBody AlterarLoginDTO dto, 
+                                        @AuthenticationPrincipal Usuario usuarioLogado){
+
+        String loginAtual = usuarioLogado.getLogin();
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(loginAtual);
+
+        if(usuario.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+        }
+
+        usuarioRepository.updateLogin(usuario.get().getId(), dto.novoLogin());
+
+        return ResponseEntity.ok("Login alterado com sucesso.");
     }
 
     @PostMapping("/verificarEmail")

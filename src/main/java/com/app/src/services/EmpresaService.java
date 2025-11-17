@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,12 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    private final EmpresaMapper empresaMapper;
     
     public EmpresaService(EmpresaRepository repository, EmpresaMapper mapper){
         super(repository, mapper);
+        this.empresaMapper = mapper;
     }
 
     @Override
@@ -47,11 +51,12 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
         return repository.findByUsuarioLogin(login);
     }
 
+    @CachePut(value = "empresas", key = "#id")
     public EmpresaDTO atualizar(Integer id, EmpresaDTO dadosAtualizados){
         Empresa existente = repository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Empresa não encontrado com id: " + id));
 
-        ((EmpresaMapper) mapper).updateEntityFromDto(dadosAtualizados, existente);
+        this.empresaMapper.updateEntityFromDto(dadosAtualizados, existente);
 
         Empresa salvo = repository.save(existente);
         

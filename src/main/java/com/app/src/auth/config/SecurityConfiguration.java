@@ -38,6 +38,7 @@ public class SecurityConfiguration {
         "/api/pesquisadores/**",
         "/api/auth/refresh-token",
         "/api/seguidores/**",
+        "/api/favoritos/**",
         "/api/recomendacoes/**",
         "/api/empresas/**",
         "/api/tags/alterarTag/**",
@@ -47,9 +48,6 @@ public class SecurityConfiguration {
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {
-        // "/api/pesquisadores/**",
-        // "/api/seguidores/**",
-        // "/api/recomendacoes/**",
         "/api/dadosPesquisador/**",
         "/api/usuarios/listarUsuario/**",
         "/api/tags/listarTag/**"

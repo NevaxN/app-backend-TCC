@@ -1,10 +1,13 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.FavoritoDTO;
+import com.app.src.models.Favorito;
+import com.app.src.models.Usuario;
 import com.app.src.services.FavoritoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +30,29 @@ public class FavoritoController {
     }
 
     @PostMapping("/salvarFavorito")
-    public ResponseEntity<FavoritoDTO> criar(@RequestBody FavoritoDTO favoritoDTO) {
-        return ResponseEntity.ok(favoritoService.salvar(favoritoDTO));
+    public ResponseEntity<FavoritoDTO> criar(
+        @RequestBody FavoritoDTO favoritoDTO,
+        @AuthenticationPrincipal Usuario usuarioLogado) {
+        
+        if (usuarioLogado == null) {
+            return ResponseEntity.status(401).build(); 
+        }
+
+        return ResponseEntity.ok(favoritoService.salvar(favoritoDTO, usuarioLogado));
     }
 
-    @DeleteMapping("/excluirFavorito/{id}")
-    public ResponseEntity<String> excluir(@PathVariable Integer id) {
-        return ResponseEntity.ok(favoritoService.excluir(id));
+    @DeleteMapping("/excluirFavorito")
+    public ResponseEntity<String> excluir(
+        @RequestParam Integer usuarioId, 
+        @RequestParam Integer pesquisadorId) {
+
+        favoritoService.excluir(usuarioId, pesquisadorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/usuario/{usuarioId}/favorito")
+    public ResponseEntity<List<Favorito>> listarQuemUsuarioSegue(@PathVariable Integer usuarioId) {
+        List<Favorito> listaDeFavorito = favoritoService.buscarPorUsuarioId(usuarioId);
+        return ResponseEntity.ok(listaDeFavorito);
     }
 }

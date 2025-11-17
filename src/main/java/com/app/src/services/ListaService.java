@@ -1,11 +1,13 @@
 package com.app.src.services;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.src.dto.ListaDTO;
 import com.app.src.mappers.ListaMapper;
@@ -33,6 +35,13 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ListaDTO> buscarTodos() {
+        return super.buscarTodos();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "listas", key = "#id")
     public ListaDTO buscarPorId(Integer id){
         return super.buscarPorId(id);

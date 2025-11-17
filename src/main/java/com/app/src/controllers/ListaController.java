@@ -1,10 +1,12 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.ListaDTO;
+import com.app.src.models.Usuario;
 import com.app.src.services.ListaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,9 +17,7 @@ public class ListaController {
 
     @Autowired
     private ListaService listaService;
-
     
-
     @GetMapping("/listarListas")
     public ResponseEntity<List<ListaDTO>> listarTodos() {
         return ResponseEntity.ok(listaService.buscarTodos());
@@ -31,8 +31,11 @@ public class ListaController {
 
     // Criar novo endereço
     @PostMapping("/salvarLista")
-    public ResponseEntity<ListaDTO> criar(@RequestBody ListaDTO listaDTO) {
-        return ResponseEntity.ok(listaService.salvar(listaDTO));
+    public ResponseEntity<ListaDTO> criar(
+        @RequestBody ListaDTO listaDTO,
+        @AuthenticationPrincipal Usuario usuarioLogado) {
+            
+        return ResponseEntity.ok(listaService.salvar(listaDTO, usuarioLogado));
     }
 
     @PostMapping("/salvarLista/{listaId}/perfil/{usuarioId}")

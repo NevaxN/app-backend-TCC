@@ -3,12 +3,14 @@ package com.app.src.services;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.app.src.dto.ListaDTO;
 import com.app.src.mappers.ListaMapper;
 import com.app.src.models.Lista;
+import com.app.src.models.Pesquisador;
 import com.app.src.models.Usuario;
 import com.app.src.repositories.ListaRepository;
 import com.app.src.repositories.PesquisadorRepository;
@@ -22,9 +24,12 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    private final ListaMapper listaMapper;
     
     public ListaService(ListaRepository repository, ListaMapper mapper) {
         super(repository, mapper);
+        this.listaMapper = mapper;
     }
 
     @Override
@@ -33,26 +38,26 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
         return super.buscarPorId(id);
     }
 
-    @Override
-    public ListaDTO salvar(ListaDTO listaDTO){
-        Lista lista = mapper.toEntity(listaDTO);
+    public ListaDTO salvar(ListaDTO listaDTO, Usuario usuarioLogado){
+        
+        Pesquisador pesquisador = pesquisadorRepository.findByUsuarioId(usuarioLogado.getId())
+            .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado para o usuário: " + usuarioLogado.getLogin()));
 
-        if (lista.getPesquisador() == null || lista.getPesquisador().getId() == null) {
-            throw new IllegalArgumentException("ID do pesquisador é obrigatório.");
-        }
+        Lista lista = new Lista();
+        lista.setNomeLista(listaDTO.getNomeLista());
+        lista.setPesquisador(pesquisador);
+        lista.setPerfisSalvos(new java.util.HashSet<>());
 
-        if (!pesquisadorRepository.existsById(lista.getPesquisador().getId())) {
-            throw new NoSuchElementException("Pesquisador não encontrado com id: " + lista.getPesquisador().getId());
-        }
-
-        return super.salvar(listaDTO);
+        Lista listaSalva = repository.save(lista);
+        return mapper.toDTO(listaSalva);
     }
 
+    @CachePut(value = "listas", key = "#id")
     public ListaDTO atualizar(Integer id, ListaDTO dadosAtualizados){
         Lista lista = repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrado com id: " + id));
 
-        ((ListaMapper) mapper).updateEntityFromDto(dadosAtualizados, lista);
+        this.listaMapper.updateEntityFromDto(dadosAtualizados, lista);
 
         Lista salvo = repository.save(lista);
 

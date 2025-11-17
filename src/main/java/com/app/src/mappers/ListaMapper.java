@@ -10,7 +10,7 @@ import com.app.src.models.Lista;
 
 @Mapper(
     componentModel = "spring", 
-    uses = { UsuarioMapper.class }
+    uses = { PesquisadorMapper.class, UsuarioMapper.class }
 )
 public interface ListaMapper extends GenericMapper<Lista, ListaDTO>{
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

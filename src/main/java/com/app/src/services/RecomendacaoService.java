@@ -20,7 +20,7 @@ import com.app.src.repositories.TagRepository;
 public class RecomendacaoService {
     
     @Autowired
-    SeguidorService seguidorService;
+    FavoritoService favoritoService;
 
     @Autowired
     PesquisadorService pesquisadorService;
@@ -33,10 +33,10 @@ public class RecomendacaoService {
 
     public List<PesquisadorDTO> getRecomendacao(Integer usuarioId) {
         // Obter os IDs dos pesquisadores que o usuário já segue.
-        Set<Integer> idsPesquisadoresSeguidos = seguidorService.buscarIdsPesquisadoresPorUsuarioId(usuarioId);
+        Set<Integer> idsPesquisadoresFavoritos = favoritoService.buscarIdsPesquisadoresPorUsuarioId(usuarioId);
 
         // Coletar todas as tags desses pesquisadores e calcular a frequência (peso).
-        Map<String, Long> frequenciaTags = idsPesquisadoresSeguidos.stream()
+        Map<String, Long> frequenciaTags = idsPesquisadoresFavoritos.stream()
                 .map(tagRepository::findListaByPesquisadorId)
                 .flatMap(List::stream)
                 .flatMap(tag -> tag.getListaTags().stream())
@@ -56,10 +56,10 @@ public class RecomendacaoService {
         // Pontuar os candidatos com base na frequência das tags.
         List<Pesquisador> listaFinal = pesquisadoresCandidatos.stream()
                 .filter(candidato -> {
-                        boolean naoSeguido = !idsPesquisadoresSeguidos.contains(candidato.getId());
+                        boolean naoFavorito = !idsPesquisadoresFavoritos.contains(candidato.getId());
                         boolean naoEUsuarioAtual =!candidato.getUsuario().getId().equals(usuarioId);
 
-                        return naoSeguido && naoEUsuarioAtual;
+                        return naoFavorito && naoEUsuarioAtual;
                 })
                 .map(candidato -> Map.entry(
                         candidato,

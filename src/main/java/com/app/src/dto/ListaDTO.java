@@ -2,9 +2,6 @@ package com.app.src.dto;
 
 import java.util.Set;
 
-import com.app.src.models.Pesquisador;
-import com.app.src.models.Usuario;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,10 +11,10 @@ public class ListaDTO {
     
     private Integer id;
 
-    private Pesquisador pesquisador;
+    private PesquisadorDTO pesquisador;
     
     private String nomeLista;
 
-    private Set<Usuario> perfisSalvos;
+    private Set<UsuarioDTO> perfisSalvos;
 
 }

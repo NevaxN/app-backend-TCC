@@ -46,7 +46,7 @@ public class FavoritoController {
         @RequestParam Integer usuarioId, 
         @RequestParam Integer pesquisadorId) {
 
-        favoritoService.excluir(usuarioId, pesquisadorId);
+        favoritoService.deixarDeSeguir(usuarioId, pesquisadorId);
         return ResponseEntity.noContent().build();
     }
 

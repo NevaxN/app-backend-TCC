@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,8 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
         return mapper.toDTO(salvo);
     }
 
+    @Transactional
+    @CacheEvict(value = "listas", key = "#listaId")
     public void adicionarPerfilNaLista(Integer listaId, Integer pesquisadorId){
         Lista lista = repository.findById(listaId)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
@@ -86,6 +89,8 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
         repository.save(lista);
     }
 
+    @Transactional
+    @CacheEvict(value = "listas", key = "#listaId")
     public void removerPerfilNaLista(Integer listaId, Integer pesquisadorId){
         Lista lista = repository.findById(listaId)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));

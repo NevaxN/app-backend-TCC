@@ -12,11 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@DiscriminatorValue("ARTIGO")
 public class Artigo extends ProducaoBibliografica {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
     @Column(name = "titulo", nullable = true)
     private String titulo;

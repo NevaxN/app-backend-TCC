@@ -13,6 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "producao_bibliografica")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_producao")
 public class ProducaoBibliografica {
 
     @Id

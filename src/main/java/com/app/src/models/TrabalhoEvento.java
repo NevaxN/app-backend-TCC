@@ -11,11 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@DiscriminatorValue("TRABALHO_EVENTO")
 public class TrabalhoEvento extends ProducaoBibliografica {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
     @Column(name = "titulo", nullable = true)
     private String titulo;

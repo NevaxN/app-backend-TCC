@@ -72,7 +72,7 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
 
     @Transactional
     @CacheEvict(value = "listas", key = "#listaId")
-    public void adicionarPerfilNaLista(Integer listaId, Integer pesquisadorId){
+    public boolean adicionarPerfilNaLista(Integer listaId, Integer pesquisadorId){
         Lista lista = repository.findById(listaId)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
 
@@ -84,9 +84,14 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
             throw new NoSuchElementException("Usuário não encontrado para o pesquisador com id: " + pesquisadorId);
         }
         
-        lista.getPerfisSalvos().add(perfilParaAdicionar);
+        boolean foiAdicionado = lista.getPerfisSalvos().add(perfilParaAdicionar);
 
-        repository.save(lista);
+        if (foiAdicionado) {
+            repository.save(lista);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Transactional

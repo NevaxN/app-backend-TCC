@@ -5,6 +5,7 @@ import com.app.src.models.Usuario;
 import com.app.src.services.ListaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +41,13 @@ public class ListaController {
 
     @PostMapping("/salvarLista/{listaId}/perfil/{pesquisadorId}")
     public ResponseEntity<Void> adicionarPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer pesquisadorId){
-        listaService.adicionarPerfilNaLista(listaId, pesquisadorId);
-        return ResponseEntity.ok().build();
+        boolean sucesso = listaService.adicionarPerfilNaLista(listaId, pesquisadorId);
+
+        if (sucesso) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
+        }
     }
 
     @DeleteMapping("/alterarLista/{listaId}/perfil/{pesquisadorId}")

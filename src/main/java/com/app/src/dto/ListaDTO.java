@@ -15,6 +15,6 @@ public class ListaDTO {
     
     private String nomeLista;
 
-    private Set<UsuarioDTO> perfisSalvos;
+    private Set<PerfilSalvoDTO> perfisSalvos;
 
 }

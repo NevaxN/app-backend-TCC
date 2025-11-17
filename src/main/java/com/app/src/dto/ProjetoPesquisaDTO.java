@@ -1,8 +1,5 @@
 package com.app.src.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public record ProjetoPesquisaDTO (
         Integer id,
 

@@ -1,11 +1,9 @@
 package com.app.src.services;
 
 import com.app.src.dto.*;
-import com.app.src.models.Premiacao;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service

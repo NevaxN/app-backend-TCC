@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import com.app.src.dto.PremiacaoDTO;
-import com.app.src.models.Premiacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

@@ -17,7 +17,7 @@ public interface FavoritoRepository extends JpaRepository<Favorito, Integer>{
     @Query("SELECT f.pesquisador.id FROM Favorito f WHERE f.usuario.id = :usuarioId")
     Set<Integer> findPesquisadorIdsByUsuarioId(@Param("usuarioId") Integer usuarioId);
 
-    @Query("SELECT f FROM Favorito s " +
+    @Query("SELECT f FROM Favorito f " +
            "LEFT JOIN FETCH f.usuario uFavorito " +
            "LEFT JOIN FETCH f.pesquisador pFavorito " +
            "LEFT JOIN FETCH pFavorito.usuario uPesquisador " +

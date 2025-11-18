@@ -35,7 +35,7 @@ public class Usuario implements UserDetails{
     @Column(nullable = false, unique = true)
     private String login;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String password;
 
     @ManyToOne(fetch = FetchType.EAGER)

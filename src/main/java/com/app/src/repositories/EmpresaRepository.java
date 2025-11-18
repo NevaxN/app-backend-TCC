@@ -1,6 +1,7 @@
 package com.app.src.repositories;
 
 import com.app.src.models.Empresa;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +13,8 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
     Optional<Empresa> findById(Integer id);
 
     Optional<Empresa> findByUsuarioLogin(String login);
+
+    Optional<Empresa> findByUsuarioId(Integer usuarioId);
 
     List<Empresa> findAll();
 

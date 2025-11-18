@@ -31,7 +31,9 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
     @Override
     @Cacheable(value = "empresas", key = "#id")
     public EmpresaDTO buscarPorId(Integer id){
-        return super.buscarPorId(id);
+        Optional<Empresa> empresa = repository.findByUsuarioId(id);
+    
+        return super.buscarPorId(empresa.get().getId());
     }
 
     public EmpresaDTO salvar(EmpresaDTO dto, Usuario usuarioLogado){

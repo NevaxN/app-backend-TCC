@@ -114,7 +114,10 @@ public class XmlService {
             
             idiomaRepository.saveAll(idiomaService.converterJsonParaIdioma(flaskJson, pesquisadorSalvo));
 
-            return flaskResponse.getBody();
+            JSONObject jsonObjectResposta = new JSONObject(flaskJson);
+            jsonObjectResposta.put("idPesquisador", pesquisadorSalvo.getId());
+
+            return jsonObjectResposta.toString();
 
         } catch (Exception e) {
             e.printStackTrace();

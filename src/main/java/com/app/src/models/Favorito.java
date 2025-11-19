@@ -13,7 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "favoritos")
+@Table(name = "favoritos",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"usuario_id", "pesquisador_id"})
+    }
+)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Favorito {
         

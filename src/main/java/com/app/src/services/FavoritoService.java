@@ -50,6 +50,15 @@ public class FavoritoService extends GenericCrudService<Favorito, FavoritoDTO, I
         Pesquisador pesquisadorASerSeguido = pesquisadorRepository.findById(favoritoDTO.getPesquisadorId())
         .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado"));
 
+        boolean jaExiste = favoritoRepository.existsByUsuarioIdAndPesquisadorId(
+            usuarioLogado.getId(),
+            pesquisadorASerSeguido.getId()
+        );
+
+        if (jaExiste) {
+            throw new IllegalStateException("O perfil já está salvo como favorito.");
+        }   
+
         Favorito novoFavorito = new Favorito();
         novoFavorito.setUsuario(usuarioLogado);
         novoFavorito.setPesquisador(pesquisadorASerSeguido);

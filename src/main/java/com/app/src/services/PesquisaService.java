@@ -111,6 +111,13 @@ public class PesquisaService {
     private PesquisaDTO toPesquisaDTO(Pesquisador pesquisador, List<Tag> todasTags) {
         PesquisaDTO dto = new PesquisaDTO();
         dto.setId(pesquisador.getId());
+        
+        if (pesquisador.getUsuario() != null) {
+            dto.setUsuarioId(pesquisador.getUsuario().getId());
+        } else {
+            dto.setUsuarioId(pesquisador.getId()); 
+        }
+
         dto.setNome(pesquisador.getNomePesquisador() + " " + (pesquisador.getSobrenome() != null ? pesquisador.getSobrenome() : ""));
         dto.setTipo("pesquisador");
         dto.setArea(pesquisador.getNomeCitacoesBibliograficas() != null ? pesquisador.getNomeCitacoesBibliograficas() : "Pesquisador");
@@ -133,7 +140,15 @@ public class PesquisaService {
 
     private PesquisaDTO toPesquisaDTO(Empresa empresa) {
         PesquisaDTO dto = new PesquisaDTO();
+        
         dto.setId(empresa.getId());
+
+        if (empresa.getUsuario() != null) {
+            dto.setUsuarioId(empresa.getUsuario().getId());
+        } else {
+            dto.setUsuarioId(empresa.getId());
+        }
+
         dto.setNome(empresa.getNomeComercial());
         dto.setTipo("empresa");
         dto.setArea(empresa.getSetor() != null ? empresa.getSetor() : "Empresa");

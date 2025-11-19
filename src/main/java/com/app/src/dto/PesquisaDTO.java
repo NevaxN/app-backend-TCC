@@ -8,6 +8,7 @@ import java.util.List;
 @Setter
 public class PesquisaDTO {
     private Integer id;
+    private Integer usuarioId;
     private String nome;
     private String tipo;
     private String area;

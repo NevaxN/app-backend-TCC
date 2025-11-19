@@ -6,7 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PerfilSalvoDTO {
-    private Integer id;
-    private String nome;
-    private String sobrenome;
+    private Integer idUsuario;
+    private Integer idEntidade;
+    private String nomeCompleto;
+    private String tipoPerfil;
+    private String area;
 }

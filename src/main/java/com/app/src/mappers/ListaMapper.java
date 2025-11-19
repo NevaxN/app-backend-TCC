@@ -16,6 +16,7 @@ import com.app.src.dto.ListaDTO;
 import com.app.src.dto.PerfilSalvoDTO;
 import com.app.src.models.Lista;
 import com.app.src.models.Usuario;
+import com.app.src.repositories.EmpresaRepository;
 import com.app.src.repositories.PesquisadorRepository;
 
 @Mapper(
@@ -27,6 +28,9 @@ public abstract class ListaMapper implements GenericMapper<Lista, ListaDTO>{
     @Autowired
     protected PesquisadorRepository pesquisadorRepository;
 
+    @Autowired
+    protected EmpresaRepository empresaRepository;
+
     @Mapping(target = "perfisSalvos", source = "perfisSalvos", qualifiedByName = "mapUsuariosToPerfis")
     public abstract ListaDTO toDTO(Lista entity);
 
@@ -36,22 +40,39 @@ public abstract class ListaMapper implements GenericMapper<Lista, ListaDTO>{
             return Collections.emptySet();
         }
 
-        // Para cada Usuario na lista, busque o Pesquisador e crie o DTO
         return usuarios.stream()
             .map(usuario -> {
-                // Busca o pesquisador associado a este usuário
-                return pesquisadorRepository.findByUsuarioId(usuario.getId())
-                    .map(pesquisador -> {
-                        // Se encontrou, cria o DTO com os nomes
-                        PerfilSalvoDTO dto = new PerfilSalvoDTO();
-                        dto.setId(pesquisador.getId()); // ID do Pesquisador
-                        dto.setNome(pesquisador.getNomePesquisador());
-                        dto.setSobrenome(pesquisador.getSobrenome());
-                        return dto;
-                    })
-                    .orElse(null); // Retorna null se não achar (filtraremos depois)
+                String tipo = usuario.getTipoUsuario().getName().toString();
+                
+                // Objeto DTO que será preenchido
+                PerfilSalvoDTO dto = new PerfilSalvoDTO();
+                dto.setIdUsuario(usuario.getId());
+                dto.setTipoPerfil(tipo);
+                
+                if ("PESQUISADOR".equals(tipo)) {
+                    pesquisadorRepository.findByUsuarioId(usuario.getId()).ifPresent(pesquisador -> {
+                        dto.setIdEntidade(pesquisador.getId());
+                        dto.setNomeCompleto(pesquisador.getNomePesquisador() + " " + (pesquisador.getSobrenome() != null ? pesquisador.getSobrenome() : ""));
+                        dto.setArea("Pesquisador"); 
+                    });
+                } else if ("EMPRESA".equals(tipo)) {
+                    empresaRepository.findByUsuarioId(usuario.getId()).ifPresent(empresa -> {
+                        dto.setIdEntidade(empresa.getId()); // ID da Entidade para rotas
+                        dto.setNomeCompleto(empresa.getNomeComercial());
+                        dto.setArea(empresa.getSetor() != null ? empresa.getSetor() : "Empresa");
+                    });
+                } else {
+                    return null; 
+                }
+
+                if (dto.getNomeCompleto() == null) {
+                    return null;
+                }
+                
+                return dto;
+
             })
-            .filter(dto -> dto != null) // Remove os nulos
+            .filter(dto -> dto != null)
             .collect(Collectors.toSet());
     }
 

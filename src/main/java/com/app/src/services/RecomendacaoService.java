@@ -35,6 +35,20 @@ public class RecomendacaoService {
         // Obter os IDs dos pesquisadores que o usuário já segue.
         Set<Integer> idsPesquisadoresFavoritos = favoritoService.buscarIdsPesquisadoresPorUsuarioId(usuarioId);
 
+        if (idsPesquisadoresFavoritos.isEmpty()) {
+            
+            // Busca todos os pesquisadores como DTOs
+            List<PesquisadorDTO> todosPesquisadoresDTO = pesquisadorService.buscarTodos(); 
+
+            // Filtra o usuário atual e limita a 10
+            List<PesquisadorDTO> topCandidatos = todosPesquisadoresDTO.stream()
+                .filter(p -> !p.getUsuario().getId().equals(usuarioId)) 
+                .limit(10) 
+                .collect(Collectors.toList());
+
+            return topCandidatos;
+        }
+
         // Coletar todas as tags desses pesquisadores e calcular a frequência (peso).
         Map<String, Long> frequenciaTags = idsPesquisadoresFavoritos.stream()
                 .map(tagRepository::findListaByPesquisadorId)

@@ -10,11 +10,8 @@ import lombok.Setter;
 public class ListaDTO {
     
     private Integer id;
-
     private PesquisadorDTO pesquisador;
-    
     private String nomeLista;
-
     private Set<PerfilSalvoDTO> perfisSalvos;
 
 }

@@ -17,12 +17,17 @@ import com.app.src.models.Pesquisador;
 import com.app.src.models.Usuario;
 import com.app.src.repositories.ListaRepository;
 import com.app.src.repositories.PesquisadorRepository;
+import com.app.src.repositories.UsuarioRepository;
 
 @Service
 public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, ListaRepository> {
 
     @Autowired
     private PesquisadorRepository pesquisadorRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
 
     private final ListaMapper listaMapper;
     
@@ -72,17 +77,13 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
 
     @Transactional
     @CacheEvict(value = "listas", key = "#listaId")
-    public boolean adicionarPerfilNaLista(Integer listaId, Integer pesquisadorId){
+    public boolean adicionarPerfilNaLista(Integer listaId, Integer perfilId){
         Lista lista = repository.findById(listaId)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
 
-        Pesquisador pesquisador = pesquisadorRepository.findById(pesquisadorId)
-                .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado com o id: " + pesquisadorId));
+        Usuario perfilParaAdicionar = usuarioRepository.findById(perfilId)
+             .orElseThrow(() -> new NoSuchElementException("Perfil (Usuário) não encontrado com o id: " + perfilId));
 
-        Usuario perfilParaAdicionar = pesquisador.getUsuario();
-        if (perfilParaAdicionar == null) {
-            throw new NoSuchElementException("Usuário não encontrado para o pesquisador com id: " + pesquisadorId);
-        }
         
         boolean foiAdicionado = lista.getPerfisSalvos().add(perfilParaAdicionar);
 
@@ -96,19 +97,17 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
 
     @Transactional
     @CacheEvict(value = "listas", key = "#listaId")
-    public void removerPerfilNaLista(Integer listaId, Integer pesquisadorId){
+    public void removerPerfilNaLista(Integer listaId, Integer perfilId){
         Lista lista = repository.findById(listaId)
                 .orElseThrow(() -> new NoSuchElementException("Lista não encontrada com id: " + listaId));
         
-        Pesquisador pesquisador = pesquisadorRepository.findById(pesquisadorId)
-                .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado com o id: " + pesquisadorId));
-
-        Usuario perfilParaRemover = pesquisador.getUsuario();
+        Usuario perfilParaRemover = usuarioRepository.findById(perfilId)
+            .orElseThrow(() -> new NoSuchElementException("Perfil (Usuário) não encontrado com o id: " + perfilId));
 
         boolean removido = lista.getPerfisSalvos().remove(perfilParaRemover);
 
         if(!removido){
-            throw new NoSuchElementException("O pesquisador com id " + pesquisadorId + " não está na lista com id " + listaId);
+            throw new NoSuchElementException("O pesquisador com id " + perfilId + " não está na lista com id " + listaId);
         }
 
         repository.save(lista);

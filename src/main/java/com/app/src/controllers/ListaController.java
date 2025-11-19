@@ -39,9 +39,9 @@ public class ListaController {
         return ResponseEntity.ok(listaService.salvar(listaDTO, usuarioLogado));
     }
 
-    @PostMapping("/salvarLista/{listaId}/perfil/{pesquisadorId}")
-    public ResponseEntity<Void> adicionarPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer pesquisadorId){
-        boolean sucesso = listaService.adicionarPerfilNaLista(listaId, pesquisadorId);
+    @PostMapping("/salvarLista/{listaId}/perfil/{perfilId}")
+    public ResponseEntity<Void> adicionarPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer perfilId){
+        boolean sucesso = listaService.adicionarPerfilNaLista(listaId, perfilId);
 
         if (sucesso) {
             return ResponseEntity.ok().build();
@@ -50,9 +50,9 @@ public class ListaController {
         }
     }
 
-    @DeleteMapping("/alterarLista/{listaId}/perfil/{pesquisadorId}")
-    public ResponseEntity<Void> removerPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer pesquisadorId){
-        listaService.removerPerfilNaLista(listaId, pesquisadorId);
+    @DeleteMapping("/alterarLista/{listaId}/perfil/{perfilId}")
+    public ResponseEntity<Void> removerPerfilNaLista(@PathVariable Integer listaId, @PathVariable Integer perfilId){
+        listaService.removerPerfilNaLista(listaId, perfilId);
         return ResponseEntity.ok().build();
     }
 

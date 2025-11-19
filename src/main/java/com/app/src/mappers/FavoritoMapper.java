@@ -2,6 +2,7 @@ package com.app.src.mappers;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -13,6 +14,10 @@ import com.app.src.models.Favorito;
     uses = { UsuarioMapper.class }
 )
 public interface FavoritoMapper extends GenericMapper<Favorito, FavoritoDTO> {
+
+    @Mapping(target = "pesquisadorId", source = "pesquisador.id") 
+    FavoritoDTO toDTO(Favorito entity);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(FavoritoDTO dto, @MappingTarget Favorito entity);
 }

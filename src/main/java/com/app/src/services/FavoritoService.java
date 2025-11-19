@@ -41,7 +41,7 @@ public class FavoritoService extends GenericCrudService<Favorito, FavoritoDTO, I
         return repository.findByUsuarioId(usuarioId);
     }
 
-    @CacheEvict(value = "idsSeguindo", key = "#usuarioLogado.id")
+    @CacheEvict(value = "idsFavorito", key = "#usuarioLogado.id")
     public FavoritoDTO salvar(FavoritoDTO favoritoDTO, Usuario usuarioLogado){
         if (favoritoDTO.getPesquisadorId() == null) {
             throw new IllegalArgumentException("pesquisadorId não pode ser nulo");
@@ -60,7 +60,7 @@ public class FavoritoService extends GenericCrudService<Favorito, FavoritoDTO, I
     }
 
     @Transactional
-    @CacheEvict(value = "usuarios_favoritos", key = "#usuarioId")
+    @CacheEvict(value = "idsFavorito", key = "#usuarioId")
     public void deixarDeSeguir(Integer usuarioId, Integer pesquisadorId) {
         if (pesquisadorId == null || usuarioId == null) {
             throw new IllegalArgumentException("IDs do usuário e do pesquisador são obrigatórios.");

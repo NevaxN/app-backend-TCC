@@ -1,6 +1,6 @@
 package com.app.src.services;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,16 +38,22 @@ public class RecomendacaoService {
         // Coletar todas as tags desses pesquisadores e calcular a frequência (peso).
         Map<String, Long> frequenciaTags = idsPesquisadoresFavoritos.stream()
                 .map(tagRepository::findListaByPesquisadorId)
+                .filter(list -> list != null && !list.isEmpty())
                 .flatMap(List::stream)
                 .flatMap(tag -> tag.getListaTags().stream())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
+        
+        System.out.println("LOG RECOMENDAÇÃO: IDs de favoritos: " + idsPesquisadoresFavoritos);
+        System.out.println("LOG RECOMENDAÇÃO: Frequência das tags: " + frequenciaTags);
+
         if (frequenciaTags.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
+
+        Set<String> tagsDeInteresse = frequenciaTags.keySet();
         
         // Encontrar todos os pesquisadores que possuem alguma das tags de interesse.
-        Set<String> tagsDeInteresse = frequenciaTags.keySet();
         Set<Pesquisador> pesquisadoresCandidatos = tagsDeInteresse.stream()
                 .flatMap(tag -> tagRepository.findByTagContaining(tag).stream())
                 .map(Tag::getPesquisador)
@@ -57,7 +63,7 @@ public class RecomendacaoService {
         List<Pesquisador> listaFinal = pesquisadoresCandidatos.stream()
                 .filter(candidato -> {
                         boolean naoFavorito = !idsPesquisadoresFavoritos.contains(candidato.getId());
-                        boolean naoEUsuarioAtual =!candidato.getUsuario().getId().equals(usuarioId);
+                        boolean naoEUsuarioAtual = !candidato.getUsuario().getId().equals(usuarioId);
 
                         return naoFavorito && naoEUsuarioAtual;
                 })
@@ -75,8 +81,14 @@ public class RecomendacaoService {
     }
 
     private Long calcularPontuacao(Pesquisador pesquisador, Map<String, Long> frequenciaTags) {
-        return tagRepository.findListaByPesquisadorId(pesquisador.getId()).stream()
-                .flatMap(tag -> tag.getListaTags().stream())
+        List<Tag> tagEntities = tagRepository.findListaByPesquisadorId(pesquisador.getId()); 
+        
+        if (tagEntities == null || tagEntities.isEmpty()) {
+            return 0L;
+        }
+
+        return tagEntities.stream()
+                .flatMap(tag -> tag.getListaTags().stream()) // 1. Achatamos a List<List<Tag>> para Stream<String>
                 .mapToLong(tag -> frequenciaTags.getOrDefault(tag, 0L))
                 .sum();
     }

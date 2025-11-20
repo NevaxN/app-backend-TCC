@@ -46,6 +46,4 @@ public class PesquisadorDTO {
     private Long lattesId;
 
     private byte[] imagemPerfil;
-
-    private String telefone;
 }

@@ -5,7 +5,6 @@ import com.app.src.auth.models.Role;
 import com.app.src.auth.services.PerfilUsuarioService;
 import com.app.src.dto.*;
 import com.app.src.exceptions.CodigoInvalidoException;
-import com.app.src.models.UsuarioPreferencias;
 import com.app.src.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,9 +41,6 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private UsuarioPreferenciasService usuarioPreferenciasService;
 
     @Autowired
     private TipoUsuarioRepository tipoUsuarioRepository;
@@ -142,15 +138,7 @@ public class UsuarioService {
                 .emailVerificado(false)
                 .build();
 
-        Usuario usuarioCriado = usuarioRepository.save(novoUsuario);
-
-        UsuarioPreferencias preferencias = new UsuarioPreferencias(
-                usuarioCriado,
-                false,
-                false
-        );
-
-        usuarioPreferenciasService.salvar(preferencias);
+        usuarioRepository.save(novoUsuario);
 
     }
 

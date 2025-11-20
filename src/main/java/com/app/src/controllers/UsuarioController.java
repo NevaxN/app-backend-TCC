@@ -82,7 +82,7 @@ public class UsuarioController {
     @PostMapping("/verificarEmail")
     public ResponseEntity<?> verificarEmail(@RequestParam("codigo") String codigo) {
 
-        String emailUsuario = (String) redisTemplate.opsForValue().getAndDelete("verificacaoEmail:" + codigo);
+        String emailUsuario = (String) redisTemplate.opsForValue().get("verificacaoEmail:" + codigo);
 
         if (emailUsuario == null) {
             return ResponseEntity.badRequest().body("Código inválido ou expirado.");
@@ -91,10 +91,12 @@ public class UsuarioController {
         Usuario usuario = usuarioService.findByLogin(emailUsuario);
 
         if (usuario.isEmailVerificado()) {
+            redisTemplate.delete("verificacaoEmail:" + codigo);
             return ResponseEntity.badRequest().body("ERRO: Conta já verificada!");
         } else {
             usuario.setEmailVerificado(true);
             usuarioService.updateUsuario(usuario);
+            redisTemplate.delete("verificacaoEmail:" + codigo);
             return ResponseEntity.ok(
                     Map.of("tipo", usuario.getTipoUsuario().getName())
             );

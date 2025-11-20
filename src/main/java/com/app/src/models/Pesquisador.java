@@ -42,7 +42,7 @@ public class Pesquisador {
     @Column(nullable = false)
     private String sobrenome;
 
-    @Column(nullable = true)
+    @Column(name = "ocupacao")
     private String ocupacao;
 
     @Column(name = "data_nascimento")
@@ -66,6 +66,9 @@ public class Pesquisador {
 
     @Column(name = "lattes_id")
     private Long lattesId;
+
+    @Column(name = "telefone")
+    private String telefone;
 
     @JsonIgnore
     @OneToMany(mappedBy = "pesquisador")

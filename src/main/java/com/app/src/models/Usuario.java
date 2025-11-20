@@ -50,8 +50,11 @@ public class Usuario implements UserDetails{
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<Role> roles;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "email_verificado")
     private boolean emailVerificado;
+
+    @Column(name = "exibir_contato")
+    private boolean exibirContato;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

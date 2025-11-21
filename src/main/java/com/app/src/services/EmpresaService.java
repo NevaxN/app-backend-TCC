@@ -4,9 +4,11 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.src.dto.EmpresaDTO;
 import com.app.src.mappers.EmpresaMapper;
@@ -29,7 +31,8 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
     }
 
     @Override
-    @Cacheable(value = "empresas", key = "#id")
+    @Transactional(readOnly = true)
+    @Cacheable(value = "empresa_por_usuario", key = "#id")
     public EmpresaDTO buscarPorId(Integer id){
         Optional<Empresa> empresa = repository.findByUsuarioId(id);
     
@@ -54,6 +57,7 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
     }
 
     @CachePut(value = "empresas", key = "#id")
+    @CacheEvict(value = "empresa_por_usuario", allEntries = true)
     public EmpresaDTO atualizar(Integer id, EmpresaDTO dadosAtualizados){
         Empresa existente = repository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Empresa não encontrado com id: " + id));

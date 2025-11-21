@@ -13,17 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.app.src.dto.ListaDTO;
 import com.app.src.mappers.ListaMapper;
 import com.app.src.models.Lista;
-import com.app.src.models.Pesquisador;
 import com.app.src.models.Usuario;
 import com.app.src.repositories.ListaRepository;
-import com.app.src.repositories.PesquisadorRepository;
 import com.app.src.repositories.UsuarioRepository;
 
 @Service
 public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, ListaRepository> {
-
-    @Autowired
-    private PesquisadorRepository pesquisadorRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -51,12 +46,9 @@ public class ListaService extends GenericCrudService<Lista, ListaDTO, Integer, L
 
     public ListaDTO salvar(ListaDTO listaDTO, Usuario usuarioLogado){
         
-        Pesquisador pesquisador = pesquisadorRepository.findByUsuarioId(usuarioLogado.getId())
-            .orElseThrow(() -> new NoSuchElementException("Pesquisador não encontrado para o usuário: " + usuarioLogado.getLogin()));
-
         Lista lista = new Lista();
         lista.setNomeLista(listaDTO.getNomeLista());
-        lista.setPesquisador(pesquisador);
+        lista.setUsuario(usuarioLogado);
         lista.setPerfisSalvos(new java.util.HashSet<>());
 
         Lista listaSalva = repository.save(lista);

@@ -22,8 +22,8 @@ public class Lista {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "pesquisador_id", nullable = false)
-    private Pesquisador pesquisador;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     @Column(name = "nome_lista", nullable = false)
     private String nomeLista;

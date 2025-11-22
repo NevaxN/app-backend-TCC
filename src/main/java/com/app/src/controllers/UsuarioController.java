@@ -17,6 +17,8 @@ import com.app.src.dto.CriarUsuarioDTO;
 import com.app.src.dto.LoginUsuarioDTO;
 import com.app.src.dto.ResgatarJWTTokenDTO;
 import com.app.src.dto.RespostaUsuarioDTO;
+import com.app.src.repositories.EmpresaRepository;
+import com.app.src.repositories.PesquisadorRepository;
 import com.app.src.repositories.UsuarioRepository;
 import com.app.src.services.UsuarioService;
 
@@ -32,6 +34,12 @@ public class UsuarioController {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PesquisadorRepository pesquisadorRepository;
+    
+    @Autowired
+    private EmpresaRepository empresaRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginUsuarioDTO loginUsuarioDTO) {
@@ -108,5 +116,21 @@ public class UsuarioController {
             throw new NoSuchElementException("Usuario não encontrado com login: " + login);
         }
         return ResponseEntity.ok(usuarioRepository.findByLogin(login));
+    }
+
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity<?> excluir(@PathVariable("id") Integer usuarioId){ 
+
+        pesquisadorRepository.findByUsuarioId(usuarioId).ifPresent(pesquisador -> {
+            pesquisadorRepository.delete(pesquisador);
+        });
+
+        empresaRepository.findByUsuarioId(usuarioId).ifPresent(empresa -> {
+            empresaRepository.delete(empresa);
+        });
+        
+        usuarioRepository.deleteById(usuarioId);
+        
+        return ResponseEntity.ok("Usuário e perfil excluídos com sucesso");
     }
 }

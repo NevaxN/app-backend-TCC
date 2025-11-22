@@ -17,6 +17,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -74,4 +75,47 @@ public class Pesquisador {
     @Column()
     @JdbcTypeCode(Types.VARBINARY)
     private byte[] imagemPerfil;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Favorito> favoritos; 
+
+    // Endereço (Se for uma tabela separada para pesquisadores)
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Endereco> enderecos;
+
+    // Currículo Lattes (Adicione as listas para que o Hibernate saiba o que apagar)
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FormacaoAcademica> formacoesAcademicas;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AtuacaoProfissional> atuacoesProfissionais;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProducaoBibliografica> producoesBibliograficas;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjetoPesquisa> projetosPesquisa;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Orientacao> orientacoes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Premiacao> premiacoes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Idioma> idiomas;
+    
+    // Tags
+    @JsonIgnore
+    @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Tag> tags;
 }

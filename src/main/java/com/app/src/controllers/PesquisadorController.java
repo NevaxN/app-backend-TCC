@@ -94,7 +94,7 @@ public class PesquisadorController {
             imageBytes = pesquisador.getImagemPerfil();
             contentType = MediaType.IMAGE_JPEG; // Ou o tipo que você salvou
         } else {
-            Resource resource = new ClassPathResource("images/default-user.jpg");
+            Resource resource = new ClassPathResource("images/default-user.png");
             try (InputStream inputStream = resource.getInputStream()) {
                 imageBytes = StreamUtils.copyToByteArray(inputStream);
             }

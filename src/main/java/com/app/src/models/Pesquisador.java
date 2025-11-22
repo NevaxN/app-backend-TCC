@@ -71,7 +71,7 @@ public class Pesquisador {
     @OneToMany(mappedBy = "pesquisador")
     private Set<Seguidor> seguidores;
 
-    @Column()
+    @Column(name = "imagem_perfil")
     @JdbcTypeCode(Types.VARBINARY)
     private byte[] imagemPerfil;
 }

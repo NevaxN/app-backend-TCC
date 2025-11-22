@@ -4,6 +4,7 @@ import com.app.src.dto.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -193,6 +194,11 @@ public class DadosPesquisadorService {
 
         TagDTO tags = tagService.buscarPorIdPesquisador(idPesquisador);
 
+        List<LinhaTempoDTO> linhaDoTempoOrdenada = linhaDoTempo
+                .stream()
+                .sorted(Comparator.comparing(LinhaTempoDTO::ano).reversed())
+                .toList();
+
         return new DadosPesquisadorDTO(
                 pesquisador,
                 formacoesAcademicas,
@@ -206,7 +212,7 @@ public class DadosPesquisadorService {
                 premiacoes,
                 orientacoes,
                 tags,
-                linhaDoTempo
+                linhaDoTempoOrdenada
         );
     }
 

@@ -43,6 +43,10 @@ public class PesquisadorService extends GenericCrudService<Pesquisador, Pesquisa
         return super.buscarPorId(id);
     }
 
+    public Pesquisador buscarPorIdUsuario(Integer id){
+        return repository.findByUsuarioId(id).orElseThrow(() -> new NoSuchElementException("Usuário não encontrado."));
+    }
+
 
     public Optional<Pesquisador> buscarPorLogin(String login) {
         return repository.findByUsuarioLogin(login);

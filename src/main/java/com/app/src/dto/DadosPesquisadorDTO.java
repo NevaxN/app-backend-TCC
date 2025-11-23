@@ -4,6 +4,7 @@ import java.util.List;
 
 public record DadosPesquisadorDTO(
         PesquisadorDTO pesquisador,
+        EnderecoDTO endereco,
         List<FormacaoAcademicaDTO> formacoesAcademicas,
         List<IdiomaDTO> idiomas,
         List<AtuacaoProfissionalDTO> atuacoesProfissionais,

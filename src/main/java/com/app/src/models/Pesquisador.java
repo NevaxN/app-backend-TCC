@@ -43,7 +43,6 @@ public class Pesquisador {
     @Column(nullable = false)
     private String sobrenome;
 
-    @Column(nullable = true)
     private String ocupacao;
 
     @Column(name = "data_nascimento")
@@ -80,12 +79,10 @@ public class Pesquisador {
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Favorito> favoritos; 
 
-    // Endereço (Se for uma tabela separada para pesquisadores)
     @JsonIgnore
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos;
 
-    // Currículo Lattes (Adicione as listas para que o Hibernate saiba o que apagar)
     @JsonIgnore
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FormacaoAcademica> formacoesAcademicas;
@@ -118,4 +115,7 @@ public class Pesquisador {
     @JsonIgnore
     @OneToMany(mappedBy = "pesquisador", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Tag> tags;
+
+    @Column(name = "exibir_contato")
+    private boolean exibirContato = false;
 }

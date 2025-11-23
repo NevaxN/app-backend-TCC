@@ -1,6 +1,7 @@
 package com.app.src.services;
 
 import com.app.src.dto.*;
+import com.app.src.models.Endereco;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,8 +23,9 @@ public class DadosPesquisadorService {
     private final TagService tagService;
     private final PremiacaoService premiacaoService;
     private final OrientacaoService orientacaoService;
+    private final EnderecoService enderecoService;
 
-    public DadosPesquisadorService(PesquisadorService pesquisadorService, FormacaoAcademicaService formacaoAcademicaService, IdiomaService idiomaService, AtuacaoProfissionalService atuacaoProfissionalService, ArtigoService artigoService, LivroService livroService, CapituloService capituloService, ProjetoPesquisaService projetoPesquisaService, TrabalhoEventoService trabalhoEventoService, TagService tagService, PremiacaoService premiacaoService, OrientacaoService orientacaoService) {
+    public DadosPesquisadorService(PesquisadorService pesquisadorService, FormacaoAcademicaService formacaoAcademicaService, IdiomaService idiomaService, AtuacaoProfissionalService atuacaoProfissionalService, ArtigoService artigoService, LivroService livroService, CapituloService capituloService, ProjetoPesquisaService projetoPesquisaService, TrabalhoEventoService trabalhoEventoService, TagService tagService, PremiacaoService premiacaoService, OrientacaoService orientacaoService, EnderecoService enderecoService) {
         this.pesquisadorService = pesquisadorService;
         this.formacaoAcademicaService = formacaoAcademicaService;
         this.idiomaService = idiomaService;
@@ -36,11 +38,19 @@ public class DadosPesquisadorService {
         this.tagService = tagService;
         this.premiacaoService = premiacaoService;
         this.orientacaoService = orientacaoService;
+        this.enderecoService = enderecoService;
     }
 
     public DadosPesquisadorDTO buscarDadosPesquisadorPorId(Integer idPesquisador) {
 
         PesquisadorDTO pesquisador = pesquisadorService.buscarPorId(idPesquisador);
+
+        // Endereço
+        EnderecoDTO endereco = null;
+        List<EnderecoDTO> enderecos = enderecoService.buscarPorIdPesquisador(idPesquisador);
+        if (!enderecos.isEmpty()) {
+            endereco = enderecos.getFirst();
+        }
 
         // Inicializamos a linha do tempo vazia, e vamos preencher ela conforme buscamos os outros dados.
         List<LinhaTempoDTO> linhaDoTempo = new ArrayList<>();
@@ -201,6 +211,7 @@ public class DadosPesquisadorService {
 
         return new DadosPesquisadorDTO(
                 pesquisador,
+                endereco,
                 formacoesAcademicas,
                 idiomas,
                 atuacoesProfissionais,

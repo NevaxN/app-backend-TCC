@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.app.src.dto.EnderecoSemPesquisadorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,15 @@ public class EnderecoService extends GenericCrudService<Endereco, EnderecoDTO, I
         return super.buscarPorId(id);
     }
 
+    public List<EnderecoDTO> buscarPorIdPesquisador(Integer id) {
+        List<Endereco> enderecos = repository.findByPesquisadorId(id);
+        return enderecos
+                .stream()
+                .filter(endereco -> endereco.getTipo().equals("PROFISSIONAL"))
+                .map(mapper::toDTO)
+                .toList();
+    }
+
     @Override
     public EnderecoDTO salvar(EnderecoDTO enderecoDTO){
         Endereco endereco = mapper.toEntity(enderecoDTO);
@@ -63,6 +73,20 @@ public class EnderecoService extends GenericCrudService<Endereco, EnderecoDTO, I
 
         return mapper.toDTO(salvo);
     }
+
+    public EnderecoDTO atualizarSemPesquisador(Integer id, EnderecoSemPesquisadorDTO dadosAtualizados){
+        Endereco existente = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Endereco não encontrado com id: " + id));
+
+        existente.setPais(dadosAtualizados.pais());
+        existente.setCidade(dadosAtualizados.cidade());
+        existente.setEmail(dadosAtualizados.email());
+        existente.setTelefone(dadosAtualizados.telefone());
+
+        Endereco salvo = repository.save(existente);
+
+        return mapper.toDTO(salvo);
+    }
     
     public List<Endereco> converterJsonParaEndereco (String jsonBody, Pesquisador pesquisador) {
         try {
@@ -83,6 +107,16 @@ public class EnderecoService extends GenericCrudService<Endereco, EnderecoDTO, I
 
                 enderecoList.add(endereco);
             }
+
+            // Criamos um endereço caso não possua, apenas para não ficar vago.
+            if (enderecoList.isEmpty()) {
+                Endereco endereco = new Endereco();
+                endereco.setTipo("PROFISSIONAL");
+                endereco.setBairro("");
+                endereco.setPesquisador(pesquisador);
+                enderecoList.add(endereco);
+            }
+
             return enderecoList;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao converter JSON para Endereço", e);

@@ -39,6 +39,10 @@ public class EmpresaService extends GenericCrudService<Empresa, EmpresaDTO, Inte
         return super.buscarPorId(empresa.get().getId());
     }
 
+    public Empresa buscarPorUsuarioId(Integer id){
+        return repository.findByUsuarioId(id).orElseThrow(() -> new NoSuchElementException("Empresa não encontrada."));
+    }
+
     public EmpresaDTO salvar(EmpresaDTO dto, Usuario usuarioLogado){
         Empresa novEmpresa = mapper.toEntity(dto);
 

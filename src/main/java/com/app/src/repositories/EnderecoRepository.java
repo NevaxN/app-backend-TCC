@@ -18,5 +18,7 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Integer> {
     void deleteById(Integer id);
 
     boolean existsById(Integer id);
+
+    List<Endereco> findByPesquisadorId(Integer id);
     
 }

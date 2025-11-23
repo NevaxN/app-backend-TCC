@@ -25,18 +25,18 @@ public class Endereco {
     @Column(name = "tipo", nullable = false)
     private String tipo;
 
-    @Column(name = "pais", nullable = false)
+    @Column(name = "pais", nullable = true)
     private String pais;
 
-    @Column(name = "cidade", nullable = false)
+    @Column(name = "cidade", nullable = true)
     private String cidade;
 
-    @Column(name = "bairro", nullable = false)
+    @Column(name = "bairro", nullable = true)
     private String bairro;
 
-    @Column(name = "telefone", nullable = false)
+    @Column(name = "telefone", nullable = true)
     private String telefone;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = true)
     private String email;
 }

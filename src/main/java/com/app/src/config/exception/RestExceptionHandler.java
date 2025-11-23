@@ -3,6 +3,7 @@ package com.app.src.config.exception;
 import java.util.NoSuchElementException;
 
 import com.app.src.exceptions.CodigoInvalidoException;
+import com.app.src.exceptions.TempoEsperaAtivoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +20,12 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(CodigoInvalidoException.class)
     public ResponseEntity<Object> handleCodigoInvalido(CodigoInvalidoException ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TempoEsperaAtivoException.class)
+    public ResponseEntity<Object> handleTempoEsperaAtivo(TempoEsperaAtivoException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }

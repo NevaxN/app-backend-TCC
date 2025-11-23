@@ -27,18 +27,19 @@ INSERT INTO usuarios (id, login, password, email_verificado) VALUES
 (24, 'empresa.focus@email.com', '$2a$10$N9Z.OM.Y.8.W.X.G.E.Z.Z.u5.1.O.u.B.m.S.S.I.Q.0.l.3.f.S.6.a', true)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO pesquisadores (id, usuario_id, nome_pesquisador, sobrenome) VALUES
-(1, 10, 'Ana', 'Souza'),
-(2, 11, 'Bruno', 'Lima'),
-(3, 12, 'Carla', 'Costa'),
-(4, 13, 'Diego', 'Martins'),
-(5, 14, 'Elisa', 'Ferreira'),
-(6, 15, 'Fábio', 'Almeida'),
-(7, 16, 'Gabriela', 'Nunes'),
-(8, 17, 'Heitor', 'Gomes'),
-(9, 18, 'Isabela', 'Pinto'),
-(10, 19, 'Júlio', 'Rocha')
+INSERT INTO pesquisadores (id, usuario_id, nome_pesquisador, sobrenome, exibir_contato) VALUES
+(1, 10, 'Ana', 'Souza', false),
+(2, 11, 'Bruno', 'Lima', false),
+(3, 12, 'Carla', 'Costa', false),
+(4, 13, 'Diego', 'Martins', false),
+(5, 14, 'Elisa', 'Ferreira', false),
+(6, 15, 'Fábio', 'Almeida', false),
+(7, 16, 'Gabriela', 'Nunes', false),
+(8, 17, 'Heitor', 'Gomes', false),
+(9, 18, 'Isabela', 'Pinto', false),
+(10, 19, 'Júlio', 'Rocha', false)
 ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO empresas (
     id, 

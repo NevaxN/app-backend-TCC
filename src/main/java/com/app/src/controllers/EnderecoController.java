@@ -1,6 +1,7 @@
 package com.app.src.controllers;
 
 import com.app.src.dto.EnderecoDTO;
+import com.app.src.dto.EnderecoSemPesquisadorDTO;
 import com.app.src.services.EnderecoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class EnderecoController {
 
     // Atualizar endereço
     @PutMapping("/alterarEndereco/{id}")
-    public ResponseEntity<EnderecoDTO> atualizar(@PathVariable Integer id, @RequestBody EnderecoDTO enderecoAtualizado) {
-        return ResponseEntity.ok(enderecoService.atualizar(id, enderecoAtualizado));
+    public ResponseEntity<EnderecoDTO> atualizar(@PathVariable Integer id, @RequestBody EnderecoSemPesquisadorDTO enderecoAtualizado) {
+        return ResponseEntity.ok(enderecoService.atualizarSemPesquisador(id, enderecoAtualizado));
     }
 
     // Deletar endereço

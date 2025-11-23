@@ -45,7 +45,8 @@ public class SecurityConfiguration {
         "/api/usuarios/alterarLogin",
         "/api/formacoes/salvarFormacao",
         "/api/pesquisa/buscar",
-        "/api/listas/**"
+        "/api/listas/**",
+        "/api/perfilAcademico/**"
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {

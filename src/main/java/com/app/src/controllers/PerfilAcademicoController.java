@@ -1,6 +1,6 @@
 package com.app.src.controllers;
 
-import com.app.src.dto.AlteracaoPerfilAcademicoDTO;
+import com.app.src.dto.perfilAcademico.AlteracaoPerfilAcademicoDTO;
 import com.app.src.services.PerfilAcademicoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

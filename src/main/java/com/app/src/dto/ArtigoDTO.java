@@ -4,7 +4,7 @@ import com.app.src.models.Pesquisador;
 
 public record ArtigoDTO (
          Integer sequenciaProducao,
-         Pesquisador pesquisador,
+         PesquisadorDTO pesquisador,
          String autores,
          Integer ano,
          Boolean destaque,

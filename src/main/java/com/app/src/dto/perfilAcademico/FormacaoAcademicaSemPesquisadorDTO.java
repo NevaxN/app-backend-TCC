@@ -1,4 +1,4 @@
-package com.app.src.dto;
+package com.app.src.dto.perfilAcademico;
 
 public record FormacaoAcademicaSemPesquisadorDTO(
         Integer id,

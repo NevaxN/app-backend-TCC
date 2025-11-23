@@ -1,4 +1,4 @@
-package com.app.src.dto;
+package com.app.src.dto.perfilAcademico;
 
 import java.util.List;
 

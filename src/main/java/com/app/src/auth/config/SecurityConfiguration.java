@@ -52,6 +52,7 @@ public class SecurityConfiguration {
     public static final String [] ENDPOINTS_CUSTOMER = {
         "/api/dadosPesquisador/**",
         "/api/usuarios/listarUsuario/**",
+        "/api/usuarios/excluir/**",
         "/api/tags/listarTag/**"
     };
 

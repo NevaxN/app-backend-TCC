@@ -1,5 +1,9 @@
 package com.app.src.models;
 
+import java.sql.Types;
+
+import org.hibernate.annotations.JdbcTypeCode;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,4 +70,8 @@ public class Empresa {
 
     @Column(name = "logradouro", nullable = false)
     private String logradouro;
+
+    @Column()
+    @JdbcTypeCode(Types.VARBINARY)
+    private byte[] imagemPerfil;
 }

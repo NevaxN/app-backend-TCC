@@ -1,7 +1,5 @@
 package com.app.src.dto.perfilAcademico;
 
-import com.app.src.models.Pesquisador;
-
 public record CapituloSemPesquisadorDTO(
         Integer sequenciaProducao,
         String autores,

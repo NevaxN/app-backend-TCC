@@ -1,7 +1,5 @@
 package com.app.src.dto.perfilAcademico;
 
-import com.app.src.dto.PesquisadorDTO;
-
 public record LivroSemPesquisadorDTO(
         Integer sequenciaProducao,
         String autores,

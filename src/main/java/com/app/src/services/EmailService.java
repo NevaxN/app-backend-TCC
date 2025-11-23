@@ -1,6 +1,5 @@
 package com.app.src.services;
 
-import com.app.src.dto.EmpresaDTO;
 import com.app.src.dto.EnviarContatoDTO;
 import com.app.src.dto.PesquisadorDTO;
 import com.app.src.exceptions.TempoEsperaAtivoException;

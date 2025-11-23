@@ -1,7 +1,6 @@
 package com.app.src.services;
 
 import com.app.src.dto.*;
-import com.app.src.models.Endereco;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

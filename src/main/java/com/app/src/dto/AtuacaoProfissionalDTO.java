@@ -1,8 +1,5 @@
 package com.app.src.dto;
 
-import com.app.src.models.Pesquisador;
-
-
 public record AtuacaoProfissionalDTO(
         Integer id,
         PesquisadorDTO pesquisador,

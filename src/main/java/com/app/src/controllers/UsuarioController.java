@@ -133,4 +133,17 @@ public class UsuarioController {
         
         return ResponseEntity.ok("Usuário e perfil excluídos com sucesso");
     }
+
+    @PutMapping("/alterarSenha/{id}")
+    public ResponseEntity<?> alterarSenha(@PathVariable Integer id, @RequestBody Map<String, String> payload) {
+        String novaSenha = payload.get("senha");
+
+        if (novaSenha == null || novaSenha.length() < 6) {
+            return ResponseEntity.badRequest().body("A senha deve ter no mínimo 6 caracteres.");
+        }
+
+        usuarioService.atualizarSenhaPeloId(id, novaSenha);
+        
+        return ResponseEntity.ok("Senha alterada com sucesso.");
+    }
 }

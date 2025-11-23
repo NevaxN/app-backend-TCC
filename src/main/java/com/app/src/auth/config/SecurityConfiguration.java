@@ -44,6 +44,7 @@ public class SecurityConfiguration {
         "/api/empresas/**",
         "/api/tags/alterarTag/**",
         "/api/usuarios/alterarLogin",
+        "/api/usuarios/alterarSenha/**",
         "/api/formacoes/salvarFormacao",
         "/api/pesquisa/buscar",
         "/api/listas/**",

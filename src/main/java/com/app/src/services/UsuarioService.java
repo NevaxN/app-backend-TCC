@@ -157,4 +157,14 @@ public class UsuarioService {
 
     }
 
+    public void atualizarSenhaPeloId(Integer id, String novaSenha) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+        String senhaCodificada = securityConfiguration.passwordEncoder().encode(novaSenha);
+
+        usuario.setPassword(senhaCodificada);
+        usuarioRepository.save(usuario);
+    }
+
 }

@@ -22,13 +22,13 @@ public class Premiacao {
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = true)
     private String titulo;
 
-    @Column(name = "instituicao", nullable = false)
+    @Column(name = "instituicao", nullable = true)
     private String instituicao;
 
-    @Column(name = "ano", nullable = false)
+    @Column(name = "ano", nullable = true)
     private Integer ano;
 
     @Column(name = "destaque", nullable = false)

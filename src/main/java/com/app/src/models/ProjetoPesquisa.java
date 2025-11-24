@@ -22,24 +22,24 @@ public class ProjetoPesquisa {
     @JoinColumn(name = "pesquisador_id", nullable = false)
     private Pesquisador pesquisador;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = true)
     private String titulo;
 
-    @Column(name = "descricao", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "descricao", columnDefinition = "TEXT", nullable = true)
     private String descricao;
 
-    @Column(name = "instituicao", nullable = false)
+    @Column(name = "instituicao", nullable = true)
     private String instituicao;
 
-    @Column(name = "ano", nullable = false)
+    @Column(name = "ano", nullable = true)
     private Integer ano;
 
-    @Column(name = "financiador", nullable = false)
+    @Column(name = "financiador", nullable = true)
     private String financiador;
 
     @Column(name = "destaque", nullable = false)
     private Boolean destaque;
 
-    @Column(name = "sequencia", nullable = false)
+    @Column(name = "sequencia", nullable = true)
     private Integer sequencia;
 }
